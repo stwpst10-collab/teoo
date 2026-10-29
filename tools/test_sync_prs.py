@@ -1,5 +1,6 @@
 """Temporary fixtures only; no GitHub access or real vault changes."""
 
+import io
 import json
 from pathlib import Path
 import shutil
@@ -102,8 +103,9 @@ class SyncTests(unittest.TestCase):
     def test_api_failure_preserves_last_success(self):
         self.sync([pull()])
         before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
-        with patch('sync_prs.fetch_pulls', side_effect=SyncError('offline')):
+        with patch('sync_prs.fetch_pulls', side_effect=SyncError('offline')),                 patch('sys.stderr', new_callable=io.StringIO) as stderr:
             self.assertEqual(1, main(['--root', str(self.root), '--repo', 'owner/venture']))
+        self.assertIn('PR 조회 실패: offline', stderr.getvalue())
         after = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
         self.assertEqual(before, after)
 
