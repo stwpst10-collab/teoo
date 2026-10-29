@@ -1,0 +1,15 @@
+{
+  "share_files": 88,
+  "total_MB": 18.29,
+  "original_hashes_passed": 68,
+  "clean_share_validation": "passed",
+  "validator_tests": 15,
+  "remote_created": false,
+  "committed": false,
+  "pushed": false,
+  "limitations": [
+    "External URLs and heading anchors are not fetched or validated.",
+    "Historical artifacts are preserved, not re-executed.",
+    "Server-side protection and CI execution require a configured remote."
+  ]
+}

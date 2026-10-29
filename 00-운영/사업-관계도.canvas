@@ -1,0 +1,261 @@
+{
+  "nodes": [
+    {
+      "id": "business",
+      "type": "file",
+      "file": "10-지식/사업/그날의 류.md",
+      "x": 0,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "customer",
+      "type": "file",
+      "file": "10-지식/고객/초기 고객.md",
+      "x": 480,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "problem",
+      "type": "file",
+      "file": "10-지식/고객/고객 문제.md",
+      "x": 960,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "solution",
+      "type": "file",
+      "file": "10-지식/제품/발목형 웰니스 디바이스.md",
+      "x": 960,
+      "y": 400,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "model",
+      "type": "file",
+      "file": "10-지식/사업모델/수익과 비용 가정.md",
+      "x": 0,
+      "y": 400,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "test",
+      "type": "file",
+      "file": "50-검증/100일 검증 계획.md",
+      "x": 480,
+      "y": 400,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "source",
+      "type": "file",
+      "file": "30-근거/린캔버스 원문.md",
+      "x": 480,
+      "y": 800,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "stage",
+      "type": "file",
+      "file": "40-결정/사업화 단계.md",
+      "x": -480,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "decision",
+      "type": "file",
+      "file": "40-결정/수동 시연 목업 결정.md",
+      "x": 1440,
+      "y": 400,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "meeting",
+      "type": "file",
+      "file": "30-근거/개발 회의록 2026-10-27.md",
+      "x": 1440,
+      "y": 800,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "questions",
+      "type": "file",
+      "file": "50-검증/리서치 질문 목록.md",
+      "x": 0,
+      "y": 800,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "alternative",
+      "type": "file",
+      "file": "10-지식/제품/기존 대안.md",
+      "x": 1440,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "sku-research",
+      "type": "file",
+      "file": "20-리서치/경쟁사 제품 구성과 확장 분석.md",
+      "x": 1920,
+      "y": 0,
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": "output-model",
+      "type": "file",
+      "file": "80-산출물/시뮬레이션 모델링.md",
+      "x": 0,
+      "y": 1200,
+      "width": 440,
+      "height": 280
+    },
+    {
+      "id": "output-prototype",
+      "type": "file",
+      "file": "80-산출물/프로토타입 시안.md",
+      "x": 520,
+      "y": 1200,
+      "width": 440,
+      "height": 280
+    }
+  ],
+  "edges": [
+    {
+      "id": "e0",
+      "fromNode": "business",
+      "fromSide": "bottom",
+      "toNode": "customer",
+      "toSide": "top",
+      "label": "대상 고객"
+    },
+    {
+      "id": "e1",
+      "fromNode": "customer",
+      "fromSide": "bottom",
+      "toNode": "problem",
+      "toSide": "top",
+      "label": "겪는 문제 가설"
+    },
+    {
+      "id": "e2",
+      "fromNode": "problem",
+      "fromSide": "bottom",
+      "toNode": "solution",
+      "toSide": "top",
+      "label": "해결책 가설"
+    },
+    {
+      "id": "e3",
+      "fromNode": "business",
+      "fromSide": "bottom",
+      "toNode": "model",
+      "toSide": "top",
+      "label": "수익·비용 가정"
+    },
+    {
+      "id": "e4",
+      "fromNode": "test",
+      "fromSide": "bottom",
+      "toNode": "solution",
+      "toSide": "top",
+      "label": "사용성 검증"
+    },
+    {
+      "id": "e5",
+      "fromNode": "test",
+      "fromSide": "bottom",
+      "toNode": "model",
+      "toSide": "top",
+      "label": "구매·재구매 검증"
+    },
+    {
+      "id": "e6",
+      "fromNode": "source",
+      "fromSide": "bottom",
+      "toNode": "test",
+      "toSide": "top",
+      "label": "계획 출처"
+    },
+    {
+      "id": "e-stage",
+      "fromNode": "stage",
+      "fromSide": "bottom",
+      "toNode": "business",
+      "toSide": "top",
+      "label": "현재 사업 단계"
+    },
+    {
+      "id": "e-decision",
+      "fromNode": "decision",
+      "fromSide": "bottom",
+      "toNode": "solution",
+      "toSide": "top",
+      "label": "현재 시연 범위"
+    },
+    {
+      "id": "e-meeting",
+      "fromNode": "meeting",
+      "fromSide": "bottom",
+      "toNode": "decision",
+      "toSide": "top",
+      "label": "회의 결론 근거"
+    },
+    {
+      "id": "e-questions",
+      "fromNode": "questions",
+      "fromSide": "bottom",
+      "toNode": "decision",
+      "toSide": "top",
+      "label": "남은 검증 질문"
+    },
+    {
+      "id": "e-alt-sol",
+      "fromNode": "alternative",
+      "fromSide": "bottom",
+      "toNode": "solution",
+      "toSide": "right",
+      "label": "제품 비교 대상"
+    },
+    {
+      "id": "e-sku-alt",
+      "fromNode": "sku-research",
+      "fromSide": "left",
+      "toNode": "alternative",
+      "toSide": "right",
+      "label": "경쟁사 관측 근거"
+    },
+    {
+      "id": "output-model-reference",
+      "fromNode": "output-model",
+      "fromSide": "top",
+      "toNode": "model",
+      "toSide": "bottom",
+      "label": "사용 가정"
+    },
+    {
+      "id": "output-prototype-reference",
+      "fromNode": "output-prototype",
+      "fromSide": "top",
+      "toNode": "decision",
+      "toSide": "bottom",
+      "label": "참조 결정"
+    }
+  ]
+}

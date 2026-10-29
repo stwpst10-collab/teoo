@@ -1,0 +1,39 @@
+# Personal and runtime state
+.obsidian/
+.omx/
+.local/
+.env
+.env.*
+!.env.example
+**/node_modules/
+**/__pycache__/
+*.pyc
+**/~$*
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Historical materials: share only explicit source/artifact sets.
+/90 작업자료/*
+!/90 작업자료/원본자료/
+/90 작업자료/원본자료/*
+!/90 작업자료/원본자료/그날의류_사업성시뮬레이션_20261026.xlsx
+!/90 작업자료/output/
+/90 작업자료/output/*
+!/90 작업자료/output/린캔버스_그날의류/
+!/90 작업자료/outputs/
+/90 작업자료/outputs/*
+!/90 작업자료/outputs/assumptions_20261027/
+!/90 작업자료/outputs/ovira_20261029/
+/90 작업자료/outputs/assumptions_20261027/*
+!/90 작업자료/outputs/assumptions_20261027/*.xlsx
+!/90 작업자료/outputs/assumptions_20261027/assumptions-to-profit.html
+!/90 작업자료/outputs/assumptions_20261027/explainer-model.js
+!/90 작업자료/outputs/assumptions_20261027/verification.json
+/90 작업자료/outputs/ovira_20261029/*
+!/90 작업자료/outputs/ovira_20261029/*.xlsx
+!/90 작업자료/outputs/ovira_20261029/verification.json
+# Dependencies and lock files remain excluded even within allowlisted archives.
+**/node_modules/
+**/~$*

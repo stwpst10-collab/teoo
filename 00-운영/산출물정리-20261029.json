@@ -1,0 +1,122 @@
+﻿[
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/before.png",
+        "sha256":  "E61AD81FDBB0A8BE664449C19D915A05F43F8E322A2D0BFE92BC9338992B2BBB",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/after_top.png",
+        "sha256":  "D172C122F7714AF3E53EE9E9E3669E051624C9721EC0D1140F3027F1284BA3A2",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/after_common.png",
+        "sha256":  "D472E2837E95084E79CF31622D70334ACA9656F357012B5C51FEFB36585675DB",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/after_tail.png",
+        "sha256":  "0450EF4313E1178E866EBF4D324C59FB62FD07ACF3D3680873152E4DC3F551F8",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/after_unit.png",
+        "sha256":  "722435C258026296C5B8738CB40B3CCC40E07DEE25E5198BD9CC1F5FAE3353BF",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/after_cash.png",
+        "sha256":  "E07105EA7579A9B56C5D33B3EEEE580786D2A83B4E14593B861ED71177209C34",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/explainer-top.png",
+        "sha256":  "B75610EA35DAC4D4FEBA961A7E5C1609B876D202CB3138BC49F7506B8538FD1C",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/explainer-desktop.png",
+        "sha256":  "E6E44B4200E031FE3ECF9809A1741E8CCF99EAFEB21ECEAD5088486ED0CFA2FF",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/explainer-mobile.png",
+        "sha256":  "60A9AAA040285048074B65E25C1914FDF3C331D115C7CAC9BDAF3AE7103D8CB2",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/explainer-mobile-controls.png",
+        "sha256":  "4D43A26A512BD56DF4AE6AB1322E47D0F010C90B7580A4E3C8DAC423C5DB9CC5",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/explainer-profit.png",
+        "sha256":  "1AD37FBD5CCCE8C92772DEE32F3CF7715B6A9B66F45FB810597CBBA6EC468D10",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/profit-structure-desktop.png",
+        "sha256":  "DE984471C481662ECA7EA3FAAA69195AF82095DAD770A6803022467CBAF07461",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/assumptions_20261027/profit-structure-mobile.png",
+        "sha256":  "728BB964B2EC8B07B6A46D0913FF4836BF14A7476CAB193CAB9782000F9DDB77",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/ovira_20261029/before_market.png",
+        "sha256":  "3DFC5485E6386D088CFB67D08585098E70A297E31969E5F77CCF41F9501097B3",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/ovira_20261029/after_market.png",
+        "sha256":  "3DC3F9E64114654AC8820D829A38E59016B1322B44B07454A0C5E7DE691D1371",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/ovira_20261029/after_evidence.png",
+        "sha256":  "FE6F129F448414EF07F54FCCEED815D14E3A3B3577E7E9D7580EA84F4F12C797",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/outputs/ovira_20261029/after_sources.png",
+        "sha256":  "1953047587A1F10F6C35353853F4E4F1639AD1BBB000552974D7E002FC9848A3",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "path":  "90 작업자료/tmp/lean_canvas/page-1.png",
+        "sha256":  "66D5046DCAA60EE75F7D1476529F1CA63B95FA8FE48BACC5D8A5E85AA08E61EA",
+        "action":  "delete_validation_preview"
+    },
+    {
+        "from":  "제작의뢰보드_v2.html",
+        "to":  "OUT-002-프로토타입시안-그날의류-제작의뢰보드-20261029-v2.html",
+        "sha256":  "838D623EA68A03F6C5C169685751C3B0D44F5BD90553FB4D4AFF4B79488E8689",
+        "action":  "rename"
+    },
+    {
+        "from":  "업체전달메모.txt",
+        "to":  "OUT-002-프로토타입시안-업체전달메모-20261029-v1.txt",
+        "sha256":  "8E5692485A46336AFFA6B743A9B1163737A63A3571DDBFB3CC55093B92A19655",
+        "action":  "rename"
+    },
+    {
+        "from":  "그날의류_제작의뢰보드_v2.png",
+        "to":  "OUT-002-프로토타입시안-그날의류-제작의뢰보드-20261029-v2.png",
+        "sha256":  "4A9E37AB63D23A4D750B18EFDAA9764DB9FC1EC7BF0A808F6052A3F38FA4F3E4",
+        "action":  "rename"
+    },
+    {
+        "from":  "image-prompt.txt",
+        "to":  "OUT-002-프로토타입시안-이미지생성기록-20261029-v1.txt",
+        "sha256":  "489970CECAEB67063D576C65DFE690E14C47AFF7D12C37BDC810DD9183ED29C3",
+        "action":  "rename"
+    },
+    {
+        "from":  "그날의류_수동목업_제안_v1.png",
+        "to":  "OUT-002-프로토타입시안-그날의류-수동목업-20261029-v1.png",
+        "sha256":  "ED4A60B61A92B803C1DA7E260519530882FF1B282E5D86E7E5E539C4B1C93BD3",
+        "action":  "rename"
+    }
+]

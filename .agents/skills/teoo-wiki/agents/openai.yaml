@@ -1,0 +1,6 @@
+interface:
+  display_name: "teoo 사내벤처 위키"
+  short_description: "사내벤처 온톨로지 검색·근거 확인·조사 반영·팀 PR 제출"
+  default_prompt: "$teoo-wiki 사내벤처 자료에서 질문의 근거를 찾고 현재 결정과 미확인 사항을 구분해줘."
+policy:
+  allow_implicit_invocation: true
