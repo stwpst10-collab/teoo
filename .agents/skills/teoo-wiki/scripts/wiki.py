@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only Markdown access to a verified local teoo Git checkout."""
+"""Read-only Markdown access to a verified teoo Git checkout or exported snapshot."""
 import argparse
 import json
 import os
@@ -14,6 +14,8 @@ REMOTE = 'https://github.com/stwpst10-collab/teoo.git'
 CORPUS = {'00-운영', '10-지식', '20-리서치', '30-근거', '40-결정', '50-검증', '80-산출물'}
 EXCLUDED = {'첨부', '90 작업자료', 'node_modules', 'tmp', '__pycache__'}
 ALIASES = {'ovira': ('ovira', '오비라'), '오비라': ('ovira', '오비라')}
+# Written by tools/export_snapshot.py for environments without Git (e.g. Claude web app).
+SNAPSHOT = 'teoo-snapshot.json'
 
 
 def git(repo, *args, optional=False):
@@ -44,8 +46,24 @@ def correct_origin(value):
     return path in {'stwpst10-collab/teoo', 'stwpst10-collab/teoo.git'}
 
 
+def snapshot(folder):
+    """Return the manifest of an extracted teoo snapshot, or None for other folders."""
+    manifest = folder / SNAPSHOT
+    if (folder / '.git').exists() or not manifest.is_file():
+        return None
+    data = json.loads(manifest.read_text(encoding='utf-8-sig'))
+    if not isinstance(data, dict) or not correct_origin(str(data.get('remote', ''))):
+        raise ValueError('Snapshot manifest is not for github.com/stwpst10-collab/teoo.')
+    return {key: str(data.get(key, '')) for key in ('commit', 'branch', 'exported')}
+
+
 def repository(explicit):
+    """Return (root, snapshot manifest or None) for a verified teoo source."""
     candidate = Path(explicit).expanduser() if explicit else None
+    if candidate is not None and candidate.is_dir():
+        manifest = snapshot(candidate.resolve())
+        if manifest is not None:
+            return candidate.resolve(), manifest
     if candidate is None:
         cwd = Path.cwd().resolve()
         for parent in (cwd, *cwd.parents):
@@ -74,7 +92,7 @@ def repository(explicit):
     origins = git(repo, 'config', '--get-all', 'remote.origin.url', optional=True).splitlines()
     if len(origins) != 1 or not correct_origin(origins[0]):
         raise ValueError('Origin is missing or is not github.com/stwpst10-collab/teoo. Pass a valid teoo clone with --repo.')
-    return repo
+    return repo, None
 
 
 def allowed(parts):
@@ -118,7 +136,8 @@ def metadata(text):
     body = text[front.end():] if front else text
     title = re.search(r'^#\s+(.+)$', body, re.M)
     return {'title': title[1].strip() if title else '',
-            **{key: fields.get(key, '').strip(' \"\'') for key in ('id', 'status', 'review', 'aliases')}}
+            **{key: fields.get(key, '').strip(' \"\'') for key in
+               ('id', 'type', 'status', 'review', 'created', 'updated', 'aliases')}}
 
 
 def search(repo, query, limit):
@@ -162,10 +181,14 @@ def main():
     read.add_argument('--max-chars', type=positive, default=12000)
     args = parser.parse_args()
     try:
-        repo = repository(args.repo)
-        if args.command == 'status':
-            data = {'repository': str(repo), 'remote': REMOTE,
+        repo, manifest = repository(args.repo)
+        if args.command == 'status' and manifest is not None:
+            data = {'repository': str(repo), 'remote': REMOTE, 'source': 'snapshot', **manifest,
+                    'dirty': False}
+        elif args.command == 'status':
+            data = {'repository': str(repo), 'remote': REMOTE, 'source': 'git',
                     'branch': git(repo, 'symbolic-ref', '--short', 'HEAD', optional=True) or 'detached',
+                    'commit': git(repo, 'rev-parse', '--short', 'HEAD', optional=True) or 'none',
                     'dirty': bool(git(repo, 'status', '--porcelain'))}
         elif args.command == 'search':
             data = search(repo, args.query, args.limit)

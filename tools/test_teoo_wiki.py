@@ -127,6 +127,41 @@ class WikiCliTests(unittest.TestCase):
         unrelated.mkdir()
         self.assertEqual(ORIGIN, self.result('status', explicit=False, cwd=unrelated, script=installed)['remote'])
 
+    def snapshot(self, remote=ORIGIN):
+        folder = self.base / 'snapshot'
+        shutil.copytree(self.repo, folder, ignore=shutil.ignore_patterns('.git'))
+        (folder / 'teoo-snapshot.json').write_text(json.dumps(
+            {'remote': remote, 'commit': 'abc1234', 'branch': 'main', 'exported': '2026-10-29T00:00:00Z'}),
+            encoding='utf-8')
+        return folder
+
+    def test_snapshot_without_git_reports_manifest_and_reads(self):
+        folder = self.snapshot()
+        run = self.cli('status', explicit=False, cwd=self.base)
+        data = json.loads(self.cli('--repo', str(folder), 'status', explicit=False).stdout)
+        self.assertEqual(('snapshot', 'abc1234', '2026-10-29T00:00:00Z'),
+                         (data['source'], data['commit'], data['exported']))
+        self.assertEqual(0, run.returncode)  # sibling Git checkout is still discovered
+        found = json.loads(self.cli('--repo', str(folder), 'search', '오비라', explicit=False).stdout)
+        self.assertEqual('ALT-002', found['results'][0]['id'])
+        self.assertEqual('pending', found['results'][0]['review'])
+
+    def test_snapshot_for_other_repository_is_rejected(self):
+        folder = self.snapshot('https://github.com/elsewhere/private.git')
+        run = self.cli('--repo', str(folder), 'read', '10-지식/제품/오비라.md', explicit=False)
+        self.assertNotEqual(0, run.returncode)
+        self.assertNotIn('80명', run.stdout + run.stderr)
+        (folder / 'teoo-snapshot.json').unlink()
+        self.assertNotEqual(0, self.cli('--repo', str(folder), 'status', explicit=False).returncode)
+
+    def test_git_status_reports_commit(self):
+        self.assertEqual('none', self.result('status')['commit'])
+        self.git('add', '-A')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@example.com', 'commit', '-qm', 'init')
+        data = self.result('status')
+        self.assertEqual(('git', False), (data['source'], data['dirty']))
+        self.assertRegex(data['commit'], r'^[0-9a-f]{7,}$')
+
 
 if __name__ == '__main__':
     unittest.main()
