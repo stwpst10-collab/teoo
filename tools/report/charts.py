@@ -1,9 +1,15 @@
-"""Static report charts (validated palette slots 1-2; direct value labels for relief)."""
+"""Static report charts (validated palette slots 1-2; direct value labels for relief).
+
+Numbers and labels come from chart_data.py, which build_html.py also uses for inline SVG.
+"""
 import sys
 from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from chart_data import CHARTS  # noqa: E402
 
 OUT = Path(sys.argv[1]); OUT.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({'font.family': 'Malgun Gothic', 'axes.unicode_minus': False, 'font.size': 9})
@@ -49,73 +55,52 @@ def vbar(name, labels, values, unit, ymax, note=None):
     fig.tight_layout(); fig.savefig(OUT / name, facecolor=SURF); plt.close(fig)
 
 
-# 1. 심한 월경 증상 성인의 대처 (질병관리청 2022)
-hbar('c1_coping.png',
-     ['약국 진통제', '아무것도 안 함', '건강기능식품·민간요법', '한의원', '산부인과·비뇨의학과 진료'],
-     [59.2, 23.5, 18.2, 4.8, 28.5], '%', 75,
-     '심한 월경 증상(VAS 7점 이상)이 1개 이상인 성인 1,266명, 단위 %')
+def plan(name, d):
+    """3-year plan: revenue and pre-tax result on one axis (c4)."""
+    fig, ax = plt.subplots(figsize=(6.2, 2.9), dpi=220)
+    fig.patch.set_facecolor(SURF); frame(ax)
+    (n1, rev, _), (n2, pl, pl_text) = d['series']
+    w = 0.32; xs = range(len(d['labels']))
+    ax.bar([x - w / 2 - 0.01 for x in xs], rev, w, color=BLUE, label=n1)
+    ax.bar([x + w / 2 + 0.01 for x in xs], pl, w, color=ORANGE, label=n2)
+    for x, v in zip(xs, rev):
+        ax.text(x - w / 2, v + 0.15, f'{v:.2f}', ha='center', color=INK, fontsize=8.5)
+    for x, v, t in zip(xs, pl, pl_text):
+        ax.text(x + w / 2, v + (0.15 if v >= 0 else -0.45), t, ha='center', color=INK, fontsize=8.5)
+    ax.axhline(0, color=MUTED, lw=0.8)
+    ax.set_xticks(list(xs), d['labels'], color=INK); ax.set_ylim(d['vmin'], d['vmax'])
+    ax.yaxis.grid(True, color=GRID, lw=0.6); ax.set_axisbelow(True); ax.tick_params(axis='y', labelsize=8)
+    ax.legend(frameon=False, loc='upper left', fontsize=8.5)
+    ax.set_title(d['note'], loc='left', fontsize=8.5, color=MUTED, pad=6)
+    fig.tight_layout(); fig.savefig(OUT / name, facecolor=SURF); plt.close(fig)
 
-# 2. 심한 증상 유병률
-hbar('c2_prevalence.png',
-     ['성인 심한 월경전 증후군', '성인 심한 월경통', '청소년 심한 월경통', '청소년 심한 월경전 증후군'],
-     [46.1, 41.6, 42.6, 29.3], '%', 60,
-     '월경 중인 청소년 961명·성인 2,137명, VAS 7점 이상 비율, 단위 %')
 
-# 3. 펨테크 시장 기관별 2024 추정
-vbar('c3_femtech.png',
-     ['Fortune Business\nInsights', 'Grand View\nResearch', 'Arizton\n(2023)', 'Global Market\nInsights'],
-     [78.1, 392.9, 518.0, 602.0], '억$', 700,
-     '글로벌 펨테크 시장 규모 추정(2024), 단위 억 달러 — 기관별 정의 상이')
+def pair(name, d):
+    """Two companies side by side per year (c6)."""
+    fig, ax = plt.subplots(figsize=(6.2, 2.8), dpi=220)
+    fig.patch.set_facecolor(SURF); frame(ax)
+    (n1, a, _), (n2, b, _) = d['series']
+    w = 0.36; xs = range(len(d['labels']))
+    ax.bar([x - w / 2 - 0.01 for x in xs], a, w, color=BLUE, label=n1)
+    ax.bar([x + w / 2 + 0.01 for x in xs], b, w, color=ORANGE, label=n2)
+    for x, v in zip(xs, a):
+        ax.text(x - w / 2, v + 120, f'{v:,}', ha='center', color=INK, fontsize=7.5)
+    for x, v in zip(xs, b):
+        ax.text(x + w / 2, v + 120, f'{v:,}', ha='center', color=INK, fontsize=7.5)
+    ax.set_xticks(list(xs), d['labels'], color=INK); ax.set_ylim(d['vmin'], d['vmax'])
+    ax.yaxis.grid(True, color=GRID, lw=0.6); ax.set_axisbelow(True); ax.tick_params(axis='y', labelsize=8)
+    ax.legend(frameon=False, loc='upper right', fontsize=8.5, ncol=2)
+    ax.set_title(d['note'], loc='left', fontsize=8.5, color=MUTED, pad=6)
+    fig.tight_layout(); fig.savefig(OUT / name, facecolor=SURF); plt.close(fig)
 
-# 4. 3개년 계획: 매출과 세전 손익 (같은 단위, 하나의 축)
-fig, ax = plt.subplots(figsize=(6.2, 2.9), dpi=220)
-fig.patch.set_facecolor(SURF); frame(ax)
-yrs = ['1년차', '2년차', '3년차']; rev = [0.70, 3.00, 8.00]; pl = [-0.965, -0.44, 0.75]
-w = 0.32; xs = range(3)
-ax.bar([x - w / 2 - 0.01 for x in xs], rev, w, color=BLUE, label='매출')
-ax.bar([x + w / 2 + 0.01 for x in xs], pl, w, color=ORANGE, label='세전 단순 손익')
-for x, v in zip(xs, rev):
-    ax.text(x - w / 2, v + 0.15, f'{v:.2f}', ha='center', color=INK, fontsize=8.5)
-for x, v, t in zip(xs, pl, ['-0.965', '-0.44', '+0.75']):
-    ax.text(x + w / 2, v + (0.15 if v >= 0 else -0.45), t, ha='center', color=INK, fontsize=8.5)
-ax.axhline(0, color=MUTED, lw=0.8)
-ax.set_xticks(list(xs), yrs, color=INK); ax.set_ylim(-1.6, 9)
-ax.yaxis.grid(True, color=GRID, lw=0.6); ax.set_axisbelow(True); ax.tick_params(axis='y', labelsize=8)
-ax.legend(frameon=False, loc='upper left', fontsize=8.5)
-ax.set_title('린캔버스 계획 가정(실적 아님), 단위 억 원, 부가세 제외', loc='left', fontsize=8.5, color=MUTED, pad=6)
-fig.tight_layout(); fig.savefig(OUT / 'c4_plan.png', facecolor=SURF); plt.close(fig)
 
-# 5. 침투 시나리오
-vbar('c5_scenario.png', ['침투 0.5%\n(약 2.03만 명)', '침투 1%\n(약 4.06만 명)', '침투 3%\n(약 12.2만 명)'],
-     [24, 49, 146], '억 원', 175,
-     '심한 월경통 응답 여성 약 406만 명(추정) × 누적 침투율 × 본체 12만 원 — 규모 예시, 연간 매출 아님')
-print('charts ok')
-
-# 6. 대형 홈헬스케어 2사 매출 추이 (같은 단위, 하나의 축)
-fig, ax = plt.subplots(figsize=(6.2, 2.8), dpi=220)
-fig.patch.set_facecolor(SURF); frame(ax)
-yrs = ['2021', '2022', '2023', '2024', '2025']
-cj = [6671, 7502, 5847, 5460, 5498]; bf = [5913, 5220, 4197, 4369, 4226]
-w = 0.36; xs = range(5)
-ax.bar([x - w / 2 - 0.01 for x in xs], cj, w, color=BLUE, label='세라젬')
-ax.bar([x + w / 2 + 0.01 for x in xs], bf, w, color=ORANGE, label='바디프랜드')
-for x, v in zip(xs, cj):
-    ax.text(x - w / 2, v + 120, f'{v:,}', ha='center', color=INK, fontsize=7.5)
-for x, v in zip(xs, bf):
-    ax.text(x + w / 2, v + 120, f'{v:,}', ha='center', color=INK, fontsize=7.5)
-ax.set_xticks(list(xs), yrs, color=INK); ax.set_ylim(0, 8800)
-ax.yaxis.grid(True, color=GRID, lw=0.6); ax.set_axisbelow(True); ax.tick_params(axis='y', labelsize=8)
-ax.legend(frameon=False, loc='upper right', fontsize=8.5, ncol=2)
-ax.set_title('매출 추이, 단위 억 원', loc='left', fontsize=8.5, color=MUTED, pad=6)
-fig.tight_layout(); fig.savefig(OUT / 'c6_homehealth.png', facecolor=SURF); plt.close(fig)
-
-# 7. 국내 홈뷰티 디바이스 시장
-vbar('c7_beauty.png', ['2018', '2022', '2030(전망)'], [0.5, 1.6, 3.4], '조 원', 4.0,
-     '국내 홈뷰티 디바이스 시장 규모, 단위 조 원')
-print('charts v3 ok')
-
-# 8. 마사지용 기기(HSK 9019102000) 수입액 추이 — 관세청
-vbar('c8_imports.png', ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
-     [2.73, 3.80, 4.18, 4.05, 4.88, 5.65, 4.57, 3.70, 3.95, 3.49], '', 6.5,
-     '마사지용 기기(HSK 9019102000) 수입액, 단위 억 달러')
-print('chart c8 ok')
+for name, d in CHARTS.items():
+    if d['kind'] == 'hbar':
+        hbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
+    elif d['kind'] == 'vbar':
+        vbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
+    elif name == 'c4_plan.png':
+        plan(name, d)
+    else:
+        pair(name, d)
+print('charts ok', len(CHARTS))

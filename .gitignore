@@ -37,3 +37,6 @@ Thumbs.db
 # Dependencies and lock files remain excluded even within allowlisted archives.
 **/node_modules/
 **/~$*
+
+# Web report build output (GitHub Pages artifact)
+/_site/
