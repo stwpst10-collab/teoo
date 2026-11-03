@@ -40,13 +40,13 @@ def hbar(name, labels, values, unit, xmax, note=None):
     fig.tight_layout(); fig.savefig(OUT / name, facecolor=SURF); plt.close(fig)
 
 
-def vbar(name, labels, values, unit, ymax, note=None):
+def vbar(name, labels, values, unit, ymax, note=None, decimals=1):
     fig, ax = plt.subplots(figsize=(6.2, 2.7), dpi=220)
     fig.patch.set_facecolor(SURF); frame(ax)
     x = range(len(labels))
     ax.bar(list(x), values, width=0.5, color=BLUE)
     for xi, v in zip(x, values):
-        ax.text(xi, v + ymax * 0.02, f'{v:,.1f}{unit}' if v % 1 else f'{v:,.0f}{unit}', ha='center', color=INK, fontsize=9)
+        ax.text(xi, v + ymax * 0.02, f'{v:,.{decimals}f}{unit}' if v % 1 else f'{v:,.0f}{unit}', ha='center', color=INK, fontsize=9)
     ax.set_xticks(list(x), labels, color=INK)
     ax.set_ylim(0, ymax); ax.yaxis.grid(True, color=GRID, lw=0.6); ax.set_axisbelow(True)
     ax.tick_params(axis='y', labelsize=8)
@@ -98,7 +98,7 @@ for name, d in CHARTS.items():
     if d['kind'] == 'hbar':
         hbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
     elif d['kind'] == 'vbar':
-        vbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
+        vbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'], d.get('decimals', 1))
     elif name == 'c4_plan.png':
         plan(name, d)
     else:

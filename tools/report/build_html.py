@@ -284,8 +284,8 @@ def _t(x, y, s, anchor='start', size=11, color=INK, weight='normal'):
             f'font-weight="{weight}">{html.escape(str(s))}</text>')
 
 
-def _num(v, unit=''):
-    return (f'{v:,.1f}' if v % 1 else f'{v:,.0f}') + unit
+def _num(v, unit='', decimals=1):
+    return (f'{v:,.{decimals}f}' if v % 1 else f'{v:,.0f}') + unit
 
 
 def svg_chart(d):
@@ -330,7 +330,7 @@ def svg_chart(d):
             x = cx - k * bw / 2 + j * bw
             y1, y2 = sorted((sy(v), y0))
             parts.append(f'<rect x="{x:.1f}" y="{y1:.1f}" width="{bw - 2:.1f}" height="{max(y2 - y1, 0.5):.1f}" fill="{colors[j % 2]}" rx="1.5"/>')
-            txt = texts[i] if texts else (_num(v, d.get('unit', '')) if k == 1 else f'{v:,}')
+            txt = texts[i] if texts else (_num(v, d.get('unit', ''), d.get('decimals', 1)) if k == 1 else f'{v:,}')
             parts.append(_t(x + bw / 2 - 1, (y1 - 4) if v >= 0 else (y2 + 12), txt, 'middle', 10))
         for li, line in enumerate(str(lab).split('\n')):
             parts.append(_t(cx, top + base_h + 16 + li * 13, line, 'middle', 10.5))
