@@ -77,9 +77,9 @@ def load_report(content_src, build_src=None, chart_src=None):
            'changes': load_changes(content_src)}
     cur = {'ch': None, 'sec': None}
 
-    def section(title):
+    def section(title, level=3):
         ch = cur['ch']
-        sec = {'title': title, 'blocks': []}
+        sec = {'title': title, 'level': level, 'blocks': []}
         ch['sections'].append(sec); cur['sec'] = sec
         return sec
 
@@ -90,6 +90,9 @@ def load_report(content_src, build_src=None, chart_src=None):
 
     def s1(t):
         section(t)
+
+    def h2(t):
+        section(t, 2)
 
     def push(block):
         if cur['ch'] is None:
@@ -110,8 +113,8 @@ def load_report(content_src, build_src=None, chart_src=None):
     def figure(title, png, src, width_cm=15.0):
         push({'kind': 'figure', 'title': title, 'chart': str(png), 'src': src})
 
-    env = {'h1': h1, 'h2': s1, 's1': s1, 's2': s2, 's3': s3, 'blank': lambda: None,
-           'add': lambda kind, text='': {'s1': s1, 's2': s2, 's3': s3, 'h1': h1, 'h2': s1}[kind](text),
+    env = {'h1': h1, 'h2': h2, 's1': s1, 's2': s2, 's3': s3, 'blank': lambda: None,
+           'add': lambda kind, text='': {'s1': s1, 's2': s2, 's3': s3, 'h1': h1, 'h2': h2}[kind](text),
            'cap': lambda t: t, 'table': table, 'figure': figure, 'CHARTS': _ChartRef('charts'),
            'doc': None, 'OUT': None}
     start = content_src.find(MARK_START)
@@ -148,7 +151,7 @@ def _build_meta(src):
                 s = _literal(node.args[1])
                 if isinstance(s, str) and s.startswith('본 자료는'):
                     meta['notice'] = s
-                if isinstance(s, str) and s.startswith('손을 멈추지 않는'):
+                if isinstance(s, str) and s.startswith('하던 일을 내려놓지 않아도'):
                     meta['subtitle'] = s
             if name == 'kv_table' and isinstance(first, list) and first and first[0][0] == '작성일':
                 meta['date'] = first[0][1]
@@ -290,7 +293,22 @@ def _num(v, unit='', decimals=1):
     return (f'{v:,.{decimals}f}' if v % 1 else f'{v:,.0f}') + unit
 
 
+def html_map(d):
+    """Stage map (c9_expansion): same data as the docx PNG, as an HTML grid."""
+    br = lambda t: html.escape(t).replace('|', '<br>')  # noqa: E731
+    out = [f'<p class="legend">{html.escape(d["note"])} · ● 기존 근거 ○ 조사 중 · → 조건을 채우면 다음 단계. {html.escape(d["gate"])}</p>',
+           '<div class="xmap">']
+    for st in d['stages']:
+        cells = ''.join(f'<dt>{html.escape(r)}</dt><dd>{br(c)}</dd>' for r, c in zip(d['rows'], st['cells']))
+        mark = '●' if st['evidence'] else '○'
+        out.append(f'<div class="xs"><b>{html.escape(st["key"])} {br(st["title"])} <i>{mark}</i></b><dl>{cells}</dl></div>')
+    out.append(f'</div><p class="legend xc">{html.escape(d["contrast"])}</p>')
+    return ''.join(out)
+
+
 def svg_chart(d):
+    if d['kind'] == 'map':
+        return html_map(d)
     kind, W = d['kind'], 480
     lines = wrap(d.get('note', ''), 40)
     note = ''.join(_t(0, 14 + 15 * i, ln, size=11, color=MUTED) for i, ln in enumerate(lines))
@@ -416,11 +434,11 @@ figure{margin:10px 0}figure svg{width:100%;height:auto;background:#fcfcfb;border
 .b-new{background:#d9822b;color:#fff}.b-mod{background:#fde7cf;color:#8a4b00;border:1px solid #e8b27a}
 .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin:8px 0}
 .kv div{background:var(--panel);padding:8px 10px;border-radius:4px;font-size:13.5px}.kv b{display:block;color:var(--navy);font-size:12.5px}
-nav.toc a{color:var(--accent);text-decoration:none}nav.toc ol{list-style:none;padding-left:4px}nav.toc li{margin:2px 0}
+nav.toc a{color:var(--accent);text-decoration:none}nav.toc ol{list-style:none;padding-left:4px}nav.toc li{margin:2px 0}nav.toc ol ol{padding-left:16px;font-size:13.5px}nav.toc ol.t3{font-size:12.5px}h3.h2n{color:var(--navy)}section h4{font-size:15px;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--accent)}
 .chk li{list-style:none;margin-left:-18px}.chk li::before{content:"☐ ";color:var(--accent)}
 .legend{font-size:12.5px;color:var(--muted)}
 
-.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0}.fn{background:#2a78d6;color:#fff;border-radius:6px;padding:8px 10px;text-align:center;min-width:210px}.fn b{display:block;font-size:15px}.fn span{font-size:12.5px}.fn.held{background:#c9d2de;color:#1f3a5f}.fn .g{background:#fff;color:#1f3a5f}.prices{margin:8px 0}.pg{font-weight:700;margin:8px 0 2px}.pr{display:grid;grid-template-columns:minmax(120px,38%) 1fr auto;gap:8px;align-items:center;font-size:13px;margin:3px 0}.pt{background:#f1f3f6;height:14px;border-radius:3px;overflow:hidden}.pb{display:block;height:14px;background:#2a78d6;border-radius:3px}.pb.ours{background:#eb6834}.pb.rng{opacity:.55}.pv{white-space:nowrap}@media (max-width:560px){.pr{grid-template-columns:1fr auto}.pl{grid-column:1 / -1}}
+.xmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:6px 0}.xs{border:1px solid #c9d2de;border-top:4px solid #2a78d6;border-radius:6px;padding:8px;font-size:13px}.xs b{display:block;margin-bottom:4px}.xs i{font-style:normal;color:#2a78d6}.xs dl{margin:0}.xs dt{color:#5f6670;font-size:11.5px;margin-top:4px}.xs dd{margin:0}.xc{background:#eef3f9;padding:6px;border-radius:6px;text-align:center}.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0}.fn{background:#2a78d6;color:#fff;border-radius:6px;padding:8px 10px;text-align:center;min-width:210px}.fn b{display:block;font-size:15px}.fn span{font-size:12.5px}.fn.held{background:#c9d2de;color:#1f3a5f}.fn .g{background:#fff;color:#1f3a5f}.prices{margin:8px 0}.pg{font-weight:700;margin:8px 0 2px}.pr{display:grid;grid-template-columns:minmax(120px,38%) 1fr auto;gap:8px;align-items:center;font-size:13px;margin:3px 0}.pt{background:#f1f3f6;height:14px;border-radius:3px;overflow:hidden}.pb{display:block;height:14px;background:#2a78d6;border-radius:3px}.pb.ours{background:#eb6834}.pb.rng{opacity:.55}.pv{white-space:nowrap}@media (max-width:560px){.pr{grid-template-columns:1fr auto}.pl{grid-column:1 / -1}}
 footer{color:var(--muted);font-size:12px;margin-top:40px;border-top:1px solid var(--rule);padding-top:8px}
 @media (max-width:560px){h1.title{font-size:24px}h2.ch{font-size:19px}body{font-size:15px}main{padding:10px 12px 48px}}
 """
@@ -487,7 +505,20 @@ def render(rep, diff=None, ledger_diff=None, notes=None, current=None, previous=
     w('<nav class="toc"><b>목차</b><ol>' + ('<li><a href="#changes">변경 요약</a></li>' if chg.get('rows') else '')
       + '<li><a href="#figs">그림으로 보기 (웹 전용)</a></li>')
     for i, ch in enumerate(rep['chapters'], 1):
-        w(f'<li><a href="#{slug(ch["title"])}">{i}. {html.escape(ch["title"])}</a></li>')
+        w(f'<li><a href="#{slug(ch["title"])}">{i}. {html.escape(ch["title"])}</a>')
+        k, sub = 0, []
+        for sec in ch['sections']:
+            if not sec['title']:
+                continue
+            a = f'<a href="#{slug(ch["title"], sec["title"])}">'
+            if sec.get('level', 3) == 2:
+                k += 1
+                sub.append(['<li>' + a + f'{i}.{k}  {html.escape(sec["title"])}</a>', []])
+            elif sub:
+                sub[-1][1].append('<li>' + a + f'{html.escape(sec["title"])}</a></li>')
+        if sub:
+            w('<ol>' + ''.join(h + (f'<ol class="t3">{"".join(c)}</ol>' if c else '') + '</li>' for h, c in sub) + '</ol>')
+        w('</li>')
     w('<li><a href="#history">변경 이력</a></li></ol></nav>')
     w('<p class="legend">근거 등급: <span class="g gA">A</span> 공시·정부 통계·규제 문서·논문 원문 '
       '<span class="g gB">B</span> 리포트·언론 원문 인용 <span class="g gC">C</span> 업체 주장·판매용 요약 '
@@ -520,9 +551,14 @@ def render(rep, diff=None, ledger_diff=None, notes=None, current=None, previous=
           f'{badge(status.get((ch["title"], "")))}</h2>')
         if ch['title'] in meta.get('summary', {}):
             w(f'<div class="box"><h2>핵심 요약</h2>{fmt(meta["summary"][ch["title"]])}</div>')
+        k = 0
         for sec in ch['sections']:
-            if sec['title']:
-                w(f'<h3 id="{slug(ch["title"], sec["title"])}">{fmt(sec["title"])}{badge(status.get((ch["title"], sec["title"])))}</h3>')
+            if sec['title'] and sec.get('level', 3) == 2:
+                k += 1
+                w(f'<h3 class="h2n" id="{slug(ch["title"], sec["title"])}">{i}.{k}  {fmt(sec["title"])}{badge(status.get((ch["title"], sec["title"])))}</h3>')
+            elif sec['title']:
+                tag = 'h4' if k else 'h3'
+                w(f'<{tag} id="{slug(ch["title"], sec["title"])}">{fmt(sec["title"])}{badge(status.get((ch["title"], sec["title"])))}</{tag}>')
             if ch['title'] == 'Investment Highlights' and sec['title'] == '' and meta.get('metrics'):
                 w('<h3>핵심 지표</h3><div class="kv">' + ''.join(f'<div><b>{fmt(k)}</b>{fmt(v)}</div>' for k, v in meta['metrics']) + '</div>')
             render_blocks(sec['blocks'], rep.get('charts', {}), counters, w)

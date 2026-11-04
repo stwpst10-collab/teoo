@@ -31,7 +31,7 @@ class BuildHtmlTests(unittest.TestCase):
         titles = [c['title'] for c in rep['chapters']]
         self.assertEqual(titles, ['Investment Highlights', '시장 분석', '사업 분석 및 투자포인트', '경쟁 분석',
                                   '재무계획', '매출추정 및 사업가치', '리스크 및 대응', '결론'])
-        self.assertEqual(len(rep['meta']['metrics']), 8)
+        self.assertEqual(len(rep['meta']['metrics']), 10)  # v10.9: 출발 문제 2행 추가, 수입 행 → 공시 4사
         self.assertIn('시장 분석', rep['meta']['summary'])
         self.assertTrue(rep['meta']['thesis'].startswith('그날의 류는'))
         blocks = [b for c in rep['chapters'] for s in c['sections'] for b in s['blocks']]
@@ -61,7 +61,7 @@ class BuildHtmlTests(unittest.TestCase):
         self.assertIn('name="viewport"', page)
         tables = sum(1 for c in rep['chapters'] for s in c['sections'] for b in s['blocks'] if b['kind'] == 'table')
         self.assertEqual(page.count('[표 '), tables)
-        self.assertGreaterEqual(page.count('<svg'), 8)
+        self.assertGreaterEqual(page.count('<svg') + page.count('class="xmap"'), 8)  # 확장 지도는 HTML 격자
         self.assertIn('반영 보류', page)  # SOM stays held while finance results are not reflected
 
     def test_grade_badges_only_on_grades(self):

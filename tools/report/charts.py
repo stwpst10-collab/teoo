@@ -94,8 +94,57 @@ def pair(name, d):
     fig.tight_layout(); fig.savefig(OUT / name, facecolor=SURF); plt.close(fig)
 
 
+def expansion(name, d):
+    """Stage map (no numbers): one blue ramp light→dark for stage order, gray only for the contrast box."""
+    from matplotlib.patches import FancyBboxPatch
+    ramp = ['#d6e6f8', '#adcdf1', '#7fb1e8', '#4f8fdc']
+    fig = plt.figure(figsize=(6.6, 7.0), facecolor=SURF)
+    ax = fig.add_axes([0.01, 0.01, 0.98, 0.98]); ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis('off')
+    br = lambda s: s.replace('|', '\n')  # noqa: E731
+    ax.text(0, 0.985, d['note'], fontsize=8, color=MUTED, va='top')
+    ax.text(1, 0.985, '● 기존 근거   ○ 조사 중', fontsize=8, color=MUTED, va='top', ha='right')
+    ax.text(0, 0.955, '→ 조건을 채우면 다음 단계. ' + d['gate'], fontsize=8, color=MUTED, va='top')
+    top, bottom, gap = 0.915, 0.11, 0.03
+    ws = [0.2, 0.2, 0.2, 0.31]
+    xs = [sum(ws[:i]) + gap * i for i in range(4)]
+
+    def box(x, y0, y1, st, color, compact):
+        w = ws[3] if compact else ws[0]
+        ax.add_patch(FancyBboxPatch((x, y0), w, y1 - y0, boxstyle='round,pad=0,rounding_size=0.008',
+                                    fc='white', ec=GRID, lw=1))
+        ax.add_patch(FancyBboxPatch((x, y1 - 0.012), w, 0.012, boxstyle='square,pad=0', fc=color, ec='none'))
+        mark = '●' if st['evidence'] else '○'
+        ax.text(x + 0.012, y1 - 0.02, f"{st['key']} {br(st['title'])}", fontsize=8.5, weight='bold', color=INK, va='top')
+        ax.text(x + w - 0.01, y1 - 0.02, mark, fontsize=9, color=BLUE, va='top', ha='right')
+        y = y1 - (0.078 if '|' in st['title'] else 0.052)
+        step = (y - y0 - 0.01) / len(d['rows'])
+        for lab, val in zip(d['rows'], st['cells']):
+            ax.text(x + 0.012, y, lab, fontsize=6.5, color=MUTED, va='top')
+            ax.text(x + 0.012, y - (0.018 if compact else 0.022), br(val), fontsize=7 if compact else 7.5,
+                    color=INK, va='top', linespacing=1.25)
+            y -= step
+        return (x, (y0 + y1) / 2)
+
+    mids = [box(xs[i], bottom, top, d['stages'][i], ramp[i], False)[1] for i in range(3)]
+    h = (top - bottom - 2 * 0.015) / 3
+    four = []
+    for k in range(3):
+        y1 = top - k * (h + 0.015)
+        four.append(box(xs[3], y1 - h, y1, d['stages'][3 + k], ramp[3], True)[1])
+    arrow = dict(arrowstyle='-|>', color=MUTED, lw=1)
+    for i in range(2):
+        ax.annotate('', xy=(xs[i + 1] - 0.004, mids[i + 1]), xytext=(xs[i] + ws[i] + 0.004, mids[i]), arrowprops=arrow)
+    for ym in four:
+        ax.annotate('', xy=(xs[3] - 0.004, ym), xytext=(xs[2] + ws[2] + 0.004, mids[2]), arrowprops=arrow)
+    ax.add_patch(FancyBboxPatch((0, 0.02), 1, 0.05, boxstyle='round,pad=0,rounding_size=0.008', fc=GRID, ec='none'))
+    ax.text(0.5, 0.045, d['contrast'], fontsize=8, color=MUTED, ha='center', va='center')
+    fig.savefig(OUT / name, facecolor=SURF, dpi=200); plt.close(fig)
+
+
 for name, d in CHARTS.items():
-    if d['kind'] == 'hbar':
+    if d['kind'] == 'map':
+        expansion(name, d)
+    elif d['kind'] == 'hbar':
         hbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
     elif d['kind'] == 'vbar':
         vbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'], d.get('decimals', 1))
