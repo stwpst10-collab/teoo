@@ -39,6 +39,20 @@ class BuildHtmlTests(unittest.TestCase):
         self.assertTrue(figures and all(f['chart'] in rep['charts'] for f in figures), 'every figure has chart data')
         self.assertTrue(all(b['src'].startswith('자료') for b in blocks if b['kind'] in ('table', 'figure')))
 
+    def test_changes_summary_newest_first_and_bold(self):
+        chg = self.current()['changes']
+        self.assertTrue(chg['base'].startswith('v8'), 'base edition fixed at v8')
+        self.assertTrue(chg['rows'] and all(len(r) == 6 for r in chg['rows']))
+        latest = chg['rows'][0]['ver']
+        self.assertEqual(chg['latest'], latest)
+        self.assertIn(f'({latest})', bh.read(bh.BUILD), 'docx header/cover carry the latest edition')
+        vers = [r['ver'] for r in chg['rows']]
+        self.assertEqual(vers, sorted(vers, key=lambda v: [int(x) for x in v[1:].split('.')], reverse=True))
+        page = bh.render(self.current(), built='t')
+        self.assertIn('id="changes"', page)
+        self.assertEqual(page.count('<tr class="latest">'), sum(r['latest'] for r in chg['rows']))
+        self.assertLess(page.index('id="changes"'), page.index('id="update"'))
+
     def test_first_share_page_is_self_contained(self):
         rep = self.current()
         page = bh.render(rep, built='test')

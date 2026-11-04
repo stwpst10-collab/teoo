@@ -72,7 +72,9 @@ class _ChartRef(str):
 
 def load_report(content_src, build_src=None, chart_src=None):
     """Execute the manuscript body with recording stand-ins and return a report dict."""
-    rep = {'chapters': [], 'meta': _build_meta(build_src) if build_src else {}, 'charts': _chart_data(chart_src)}
+    from changes import load_changes
+    rep = {'chapters': [], 'meta': _build_meta(build_src) if build_src else {}, 'charts': _chart_data(chart_src),
+           'changes': load_changes(content_src)}
     cur = {'ch': None, 'sec': None}
 
     def section(title):
@@ -397,6 +399,7 @@ h1.title{font-size:30px;margin:4px 0;color:var(--navy)}
 .box{background:var(--panel);border-left:4px solid var(--accent);padding:12px 14px;margin:14px 0;border-radius:4px}
 .box h2{margin:0 0 6px;font-size:16px;color:var(--navy)}
 .upd{border-left-color:#d9822b;background:#fff7ee}
+.chg table{min-width:480px;font-size:13px}.chg tr.latest td{background:#e3ecf7}
 h2.ch{font-size:22px;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:4px;margin-top:40px}
 h3{font-size:16px;margin:22px 0 6px}h3::before{content:"■ ";color:var(--accent)}
 ul{padding-left:20px;margin:6px 0}li{margin:3px 0}li.l1{list-style:"– ";margin-left:18px;color:#333}
@@ -440,13 +443,19 @@ def render(rep, diff=None, ledger_diff=None, notes=None, current=None, previous=
     if meta.get('thesis'):
         w(f'<div class="box"><h2>한 문장 논지</h2>{fmt(meta["thesis"])}</div>')
 
-    # ---- 이번 업데이트
-    w('<section class="box upd" id="update"><h2>이번 업데이트</h2>')
+    # ---- v8 대비 변경 요약 (누적, 판 단위) — same data as the docx page after the cover
+    chg = rep.get('changes') or {}
+    if chg.get('rows'):
+        w(html_changes(chg))
+
+    # ---- 이번 업데이트 (지난 공유 이후, share 태그 단위) — 판별 내용은 위 표에 있으므로 여기서는 반복하지 않음
+    w('<section class="box upd" id="update"><h2>이번 업데이트 <span class="legend">지난 공유 이후</span></h2>')
     label = current or '공유 전 최신본'
     if previous is None:
-        w(f'<p><b>첫 공유</b> ({html.escape(label)}). 이전 share 태그가 없어 비교하지 않음.</p>')
+        w(f'<p><b>첫 공유</b> ({html.escape(label)}). 이전 share 태그가 없어 섹션 비교는 없음. '
+          '판별 변경은 위 <a href="#changes">변경 요약</a> 표 참조.</p>')
     else:
-        w(f'<p><b>{html.escape(label)}</b> · 비교 기준 <b>{html.escape(previous)}</b></p>')
+        w(f'<p><b>{html.escape(label)}</b> · 비교 기준 <b>{html.escape(previous)}</b>. 판별 변경은 위 <a href="#changes">변경 요약</a> 표 참조.</p>')
     note_key = current or next((k for k in (notes or {}) if k not in history_tags(history)), None)
     if notes and note_key in notes and notes[note_key]:
         w('<ul>' + ''.join(f'<li>{fmt(x)}</li>' for x in notes[note_key]) + '</ul>')
@@ -475,7 +484,8 @@ def render(rep, diff=None, ledger_diff=None, notes=None, current=None, previous=
     w('</section>')
 
     # ---- toc
-    w('<nav class="toc"><b>목차</b><ol><li><a href="#figs">그림으로 보기 (웹 전용)</a></li>')
+    w('<nav class="toc"><b>목차</b><ol>' + ('<li><a href="#changes">변경 요약</a></li>' if chg.get('rows') else '')
+      + '<li><a href="#figs">그림으로 보기 (웹 전용)</a></li>')
     for i, ch in enumerate(rep['chapters'], 1):
         w(f'<li><a href="#{slug(ch["title"])}">{i}. {html.escape(ch["title"])}</a></li>')
     w('<li><a href="#history">변경 이력</a></li></ol></nav>')
@@ -531,6 +541,23 @@ def render(rep, diff=None, ledger_diff=None, notes=None, current=None, previous=
     w('</section>')
     w(f'<footer>{fmt(meta.get("notice", ""))}<br>원본: tools/report/report_content.py · 생성 {html.escape(built or "")}</footer>')
     w('</main></body></html>')
+    return ''.join(out)
+
+
+def html_changes(chg):
+    base = chg['base'].split()[0] if chg['base'] else ''
+    out = [f'<section class="box chg" id="changes"><h2>{html.escape(base)} 대비 변경 요약</h2>'
+           f'<p class="legend">기준판 {html.escape(chg["base"])} → 최신판 <b>{html.escape(chg["latest"])}</b>. 최신판 변경은 맨 위·굵게.</p>'
+           '<div class="tw"><table><tr><th>판</th><th>장</th><th>바뀐 점</th><th>근거 등급</th></tr>']
+    for r in chg['rows']:
+        cls = ' class="latest"' if r['latest'] else ''
+        cell = (lambda x: f'<b>{fmt(x)}</b>') if r['latest'] else fmt
+        out.append(f'<tr{cls}><td>{cell(r["ver"])}<br><span class="legend">{html.escape(r["date"])}</span></td>'
+                   f'<td>{cell(r["chapter"])}</td><td>{cell(r["what"])}</td><td>{cell(r["grade"])}</td></tr>')
+    out.append('</table></div>')
+    if chg['common']:
+        out.append('<ul class="legend">' + ''.join(f'<li>{fmt(x)}</li>' for x in chg['common']) + '</ul>')
+    out.append('</section>')
     return ''.join(out)
 
 

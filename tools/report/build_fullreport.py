@@ -321,7 +321,7 @@ def page_field(p):
 
 hp = sec.header.paragraphs[0]
 hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.3)', size=8, color=MUTED)
+runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.4)', size=8, color=MUTED)
 para_border(hp, 'bottom', 4, RULE, 3)
 fp = sec.footer.paragraphs[0]; fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
 page_field(fp)
@@ -335,7 +335,7 @@ runs(p, '그날의 류', size=34, color=NAVY, bold=True)
 p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(14)
 runs(p, '손을 멈추지 않는 케어 — 생리 전후 발목에서 시작하는 착용형 케어 브랜드', size=13, color=INK)
 para_border(p, 'bottom', 18, NAVY, 10)
-kv_table([('작성일', '2026년 11월 4일 (v10.3)'), ('형식', '산업분석 + 기업분석 풀리포트')])
+kv_table([('작성일', '2026년 11월 4일 (v10.4)'), ('형식', '산업분석 + 기업분석 풀리포트')])
 callout('그날의 류는 "생리 지압기"가 아니라, 여성이 반복되는 일상 불편 때문에 하던 일을 멈추지 않도록 착용형 케어 제품을 탐색하는 '
         '브랜드다. 첫 제품은 생리 전후 발목 케어이며, 수동형과 전자형은 고객의 사용 상황·기능의 추가 가치·가격 수용성·사업성을 비교해 선택한다. '
         '결과에 따라 형태를 고치거나 바꾸거나 멈추며, "그날의" 시리즈 확장은 검증된 첫 제품 위에서만 추진한다. 다음 판단에 실제로 쓰일 고객·시험 기록을 남기는 것을 목표로 한다.',
@@ -347,6 +347,37 @@ p = doc.add_paragraph()
 runs(p, '본 자료는 사내벤처 심사를 위한 내부 검토 자료로, 팀 지식 저장소(teoo)의 근거에 기반해 작성되었습니다. 수치 뒤의 (A)~(D)는 근거 등급이며 '
         'A 공시·정부 통계·규제 문서·논문 원문, B 리포트·언론 원문 인용, C 업체 주장·판매용 요약·AI 답변, D 팀 가설·내부 추정을 뜻합니다. '
         '추정·시나리오는 실적이나 검증 결과가 아니며, 제품의 의학적 효능을 주장하지 않습니다.', size=7.5, color=MUTED)
+
+# ---------- v8 대비 변경 요약 (one page after the cover; data at the top of report_content.py) ----------
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from changes import load_changes  # noqa: E402
+
+CH = load_changes(CONTENT.read_text(encoding='utf-8'))
+if CH['rows']:
+    assert f'({CH["latest"]})' in hp.text, f'header version must match latest CHANGES edition {CH["latest"]}'
+    p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE)
+    p = doc.add_paragraph(); runs(p, f'{CH["base"].split()[0]} 대비 변경 요약', size=15, color=NAVY, bold=True)
+    para_border(p, 'bottom', 12, NAVY, 4)
+    p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(4)
+    runs(p, f'기준판 {CH["base"]} → 최신판 {CH["latest"]}. 최신판 변경은 맨 위·굵게. 등급은 바뀐 수치의 근거 등급(A~D, 표지 뒤 안내 참조).',
+         size=8.5, color=MUTED)
+    t = doc.add_table(rows=1 + len(CH['rows']), cols=4)
+    fix_table(t, fit([1.25, 1.0, 6.2, 1.45]))
+    borders(t._tbl.tblPr, top=(12, NAVY), bottom=(12, NAVY), insideH=(4, RULE), left=None, right=None, insideV=None)
+    for i, h in enumerate(('판', '장', '바뀐 점', '근거 등급')):
+        shade(t.rows[0].cells[i], NAVY)
+        cell_text(t.rows[0].cells[i], h, size=8, bold=True, color='FFFFFF', align=WD_ALIGN_PARAGRAPH.CENTER)
+    for r, row in enumerate(CH['rows'], start=1):
+        cells = t.rows[r].cells
+        if row['latest']:
+            for c in cells:
+                shade(c, PANEL)
+        vals = (f'{row["ver"]}\n{row["date"]}', row['chapter'], row['what'], row['grade'])
+        for i, v in enumerate(vals):
+            cell_text(cells[i], v, size=8, bold=row['latest'] or i == 0, color=NAVY if i == 0 else INK,
+                      align=WD_ALIGN_PARAGRAPH.LEFT if i == 2 else WD_ALIGN_PARAGRAPH.CENTER)
+    for line in CH['common']:
+        source('· ' + line)
 
 # ---------- table of contents ----------
 p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE)
