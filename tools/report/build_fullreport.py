@@ -321,7 +321,7 @@ def page_field(p):
 
 hp = sec.header.paragraphs[0]
 hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.6)', size=8, color=MUTED)
+runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.7)', size=8, color=MUTED)
 para_border(hp, 'bottom', 4, RULE, 3)
 fp = sec.footer.paragraphs[0]; fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
 page_field(fp)
@@ -335,7 +335,7 @@ runs(p, '그날의 류', size=34, color=NAVY, bold=True)
 p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(14)
 runs(p, '손을 멈추지 않는 케어 — 생리 전후 발목에서 시작하는 착용형 케어 브랜드', size=13, color=INK)
 para_border(p, 'bottom', 18, NAVY, 10)
-kv_table([('작성일', '2026년 11월 4일 (v10.6)'), ('형식', '산업분석 + 기업분석 풀리포트')])
+kv_table([('작성일', '2026년 11월 4일 (v10.7)'), ('형식', '산업분석 + 기업분석 풀리포트')])
 callout('그날의 류는 "생리 지압기"가 아니라, 여성이 반복되는 일상 불편 때문에 하던 일을 멈추지 않도록 착용형 케어 제품을 탐색하는 '
         '브랜드다. 첫 제품은 생리 전후 발목 케어이며, 수동형과 전자형은 고객의 사용 상황·기능의 추가 가치·가격 수용성·사업성을 비교해 선택한다. '
         '결과에 따라 형태를 고치거나 바꾸거나 멈추며, "그날의" 시리즈 확장은 검증된 첫 제품 위에서만 추진한다. 다음 판단에 실제로 쓰일 고객·시험 기록을 남기는 것을 목표로 한다.',
@@ -379,10 +379,30 @@ if CH['rows']:
     for line in CH['common']:
         source('· ' + line)
 
+if CH['questions']:
+    p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE)
+    p = doc.add_paragraph(); runs(p, '검토 중 의문사항', size=15, color=NAVY, bold=True)
+    para_border(p, 'bottom', 12, NAVY, 4)
+    p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(4)
+    runs(p, f'논리 구조를 다지기 위해 판마다 남기는 열린 질문({CH["questions_src"]} 등). 답이 본문에 반영되면 상태를 갱신하고 해결된 행은 뺌. 팀 공유용.',
+         size=8.5, color=MUTED)
+    t = doc.add_table(rows=1 + len(CH['questions']), cols=3)
+    fix_table(t, fit([0.9, 5.2, 3.8]))
+    borders(t._tbl.tblPr, top=(12, NAVY), bottom=(12, NAVY), insideH=(4, RULE), left=None, right=None, insideV=None)
+    for i, h in enumerate(('장', '의문', '현재 상태 · 다음 조치')):
+        shade(t.rows[0].cells[i], NAVY)
+        cell_text(t.rows[0].cells[i], h, size=8, bold=True, color='FFFFFF', align=WD_ALIGN_PARAGRAPH.CENTER)
+    for r, q in enumerate(CH['questions'], start=1):
+        vals = (q['chapter'], q['question'], q['status'])
+        for i, v in enumerate(vals):
+            cell_text(t.rows[r].cells[i], v, size=8, bold=i == 0, color=NAVY if i == 0 else INK,
+                      align=WD_ALIGN_PARAGRAPH.CENTER if i == 0 else WD_ALIGN_PARAGRAPH.LEFT)
+
 # ---------- table of contents ----------
-p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE)
+# page_break_before instead of an empty break paragraph: a full change-summary page must not spill a blank page
 p = doc.add_paragraph(style='Heading 1'); runs(p, '목차'); para_border(p, 'bottom', 12, NAVY, 4)
 p.paragraph_format.keep_with_next = True
+p.paragraph_format.page_break_before = True
 toc = doc.add_paragraph()
 r = toc.add_run(); r._r.append(parse_xml(f'<w:fldChar {nsdecls("w")} w:fldCharType="begin"/>'))
 r = toc.add_run(); r._r.append(parse_xml(f'<w:instrText {nsdecls("w")} xml:space="preserve"> TOC \\o "1-2" \\h \\z \\u </w:instrText>'))

@@ -12,7 +12,7 @@ FIELDS = ('ver', 'date', 'chapter', 'what', 'grade')
 
 
 def load_changes(content_src):
-    out = {'base': '', 'rows': [], 'common': [], 'latest': ''}
+    out = {'base': '', 'rows': [], 'common': [], 'latest': '', 'questions': [], 'questions_src': ''}
     if not content_src:
         return out
     for node in ast.parse(content_src).body:
@@ -29,6 +29,10 @@ def load_changes(content_src):
             out['rows'] = [dict(zip(FIELDS, r)) for r in val]
         elif 'CHANGES_COMMON' in names:
             out['common'] = list(val)
+        elif 'OPEN_QUESTIONS' in names:
+            out['questions'] = [dict(zip(('chapter', 'question', 'status'), r)) for r in val]
+        elif 'OPEN_QUESTIONS_SRC' in names:
+            out['questions_src'] = val
     if out['rows']:
         out['latest'] = out['rows'][0]['ver']
         for r in out['rows']:

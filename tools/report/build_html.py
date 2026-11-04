@@ -558,6 +558,13 @@ def html_changes(chg):
     if chg['common']:
         out.append('<ul class="legend">' + ''.join(f'<li>{fmt(x)}</li>' for x in chg['common']) + '</ul>')
     out.append('</section>')
+    if chg.get('questions'):
+        out.append('<section class="box chg" id="questions"><h2>검토 중 의문사항</h2>'
+                   f'<p class="legend">논리 구조를 다지기 위해 판마다 남기는 열린 질문({html.escape(chg.get("questions_src", ""))} 등). 해결되면 상태 갱신.</p>'
+                   '<div class="tw"><table><tr><th>장</th><th>의문</th><th>현재 상태 · 다음 조치</th></tr>')
+        for q in chg['questions']:
+            out.append(f'<tr><td>{fmt(q["chapter"])}</td><td>{fmt(q["question"])}</td><td>{fmt(q["status"])}</td></tr>')
+        out.append('</table></div></section>')
     return ''.join(out)
 
 
