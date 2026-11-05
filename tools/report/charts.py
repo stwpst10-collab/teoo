@@ -102,7 +102,7 @@ def expansion(name, d):
     ax = fig.add_axes([0.01, 0.01, 0.98, 0.98]); ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis('off')
     br = lambda s: s.replace('|', '\n')  # noqa: E731
     ax.text(0, 0.985, d['note'], fontsize=8, color=MUTED, va='top')
-    ax.text(1, 0.985, '● 기존 근거   ○ 조사 중', fontsize=8, color=MUTED, va='top', ha='right')
+    ax.text(1, 0.985, '● 규모 근거 있음   ○ 규모 근거 없음', fontsize=8, color=MUTED, va='top', ha='right')
     ax.text(0, 0.955, '→ 조건을 채우면 다음 단계. ' + d['gate'], fontsize=8, color=MUTED, va='top')
     top, bottom, gap = 0.915, 0.11, 0.03
     ws = [0.2, 0.2, 0.2, 0.31]
