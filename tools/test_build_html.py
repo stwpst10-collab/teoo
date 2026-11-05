@@ -31,7 +31,7 @@ class BuildHtmlTests(unittest.TestCase):
         titles = [c['title'] for c in rep['chapters']]
         self.assertEqual(titles, ['Investment Highlights', '시장 분석', '사업 분석 및 투자포인트', '경쟁 분석',
                                   '재무계획', '매출추정 및 사업가치', '리스크 및 대응', '결론'])
-        self.assertEqual(len(rep['meta']['metrics']), 10)  # v10.9: 출발 문제 2행 추가, 수입 행 → 공시 4사
+        self.assertEqual(len(rep['meta']['metrics']), 12)  # v10.9: 출발 문제 2행 추가, 수입 행 → 공시 4사
         self.assertIn('시장 분석', rep['meta']['summary'])
         self.assertTrue(rep['meta']['thesis'].startswith('그날의 류는'))
         blocks = [b for c in rep['chapters'] for s in c['sections'] for b in s['blocks']]
