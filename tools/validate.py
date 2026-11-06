@@ -10,7 +10,7 @@ from urllib.parse import unquote
 
 IGNORED_DIRS = {'.git', '.obsidian', '.omx', '.local', '.tmp', 'tmp', 'node_modules', '__pycache__'}
 HISTORICAL_DIRS = {'90 작업자료', '80-산출물'}
-STRUCTURED_DIRS = {'10-지식', '20-리서치', '30-근거', '40-결정', '50-검증'}
+STRUCTURED_DIRS = {'10-지식', '15-아이디어', '20-리서치', '30-근거', '40-결정', '50-검증'}
 CONFLICT = re.compile(r'^(?:<{7}(?: .*)?|={7}|>{7}(?: .*)?|\|{7}(?: .*)?)$', re.M)
 WIKI = re.compile(r'\[\[([^\]\n]+)\]\]')
 MARKDOWN = re.compile(r'(?<!!)\[[^\]\n]*\]\(\s*(<[^>\n]+>|[^\s\n]+(?:\([^\n]*?\)[^\s\n]*)?)(?:\s+["\'][^\n]*?["\'])?\s*\)|!\[[^\]\n]*\]\(\s*(<[^>\n]+>|[^\s\n]+)\s*\)')
