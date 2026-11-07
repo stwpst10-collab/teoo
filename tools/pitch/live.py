@@ -180,7 +180,7 @@ def add(cid, after, source=None):
         cap = _new_para_after(pic)
         cap.Alignment = 0
         cap.KeepWithNext = False
-        _caption(cap, d.xl_caption_text(xl) if xl else (source or '자료: 그날의 류'), xl)
+        _caption(cap, d.xl_caption_text(xl) if xl else (source or '자료: 당사'), xl)
     doc.Save()
     print(f'추가: {cid} → "{anchor.Range.Text[:30].strip()}…" 뒤, 저장함')
 

@@ -40,7 +40,7 @@ XL_CAPTION = '자료: 시뮬레이션 모델링'
 # 초안에서 차트를 넣을 위치: (차트ID, 이 문구로 시작하는 문단 뒤, 출처 문구)
 PLACEMENTS = [
     ('pms_gap', '질병관리청 조사 기준', '자료: 질병관리청(2025), 건강보험심사평가원(2025)'),
-    ('market_funnel', '429만~458만명', '자료: 질병관리청, 행정안전부 주민등록인구(2026.10), 그날의 류 추정'),
+    ('market_funnel', '429만~458만명', '자료: 질병관리청, 행정안전부 주민등록인구(2026.10), 당사 추정'),
     ('excel_pl_3y', '최종 가격은', None),
 ]
 PL_TABLE_AFTER = 'excel_pl_3y'
@@ -456,7 +456,7 @@ def add(cid, after, source=None):
     xl = excel_link.load() if charts.CHARTS[cid]['excel'] else None
     pic = insert_after(hits[0])
     picture(pic, charts.render(cid, xl), cid)
-    caption(insert_after(pic), xl_caption_text(xl) if xl else (source or '자료: 그날의 류'))
+    caption(insert_after(pic), xl_caption_text(xl) if xl else (source or '자료: 당사'))
     doc.save(DOC)
     print(f'추가: {cid} → "{hits[0].text[:30]}…" 뒤')
 
