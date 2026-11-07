@@ -1,4 +1,4 @@
-﻿"""실시간 모드: 사용자가 워드를 열어 둔 채로 같은 문서를 고친다(워드 자동화).
+"""실시간 모드: 사용자가 워드를 열어 둔 채로 같은 문서를 고친다(워드 자동화).
 
   python tools/pitch/live.py open                       문서를 워드로 연다(이미 열려 있으면 그대로)
   python tools/pitch/live.py add <차트ID> --after "문구"  문구가 있는 문단 뒤에 차트 추가
@@ -197,6 +197,40 @@ def footnotes():
     print(f'각주 {made}개 생성' + (f', 출처 목록에 없는 번호: {sorted(missing)}' if missing else '') + ', 저장함')
 
 
+def renumber():
+    """장(제목 1, 'N. ' 시작) 아래 절(제목 2)에 N.1, N.2 … 번호. 절이 하나뿐인 장은 번호 없음. 목차 갱신."""
+    app, doc = word_doc()
+    prefix = re.compile(r'^\d+\.\d+\s+')
+    chapters, cur = [], None
+    for i in range(1, doc.Paragraphs.Count + 1):
+        p = doc.Paragraphs(i)
+        if p.Range.Information(12):
+            continue
+        t = p.Range.Text.strip()
+        if p.OutlineLevel == 1 and re.match(r'^\d+\. ', t):
+            cur = [int(t.split('.')[0]), []]
+            chapters.append(cur)
+        elif p.OutlineLevel == 2 and cur is not None:
+            cur[1].append(p)
+    changed = 0
+    with Undo(app, '절 번호 정리'):
+        for num, secs in chapters:
+            for k, p in enumerate(secs, 1):
+                r = p.Range
+                m = prefix.match(r.Text)
+                if m:
+                    old = doc.Range(r.Start, r.Start + len(m.group(0)))
+                    old.Delete()
+                if len(secs) > 1:
+                    doc.Range(p.Range.Start, p.Range.Start).InsertBefore(f'{num}.{k}  ')
+                changed += 1
+        for t in range(1, doc.TablesOfContents.Count + 1):
+            doc.TablesOfContents(t).Update()
+    doc.Save()
+    single = [n for n, s in chapters if len(s) == 1]
+    print(f'절 {changed}개 번호 정리, 번호 없앤 장(절 1개): {single}, 목차 갱신, 저장함')
+
+
 def open_doc():
     app, doc = word_doc()
     app.Visible = True
@@ -207,7 +241,7 @@ def open_doc():
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
-    for c in ('open', 'sync', 'footnotes', 'save'):
+    for c in ('open', 'sync', 'footnotes', 'save', 'renumber'):
         sub.add_parser(c)
     a = sub.add_parser('add'); a.add_argument('cid'); a.add_argument('--after', required=True); a.add_argument('--source')
     args = ap.parse_args()
@@ -216,4 +250,4 @@ if __name__ == '__main__':
     elif args.cmd == 'save':
         word_doc()[1].Save(); print('저장함')
     else:
-        {'open': open_doc, 'sync': sync, 'footnotes': footnotes}[args.cmd]()
+        {'open': open_doc, 'sync': sync, 'footnotes': footnotes, 'renumber': renumber}[args.cmd]()
