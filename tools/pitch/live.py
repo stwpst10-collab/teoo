@@ -51,6 +51,20 @@ def word_doc(open_if_needed=True):
             if app.Documents(i).FullName.lower() == target:
                 return app, app.Documents(i)
         return app, app.Documents.Open(str(d.DOC.resolve()))
+    # 워드가 여러 개 떠 있어도(다른 세션의 숨은 워드 등) 이 문서를 연 워드를 정확히 찾는다: 실행 중 개체 표(ROT)에서 파일 경로로 조회
+    try:
+        rot = pythoncom.GetRunningObjectTable()
+        ctx = pythoncom.CreateBindCtx(0)
+        for mk in rot:
+            try:
+                name = mk.GetDisplayName(ctx, None)
+            except pythoncom.com_error:
+                continue
+            if name.lower() == target:
+                doc = win32.Dispatch(rot.GetObject(mk).QueryInterface(pythoncom.IID_IDispatch))
+                return doc.Application, doc
+    except pythoncom.com_error:
+        pass
     try:
         app = win32.GetActiveObject('Word.Application')
     except pythoncom.com_error:
