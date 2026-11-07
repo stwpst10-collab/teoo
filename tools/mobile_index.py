@@ -6,7 +6,7 @@
 폴더 안은 이름 역순(날짜·버전이 앞에 붙어 최신이 위로)으로 정렬한다.
 
   python tools/mobile_index.py          목록 갱신(바뀌었으면 파일을 다시 씀)
-커밋 때 자동 갱신: .git/hooks/pre-commit 에서 이 스크립트를 실행한다.
+파일을 추가·이름 변경한 커밋 전에 실행한다(작업 기준 7장).
 """
 import subprocess
 from collections import defaultdict
@@ -47,7 +47,7 @@ def build():
     for f in files():
         groups[str(Path(f).parent).replace('\\', '/')].append(f)
     lines = ['# 모바일 목록', '',
-             '폰에서 파일을 바로 열기 위한 목록이다. 커밋할 때 자동으로 갱신된다(`tools/mobile_index.py`).',
+             '폰에서 파일을 바로 열기 위한 목록이다. 파일을 추가하면 커밋 전에 `python tools/mobile_index.py`로 갱신한다.',
              '워드·엑셀(📘📗)은 Office 웹 뷰어로 열리고, 나머지는 GitHub 화면으로 열린다. 폴더 안은 최신이 위.', '']
     tops = sorted({g.split('/')[0] for g in groups})
     lines.append('바로가기: ' + ' · '.join(f'[{t}](#{quote(t.replace(" ", "-"))})' for t in tops if t != '.'))
