@@ -175,6 +175,9 @@ def footnotes():
         fn_style = doc.Styles(-30)  # 각주 텍스트
         fn_style.Font.Name = d.FONT
         fn_style.Font.Size = 8
+        fn_style.ParagraphFormat.LineSpacingRule = 0  # 1줄 간격(작업 기준 6장)
+        fn_style.ParagraphFormat.SpaceBefore = 0
+        fn_style.ParagraphFormat.SpaceAfter = 0
         # 한글판 워드에서 와일드카드 검색이 안 돼 번호별 일반 검색으로 찾는다
         found = sorted({int(m) for m in re.findall(r'\[(\d{1,2})\]', doc.Content.Text)})
         missing = {n for n in found if n not in sources}
