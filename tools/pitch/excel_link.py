@@ -110,13 +110,17 @@ def load(path=None):
     """{'file': 경로, 'years': [1,2,3], 'rows': {라벨: [연차별 값]}, 'notes': [...]} 반환."""
     path = Path(path) if path else latest_workbook()
     wb = openpyxl.load_workbook(path)
-    ws = wb.worksheets[0]
+    # 회의용 시트(excel_meeting.py)가 있으면 그 시트를 읽는다
+    ws = wb['해커톤 회의'] if '해커톤 회의' in wb.sheetnames else wb.worksheets[0]
     sh = Sheet(ws, excel_values(path))
     # 연차 헤더 행: C열부터 1,2,3... 이 있는 첫 행
     year_row, cols = None, []
     for r in range(1, ws.max_row + 1):
-        vals = [(c, sh.value(f'{get_column_letter(c)}{r}')) for c in range(3, ws.max_column + 1)]
+        vals = [(c, ws.cell(r, c).value) for c in range(3, ws.max_column + 1)]
+        vals = [(c, v) for c, v in vals if v is not None]  # 빈 칸은 건너뜀(0으로 세지 않음)
         nums = [(c, v) for c, v in vals if isinstance(v, int) and not isinstance(v, bool)]
+        if len(nums) != len(vals):
+            continue
         if len(nums) >= 2 and [v for _, v in nums] == list(range(1, len(nums) + 1)):
             year_row, cols = r, [c for c, _ in nums]
             break
