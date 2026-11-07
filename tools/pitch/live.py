@@ -225,7 +225,7 @@ def renumber():
                     old = doc.Range(r.Start, r.Start + len(m.group(0)))
                     old.Delete()
                 if len(secs) > 1:
-                    doc.Range(p.Range.Start, p.Range.Start).InsertBefore(f'{num}.{k}  ')
+                    doc.Range(p.Range.Start, p.Range.Start).InsertBefore(f'{num}.{k} ')
                 changed += 1
         for t in range(1, doc.TablesOfContents.Count + 1):
             doc.TablesOfContents(t).Update()
