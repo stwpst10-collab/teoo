@@ -3,7 +3,7 @@
 노란 칸(입력)만 바꾸면 3년 손익·단위당 이익·손익분기·TAM/SAM/SOM·민감도 표가 다시 계산된다.
 B열 라벨·연차 머리(C~E열 1,2,3)는 기존 시트와 같아서 해커톤 문서 연동(excel_link.py)이 이 시트를 읽는다.
 
-  python tools/pitch/excel_meeting.py   (기존 '해커톤 회의' 시트가 있으면 지우고 새로 만든다)
+  python tools/pitch/excel_meeting.py   (기존 '해커톤 회의' 시트가 있으면 지우고 새로 만든다. 노란 칸 입력값은 유지)
 """
 import sys
 from pathlib import Path
@@ -30,18 +30,45 @@ INPUTS = [
     ('H10', '연차', None), ('I10', 1, '0"년차"'), ('J10', 2, '0"년차"'), ('K10', 3, '0"년차"'),
     ('H11', '본체 판매 대수', None), ('I11', 1000, NUM), ('J11', 5000, NUM), ('K11', 10000, NUM),
     ('H12', '1대당 연간 패치 구매 수', None), ('I12', 3, NUM), ('J12', 6, NUM), ('K12', 6, NUM),
-    ('H14', '시장 규모 가정', None),
-    ('H15', '15~18세 여성 인구', None), ('I15', 909804, NUM),
-    ('H16', '15~18세 심한 PMS 비율', None), ('I16', 0.255, PCT),
-    ('H17', '19~39세 여성 인구', None), ('I17', 6082595, NUM),
-    ('H18', '19~39세 심한 PMS 비율', None), ('I18', 0.483, PCT),
-    ('H19', 'SAM 비율(비약물 자가관리)', None), ('I19', 0.30, PCT),
 ]
-INPUT_CELLS = ['I4', 'I5', 'I6', 'I7', 'I8', 'I9', 'I11', 'J11', 'K11', 'I12', 'J12', 'K12',
-               'I15', 'I16', 'I17', 'I18', 'I19']
-NOTES = [
-    ('H21', '기본값: 시뮬레이션 v6 수기 시트와 같음. 인구는 행정안전부 주민등록인구(2026.10), 비율은 질병관리청 2025(15~18세는 13~18세 조사값 적용).'),
-    ('H22', 'SAM 비율 30%는 최종 보고서 v10.12 6.1의 중앙 설명값(범위 17~41%).'),
+INPUT_CELLS = ['I4', 'I5', 'I6', 'I7', 'I8', 'I9', 'I11', 'J11', 'K11', 'I12', 'J12', 'K12']
+
+# ---------- 시장 규모 가정: 연령대별 인구 × 심한 증상 비율 (H14부터) ----------
+# 근거: 20-리서치/여성 인구와 월경 증상 통계 원표 확인.md, 월경 증상 유병률 기준과 대상 인구 보정.md
+#  인구: 행정안전부 주민등록인구 2026.10 월말(KOSIS DT_1B04006 1세별·DT_1B04005N 5세별), 19세 = 19~49세 합 − 20~49세 합
+#  2022 비율: 성·생식건강조사 2022 원 보고서 〈부표 3〉 10세 구간(청소년은 PHWR 그림 1A, 13~18세)
+#  2025 비율: 같은 조사 2차(2025) 〈부표 3〉 19~39세·40~64세 2구간(15~18세 25.5%는 기존 시트 값, 13~18세)
+#  현재 월경 중: 2022 〈부표 3〉 19~29 96.7%, 30~39 93.1%, 40~49 84.7%. 15~18세는 공표값 없음 → 100%
+# (연령대, 기본 포함, 여성 인구, 적용 PMS 비율 기본값, 월경 중 비율, 참고 2022 PMS, 참고 2025 PMS, 참고 2022 월경통)
+AGE_BANDS = [
+    ('15~18세', 1, 909804, 0.255, 1.000, 0.293, 0.255, 0.426),
+    ('19세', 1, 237246, 0.483, 0.967, 0.521, 0.483, 0.510),
+    ('20~24세', 1, 1133735, 0.483, 0.967, 0.521, 0.483, 0.510),
+    ('25~29세', 1, 1508529, 0.483, 0.967, 0.521, 0.483, 0.510),
+    ('30~34세', 1, 1671535, 0.483, 0.931, 0.501, 0.483, 0.468),
+    ('35~39세', 1, 1531550, 0.483, 0.931, 0.501, 0.483, 0.468),
+    ('40~44세', 0, 1723637, 0.326, 0.847, 0.402, 0.326, 0.309),
+    ('45~49세', 0, 1949288, 0.326, 0.847, 0.402, 0.326, 0.309),
+]
+MK_TOP = 14                      # 제목 행
+MK_HEAD = MK_TOP + 1             # 열 머리
+MK_FIRST = MK_HEAD + 1           # 첫 연령대 행
+MK_LAST = MK_FIRST + len(AGE_BANDS) - 1
+MK_SUM = MK_LAST + 1
+MK_ADJ = MK_SUM + 2              # 월경 중 보정 적용 여부
+MK_SAM = MK_ADJ + 1              # SAM 비율
+MK_TAM_N = MK_SAM + 1            # TAM 인원(결과)
+MK_SAM_N = MK_TAM_N + 1          # SAM 인원(결과)
+MK_NOTE = MK_SAM_N + 2
+MK_COLS = ['연령대', '포함(1/0)', '여성 인구(명)', '적용 심한 PMS 비율', '현재 월경 중 비율', '대상 인원(명)',
+           '참고: 2022 PMS', '참고: 2025 PMS', '참고: 2022 월경통']
+TAM_CELL, SAM_RATE_CELL = f'$I${MK_TAM_N}', f'$I${MK_SAM}'
+MK_NOTES = [
+    '인구: 행정안전부 주민등록인구 2026.10 월말(KOSIS DT_1B04006·DT_1B04005N). 19세 = 19~49세 합 − 20~49세 합.',
+    '비율: 질병관리청 성·생식건강조사. 2022는 10세 구간(19~29·30~39·40~49), 2025는 19~39·40~64 두 구간만 공표. 심한 = VAS 7점 이상, 지난 3년 기준.',
+    '15~18세 비율은 13~18세 조사값. 15~18세 현재 월경 중 비율은 공표값이 없어 100%로 둠.',
+    '월경 중 보정 1 = 인구에 현재 월경 중 비율을 곱함(임신·무월경 제외, 15~39세 기준 TAM 약 5% 감소). 0 = 보정 없음(기존 방식).',
+    'SAM 30%는 최종 보고서 v10.12 6.1의 중앙 설명값(범위 17~41%). 기본값은 기존 회의 시트와 같은 TAM(15~39세, 2025 비율, 보정 없음).',
 ]
 
 
@@ -77,12 +104,74 @@ UNIT = [  # 단위당 이익(1년차 기준)
 ]
 TAM = [
     (30, '시장 규모', None, None),
-    (32, '고객수', ['=$I$15*$I$16+$I$17*$I$18', '=C32*$I$19', '=$I$11'], NUM),
+    (32, '고객수', [f'={TAM_CELL}', f'=C32*{SAM_RATE_CELL}', '=$I$11'], NUM),
     (33, '시장규모', ['=C32*$I$4', '=D32*$I$4', '=E32*$I$4'], NUM),
     (34, 'SOM이 SAM에서 차지하는 비중', [None, None, '=E32/D32'], '0.00%'),
 ]
 PRICES = [29900, 49000, 99000, 132000]
 COSTS = [0.30, 0.40, 0.50, 0.60]
+
+
+def market_block(ws):
+    """연령대별 인구 × 심한 PMS 비율 표. 노란 칸(포함·인구·비율·월경 중 비율·보정·SAM)을 바꾸면 TAM/SAM이 다시 계산된다."""
+    ws.Range(f'H{MK_TOP}').Value = '시장 규모 가정 — 연령대별 인구 × 심한 PMS 비율 (노란 칸 조정, 참고 열에서 골라 넣기)'
+    ws.Range(f'H{MK_TOP}').Font.Bold = True
+    head = ws.Range(f'H{MK_HEAD}:P{MK_HEAD}')
+    head.Value = MK_COLS
+    head.Interior.Color = BLUE_HEAD
+    head.Font.Bold = True
+    head.WrapText = True
+    adj = f'$I${MK_ADJ}'
+    for k, (band, inc, pop, rate, mens, r22, r25, d22) in enumerate(AGE_BANDS):
+        r = MK_FIRST + k
+        ws.Range(f'H{r}').Value = band
+        for col, val, fmt in (('I', inc, '0'), ('J', pop, NUM), ('K', rate, PCT), ('L', mens, PCT),
+                              ('N', r22, PCT), ('O', r25, PCT), ('P', d22, PCT)):
+            ws.Range(f'{col}{r}').Value = val
+            ws.Range(f'{col}{r}').NumberFormat = fmt
+        ws.Range(f'M{r}').Formula = f'=I{r}*J{r}*K{r}*IF({adj}=1,L{r},1)'
+        ws.Range(f'M{r}').NumberFormat = NUM
+        ws.Range(f'N{r}:P{r}').Font.Color = 0x5C5F5F
+    for c in 'IJKL':
+        rng = ws.Range(f'{c}{MK_FIRST}:{c}{MK_LAST}')
+        rng.Interior.Color = YELLOW
+        rng.Font.Color = 0xC00000
+    s = MK_SUM
+    ws.Range(f'H{s}').Value = '합계(포함 연령대)'
+    ws.Range(f'J{s}').Formula = f'=SUMPRODUCT(I{MK_FIRST}:I{MK_LAST},J{MK_FIRST}:J{MK_LAST})'
+    ws.Range(f'K{s}').Formula = f'=IF(J{s}=0,0,M{s}/J{s})'  # 포함 인구 대비 평균 비율
+    ws.Range(f'M{s}').Formula = f'=SUM(M{MK_FIRST}:M{MK_LAST})'
+    ws.Range(f'J{s}').NumberFormat = NUM
+    ws.Range(f'K{s}').NumberFormat = PCT
+    ws.Range(f'M{s}').NumberFormat = NUM
+    ws.Range(f'H{s}:M{s}').Font.Bold = True
+    ws.Range(f'H{s}:P{s}').Interior.Color = GREY
+    rows = [
+        (MK_ADJ, '월경 중 보정 적용(1=적용)', 0, '0', True),
+        (MK_SAM, 'SAM 비율(비약물 자가관리)', 0.30, PCT, True),
+        (MK_TAM_N, 'TAM 대상 인원(명)', f'=M{MK_SUM}', NUM, False),
+        (MK_SAM_N, 'SAM 대상 인원(명)', f'=I{MK_TAM_N}*I{MK_SAM}', NUM, False),
+    ]
+    for r, label, val, fmt, is_input in rows:
+        ws.Range(f'H{r}').Value = label
+        cell = ws.Range(f'I{r}')
+        if isinstance(val, str):
+            cell.Formula = val
+        else:
+            cell.Value = val
+        cell.NumberFormat = fmt
+        if is_input:
+            cell.Interior.Color = YELLOW
+            cell.Font.Color = 0xC00000
+        else:
+            ws.Range(f'H{r}:I{r}').Font.Bold = True
+    ws.Range(f'J{MK_SAM}').Value = '범위 17~41%'
+    ws.Range(f'J{MK_SAM}').Font.Color = 0x5C5F5F
+    for k, txt in enumerate(MK_NOTES):
+        c = ws.Range(f'H{MK_NOTE + k}')
+        c.Value = txt
+        c.Font.Size = 8
+        c.Font.Color = 0x5C5F5F
 
 
 def build():
@@ -99,9 +188,16 @@ def build():
     if wb is None:
         sys.exit(f'열린 엑셀에서 {path.name}을 찾지 못함')
     xl.ScreenUpdating = False
+    keep = {}  # 다시 만들 때 사용자가 바꾼 입력값 유지
     try:
         for i in range(1, wb.Worksheets.Count + 1):
             if wb.Worksheets(i).Name == SHEET:
+                old = wb.Worksheets(i)
+                cells = list(INPUT_CELLS)
+                if str(old.Range(f'H{MK_TOP}').Value or '').startswith('시장 규모 가정 —'):  # 연령대 표가 있는 판
+                    cells += [f'{c}{r}' for c in 'IJKL' for r in range(MK_FIRST, MK_LAST + 1)]
+                    cells += [f'I{MK_ADJ}', f'I{MK_SAM}']
+                keep = {c: old.Range(c).Value for c in cells if old.Range(c).Value is not None}
                 xl.DisplayAlerts = False
                 wb.Worksheets(i).Delete()
                 xl.DisplayAlerts = True
@@ -121,12 +217,10 @@ def build():
             r = ws.Range(c)
             r.Interior.Color = YELLOW
             r.Font.Color = 0xC00000 >> 0  # 파란 글씨 = 입력값(금융 모델 관례)
-        for h in ('H3', 'H14'):
-            ws.Range(h).Font.Bold = True
-        for cell, txt in NOTES:
-            ws.Range(cell).Value = txt
-            ws.Range(cell).Font.Size = 8
-            ws.Range(cell).Font.Color = 0x5C5F5F
+        ws.Range('H3').Font.Bold = True
+        market_block(ws)
+        for c, v in keep.items():
+            ws.Range(c).Value = v
         # 3년 손익
         ws.Range('C2').Value, ws.Range('D2').Value, ws.Range('E2').Value = 1, 2, 3
         for row, label, tpl, fmt in MODEL:
@@ -148,7 +242,7 @@ def build():
         # TAM/SAM/SOM
         ws.Range('B30').Value = '시장 규모'
         ws.Range('B30').Font.Bold = True
-        ws.Range('C31').Value, ws.Range('D31').Value, ws.Range('E31').Value = 'TAM(심한 PMS 15~39세)', 'SAM(비약물 자가관리)', 'SOM(1년차 구매자)'
+        ws.Range('C31').Value, ws.Range('D31').Value, ws.Range('E31').Value = 'TAM(심한 PMS, 포함 연령대)', 'SAM(비약물 자가관리)', 'SOM(1년차 구매자)'
         ws.Range('C31:E31').Interior.Color = BLUE_HEAD
         for row, label, fs, fmt in TAM[1:]:
             ws.Range(f'B{row}').Value = label
@@ -187,14 +281,14 @@ def build():
             ws.Columns(col).ColumnWidth = 18
         ws.Columns('G').ColumnWidth = 3
         ws.Columns('H').ColumnWidth = 26
-        for col in 'IJK':
+        for col in 'IJKLMNOP':
             ws.Columns(col).ColumnWidth = 14
         ws.Activate()
         ws.Range('I4').Select()
     finally:
         xl.ScreenUpdating = True
     wb.Save()
-    v = {k: ws.Range(k).Value for k in ('C21', 'D21', 'E21', 'C28', 'C32', 'D32', 'E34')}
+    v = {k: ws.Range(k).Value for k in ('C21', 'D21', 'E21', 'C28', 'C32', 'D32', 'E34', f'J{MK_SUM}')}
     print('만듦:', wb.Name, SHEET, v)
 
 
