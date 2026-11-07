@@ -161,7 +161,8 @@ def picture(par, png, cid):
 
 def xl_caption_text(d):
     r = d['rows']
-    return (f"{XL_CAPTION} {d['file'].name} (엑셀 연동, {date.today():%Y.%m.%d} 갱신). "
+    # 파일명이 '시뮬레이션 모델링 …'으로 시작해 XL_CAPTION과 겹치므로 '자료: ' 뒤에 파일명만 쓴다
+    return (f"자료: {d['file'].name} (엑셀 연동, {date.today():%Y.%m.%d} 갱신). "
             f"가정: 본체 {r['본체'][0]:,.0f}원, 패치 {r['패치'][0]:,.0f}원, 고정비 연 {r['고정비'][0] / 1e8:,.1f}억원")
 
 

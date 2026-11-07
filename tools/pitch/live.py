@@ -3,6 +3,7 @@
   python tools/pitch/live.py open                       문서를 워드로 연다(이미 열려 있으면 그대로)
   python tools/pitch/live.py add <차트ID> --after "문구"  문구가 있는 문단 뒤에 차트 추가
   python tools/pitch/live.py sync                       엑셀 최신본 값으로 연동 차트·표·출처 문구 갱신
+  python tools/pitch/live.py watch                      엑셀을 저장할 때마다 자동으로 sync (켜 두는 창)
   python tools/pitch/live.py footnotes                  본문 [n] → 쪽 아래 각주
   python tools/pitch/live.py save                       저장만
 
@@ -11,9 +12,11 @@
 """
 import argparse
 import json
+import os
 import re
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import pythoncom
@@ -106,15 +109,33 @@ def _new_para_after(para):
     return new
 
 
-def _caption(para, text):
+LINK_BGR = 0xD6782A  # 팔레트 파랑 #2a78d6
+
+
+def _caption(para, text, xl=None):
     rng = para.Range
     rng.MoveEnd(1, -1)
+    for i in range(rng.Hyperlinks.Count, 0, -1):  # 예전 링크 제거 후 다시 단다
+        rng.Hyperlinks(i).Delete()
     rng.Text = text
     rng.Font.Name = d.FONT
     rng.Font.Size = 8.5
     rng.Font.Bold = False
+    rng.Font.Underline = 0
     rng.Font.Color = MUTED_BGR
     para.Format.SpaceAfter = 10
+    if xl:  # 파일명에 엑셀 파일 링크(Ctrl+클릭으로 열림). 저장소 어디서 열어도 되게 상대 경로
+        name = xl['file'].name
+        start = text.find(name)
+        if start >= 0:
+            doc = para.Range.Document
+            link = doc.Range(rng.Start + start, rng.Start + start + len(name))
+            rel = os.path.relpath(xl['file'], Path(doc.FullName).parent)
+            h = doc.Hyperlinks.Add(Anchor=link, Address=rel, ScreenTip='엑셀 시뮬레이션 열기 (Ctrl+클릭)')
+            h.Range.Font.Name = d.FONT
+            h.Range.Font.Size = 8.5
+            h.Range.Font.Color = LINK_BGR
+            h.Range.Font.Underline = 1
 
 
 def _picture_into(para, cid, xl):
@@ -145,7 +166,7 @@ def add(cid, after, source=None):
         cap = _new_para_after(pic)
         cap.Alignment = 0
         cap.KeepWithNext = False
-        _caption(cap, d.xl_caption_text(xl) if xl else (source or '자료: 그날의 류'))
+        _caption(cap, d.xl_caption_text(xl) if xl else (source or '자료: 그날의 류'), xl)
     doc.Save()
     print(f'추가: {cid} → "{anchor.Range.Text[:30].strip()}…" 뒤, 저장함')
 
@@ -187,9 +208,34 @@ def sync():
         for pi in range(1, doc.Paragraphs.Count + 1):
             p = doc.Paragraphs(pi)
             if p.Range.Text.startswith(d.XL_CAPTION):
-                _caption(p, d.xl_caption_text(xl))
+                _caption(p, d.xl_caption_text(xl), xl)
     doc.Save()
     print(f'갱신: {", ".join(done) or "없음"} (엑셀: {xl["file"].name}), 저장함')
+
+
+def watch(interval=2.0):
+    """엑셀 시뮬레이션을 저장할 때마다(새 버전 파일 포함) 워드 보고서에 자동 반영. Ctrl+C로 끝."""
+    def stamp():
+        f = excel_link.latest_workbook()
+        return f, f.stat().st_mtime
+    last = stamp()
+    print(f'엑셀 연동 켜짐: {last[0].name} 저장 시 워드에 자동 반영 (끄려면 이 창을 닫거나 Ctrl+C)', flush=True)
+    while True:
+        time.sleep(interval)
+        try:
+            cur = stamp()
+        except (OSError, ValueError):
+            continue
+        if cur == last:
+            continue
+        time.sleep(1.5)  # 엑셀이 저장을 끝낼 때까지 잠깐 기다림
+        try:
+            sync()
+            last = stamp()
+            print(f'{time.strftime("%H:%M:%S")} 반영 완료', flush=True)
+        except Exception as e:  # 워드가 대화상자를 띄운 중이거나 계산 오류 → 다음 저장 때 다시 시도
+            last = cur
+            print(f'{time.strftime("%H:%M:%S")} 반영 실패: {e}', flush=True)
 
 
 def footnotes():
@@ -270,7 +316,7 @@ def open_doc():
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
-    for c in ('open', 'sync', 'footnotes', 'save', 'renumber'):
+    for c in ('open', 'sync', 'watch', 'footnotes', 'save', 'renumber'):
         sub.add_parser(c)
     a = sub.add_parser('add'); a.add_argument('cid'); a.add_argument('--after', required=True); a.add_argument('--source')
     args = ap.parse_args()
@@ -279,4 +325,4 @@ if __name__ == '__main__':
     elif args.cmd == 'save':
         word_doc()[1].Save(); print('저장함')
     else:
-        {'open': open_doc, 'sync': sync, 'footnotes': footnotes, 'renumber': renumber}[args.cmd]()
+        {'open': open_doc, 'sync': sync, 'watch': watch, 'footnotes': footnotes, 'renumber': renumber}[args.cmd]()

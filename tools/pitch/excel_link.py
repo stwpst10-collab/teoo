@@ -1,4 +1,7 @@
-"""엑셀 시뮬레이션 읽기: 수식을 직접 계산해 연차별 값을 돌려준다.
+"""엑셀 시뮬레이션 읽기: 연차별 값을 돌려준다.
+
+파일이 엑셀에 열려 있으면 엑셀이 계산한 값을 그대로 읽는다(모든 함수 지원).
+닫혀 있으면 아래 방식으로 수식을 직접 계산한다.
 
 수기로 만든 시트라 계산 결과가 파일에 저장돼 있지 않은 경우가 있어,
 openpyxl로 수식을 읽고 여기서 계산한다(사칙연산, %, SUM/MIN/MAX/ROUND/AVERAGE 지원).
@@ -23,14 +26,49 @@ def latest_workbook():
     return max(files, key=ver)
 
 
+def excel_values(path):
+    """엑셀에서 이 파일이 열려 있으면 엑셀이 계산한 값을 {'C5': 값} 으로 돌려준다(없으면 None).
+    엑셀이 직접 계산하므로 IF·VLOOKUP 같은 함수도 그대로 반영된다."""
+    try:
+        import pythoncom
+        import win32com.client as win32
+        pythoncom.CoInitialize()
+        app = win32.GetActiveObject('Excel.Application')
+    except Exception:
+        return None
+    target = str(Path(path).resolve()).lower()
+    for i in range(1, app.Workbooks.Count + 1):
+        wb = app.Workbooks(i)
+        if wb.FullName.lower() != target:
+            continue
+        used = wb.Worksheets(1).UsedRange
+        r0, c0 = used.Row, used.Column
+        grid = used.Value2
+        if not isinstance(grid, tuple):
+            grid = ((grid,),)
+        out = {}
+        for ri, row in enumerate(grid):
+            for ci, v in enumerate(row):
+                if isinstance(v, float) and v.is_integer():
+                    v = int(v)
+                out[f'{get_column_letter(c0 + ci)}{r0 + ri}'] = v
+        return out
+    return None
+
+
 class Sheet:
-    def __init__(self, ws):
+    def __init__(self, ws, live=None):
         self.ws = ws
+        self.live = live  # 엑셀이 계산한 값(파일이 엑셀에 열려 있을 때)
         self.cache = {}
 
     def value(self, ref):
         ref = ref.replace('$', '').upper()
         if ref in self.cache:
+            return self.cache[ref]
+        if self.live is not None:
+            v = self.live.get(ref)
+            self.cache[ref] = 0 if v is None else v
             return self.cache[ref]
         v = self.ws[ref].value
         if isinstance(v, str) and v.startswith('='):
@@ -73,7 +111,7 @@ def load(path=None):
     path = Path(path) if path else latest_workbook()
     wb = openpyxl.load_workbook(path)
     ws = wb.worksheets[0]
-    sh = Sheet(ws)
+    sh = Sheet(ws, excel_values(path))
     # 연차 헤더 행: C열부터 1,2,3... 이 있는 첫 행
     year_row, cols = None, []
     for r in range(1, ws.max_row + 1):
