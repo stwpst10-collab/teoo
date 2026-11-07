@@ -113,6 +113,14 @@ def run():
             _pf(tb.Range.ParagraphFormat, 1, 1, rule=0, align=0)
             tb.Rows.LeftIndent = SPEC['body']['left'] * CM
             counts['table'] += 1
+        # 작업 기준 6장: '다음 문단과 함께'·'현재 문단 나누지 않음'·'앞에서 쪽 나누기' 금지(편집 기호 검은 네모)
+        for sid in (-1, -2, -3, -4, -30):
+            pf = doc.Styles(sid).ParagraphFormat
+            pf.KeepWithNext = False; pf.KeepTogether = False; pf.PageBreakBefore = False
+        for i in range(1, doc.Paragraphs.Count + 1):
+            f = doc.Paragraphs(i).Format
+            if f.KeepWithNext or f.KeepTogether or f.PageBreakBefore:
+                f.KeepWithNext = False; f.KeepTogether = False; f.PageBreakBefore = False
         for t in range(1, doc.TablesOfContents.Count + 1):
             doc.TablesOfContents(t).Update()
     doc.Save()

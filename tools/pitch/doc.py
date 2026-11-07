@@ -138,7 +138,7 @@ def keep_table_together(tbl):
             trpr.append(OxmlElement('w:cantSplit'))
         for c in row.cells:
             for p in c.paragraphs:
-                p.paragraph_format.keep_with_next = i < len(tbl.rows) - 1
+                p.paragraph_format.keep_with_next = False  # 작업 기준 6장: 검은 네모 생기는 설정 금지
                 p.paragraph_format.space_after = Pt(1)
 
 
@@ -155,7 +155,6 @@ def picture(par, png, cid):
     docpr.set('descr', f'chart:{cid}')
     docpr.set('title', charts.CHARTS[cid]['title'])
     par.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    par.paragraph_format.keep_with_next = True
     return shape
 
 
@@ -211,7 +210,7 @@ def styles(doc):
                 del rf.attrib[qn(a)]
         s.paragraph_format.space_before = Pt(4 if name == 'Heading 1' else 0)
         s.paragraph_format.space_after = Pt(8)
-        s.paragraph_format.keep_with_next = True
+        s.paragraph_format.keep_with_next = False
 
 
 def build(force=False):
@@ -251,7 +250,7 @@ def build(force=False):
             if not cover and not first_section:
                 p.paragraph_format.space_before = Pt(18)
             add_inline(p, l.strip('*'), size=9.5, color=ACCENT, bold_all=True)
-            p.paragraph_format.space_after = Pt(0); p.paragraph_format.keep_with_next = True
+            p.paragraph_format.space_after = Pt(0)
             if not cover and first_section:
                 # 표지 뒤 첫 장 앞에서 쪽 나눔
                 p.paragraph_format.page_break_before = True

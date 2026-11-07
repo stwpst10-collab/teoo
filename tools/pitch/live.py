@@ -161,7 +161,6 @@ def _picture_into(para, cid, xl):
     shp.AlternativeText = f'chart:{cid}'
     shp.Title = charts.CHARTS[cid]['title']
     para.Alignment = 1
-    para.KeepWithNext = True
     return shp
 
 
