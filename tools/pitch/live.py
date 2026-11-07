@@ -30,8 +30,24 @@ TMP = Path(tempfile.gettempdir()) / 'pitch_live'
 TMP.mkdir(exist_ok=True)
 
 
+_TEST_APP = None
+
+
 def word_doc(open_if_needed=True):
+    """사용자 워드에 열린 문서를 잡는다. 사용자 워드의 표시 상태·열린 문서는 절대 바꾸거나 닫지 않는다.
+    시험용 경로(PITCH_DOC)는 별도의 숨은 워드 인스턴스에서 연다(사용자 워드와 분리)."""
+    global _TEST_APP
     target = str(d.DOC.resolve()).lower()
+    if __import__('os').environ.get('PITCH_DOC'):
+        if _TEST_APP is None:
+            _TEST_APP = win32.DispatchEx('Word.Application')  # 새 인스턴스
+            _TEST_APP.Visible = False
+            _TEST_APP.DisplayAlerts = 0
+        app = _TEST_APP
+        for i in range(1, app.Documents.Count + 1):
+            if app.Documents(i).FullName.lower() == target:
+                return app, app.Documents(i)
+        return app, app.Documents.Open(str(d.DOC.resolve()))
     try:
         app = win32.GetActiveObject('Word.Application')
     except pythoncom.com_error:
@@ -44,8 +60,18 @@ def word_doc(open_if_needed=True):
             return app, doc
     if not open_if_needed:
         sys.exit('문서가 열려 있지 않음')
-    app.Visible = not __import__('os').environ.get('PITCH_DOC')  # 시험용 경로면 창을 띄우지 않음
+    app.Visible = True
     return app, app.Documents.Open(str(d.DOC.resolve()))
+
+
+def close_test_app():
+    """시험용 숨은 워드만 종료(사용자 워드는 건드리지 않음)."""
+    global _TEST_APP
+    if _TEST_APP is not None:
+        for i in range(_TEST_APP.Documents.Count, 0, -1):
+            _TEST_APP.Documents(i).Close(0)
+        _TEST_APP.Quit()
+        _TEST_APP = None
 
 
 class Undo:
