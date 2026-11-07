@@ -36,7 +36,7 @@ class BuildHtmlTests(unittest.TestCase):
         self.assertTrue(rep['meta']['thesis'].startswith('그날의 류는'))
         blocks = [b for c in rep['chapters'] for s in c['sections'] for b in s['blocks']]
         figures = [b for b in blocks if b['kind'] == 'figure']
-        self.assertTrue(figures and all(f['chart'] in rep['charts'] for f in figures), 'every figure has chart data')
+        self.assertTrue(figures and all(f['chart'] in rep['charts'] or (f['chart'].startswith('photo:') and (Path(__file__).resolve().parent / 'report' / 'photos' / f['chart'][6:]).exists()) for f in figures), 'every figure has chart data or a photo grid file')
         self.assertTrue(all(b['src'].startswith('자료') for b in blocks if b['kind'] in ('table', 'figure')))
 
     def test_changes_summary_newest_first_and_bold(self):

@@ -70,6 +70,30 @@ class _ChartRef(str):
         return name
 
 
+class _PhotoRef:
+    """PHOTOS / 'p1.png' in the manuscript → 'photo:p1.png' (embedded as an inline image, no external file)."""
+    def __truediv__(self, name):
+        return 'photo:' + name
+
+
+def photo_html(name):
+    import base64
+    from io import BytesIO
+    path = HERE / 'photos' / name
+    if not path.exists():
+        return f'<p class="legend">(사진 없음: {html.escape(name)})</p>'
+    try:  # JPEG로 줄여 단일 HTML 크기를 억제
+        from PIL import Image
+        im = Image.open(path).convert('RGB')
+        im.thumbnail((1400, 1400))
+        buf = BytesIO(); im.save(buf, 'JPEG', quality=78)
+        data, mime = buf.getvalue(), 'image/jpeg'
+    except ImportError:
+        data, mime = path.read_bytes(), 'image/png'
+    b64 = base64.b64encode(data).decode()
+    return f'<img src="data:{mime};base64,{b64}" alt="{html.escape(name)}" style="width:100%;height:auto">'
+
+
 def load_report(content_src, build_src=None, chart_src=None):
     """Execute the manuscript body with recording stand-ins and return a report dict."""
     from changes import load_changes
@@ -116,6 +140,7 @@ def load_report(content_src, build_src=None, chart_src=None):
     env = {'h1': h1, 'h2': h2, 's1': s1, 's2': s2, 's3': s3, 'blank': lambda: None,
            'add': lambda kind, text='': {'s1': s1, 's2': s2, 's3': s3, 'h1': h1, 'h2': h2}[kind](text),
            'cap': lambda t: t, 'table': table, 'figure': figure, 'CHARTS': _ChartRef('charts'),
+           'PHOTOS': _PhotoRef(),
            'doc': None, 'OUT': None}
     start = content_src.find(MARK_START)
     end = content_src.find(MARK_END, max(start, 0))
@@ -274,6 +299,8 @@ def fmt(text):
     """Escape, apply **bold**, and turn grade letters into colored badges."""
     s = html.escape(str(text))
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
+    # 원고의 [^각주]: 워드에서는 쪽 아래 각주, 웹에서는 문장 뒤 작은 회색 글씨
+    s = re.sub(r'\[\^([^\]]+)\]', r'<small class="fnote">(\1)</small>', s)
     return GRADE.sub(lambda m: f'<span class="g g{(m.group(1) or m.group(2))}">{m.group(1) or m.group(2)}</span>', s)
 
 
@@ -437,6 +464,7 @@ figure{margin:10px 0}figure svg{width:100%;height:auto;background:#fcfcfb;border
 nav.toc a{color:var(--accent);text-decoration:none}nav.toc ol{list-style:none;padding-left:4px}nav.toc li{margin:2px 0}nav.toc ol ol{padding-left:16px;font-size:13.5px}nav.toc ol.t3{font-size:12.5px}h3.h2n{color:var(--navy)}section h4{font-size:15px;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--accent)}
 .chk li{list-style:none;margin-left:-18px}.chk li::before{content:"☐ ";color:var(--accent)}
 .legend{font-size:12.5px;color:var(--muted)}
+.fnote{font-size:11px;color:var(--muted)}
 
 .xmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:6px 0}.xs{border:1px solid #c9d2de;border-top:4px solid #2a78d6;border-radius:6px;padding:8px;font-size:13px}.xs b{display:block;margin-bottom:4px}.xs i{font-style:normal;color:#2a78d6}.xs dl{margin:0}.xs dt{color:#5f6670;font-size:11.5px;margin-top:4px}.xs dd{margin:0}.xc{background:#eef3f9;padding:6px;border-radius:6px;text-align:center}.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0}.fn{background:#2a78d6;color:#fff;border-radius:6px;padding:8px 10px;text-align:center;min-width:210px}.fn b{display:block;font-size:15px}.fn span{font-size:12.5px}.fn.held{background:#c9d2de;color:#1f3a5f}.fn .g{background:#fff;color:#1f3a5f}.prices{margin:8px 0}.pg{font-weight:700;margin:8px 0 2px}.pr{display:grid;grid-template-columns:minmax(120px,38%) 1fr auto;gap:8px;align-items:center;font-size:13px;margin:3px 0}.pt{background:#f1f3f6;height:14px;border-radius:3px;overflow:hidden}.pb{display:block;height:14px;background:#2a78d6;border-radius:3px}.pb.ours{background:#eb6834}.pb.rng{opacity:.55}.pv{white-space:nowrap}@media (max-width:560px){.pr{grid-template-columns:1fr auto}.pl{grid-column:1 / -1}}
 footer{color:var(--muted);font-size:12px;margin-top:40px;border-top:1px solid var(--rule);padding-top:8px}
@@ -644,7 +672,7 @@ def render_blocks(blocks, charts, counters, w):
         elif b['kind'] == 'figure':
             counters['figure'] += 1
             d = charts.get(b['chart'])
-            body = svg_chart(d) if d else f'<p class="legend">(그림 데이터 없음: {html.escape(b["chart"])})</p>'
+            body = photo_html(b['chart'][6:]) if b['chart'].startswith('photo:') else svg_chart(d) if d else f'<p class="legend">(그림 데이터 없음: {html.escape(b["chart"])})</p>'
             w(f'<div class="cap"><span>[그림 {counters["figure"]}]</span> {fmt(b["title"])}</div>'
               f'<figure>{body}</figure><p class="src">{fmt(b["src"])}</p>')
     if open_ul:

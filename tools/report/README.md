@@ -9,13 +9,21 @@ python tools/report/charts.py <차트폴더>
 python tools/report/build_fullreport.py tools/report/report_content.py <차트폴더> <출력.docx>
 ```
 
-Word로 목차·쪽 번호를 갱신하고 PDF를 만든다(Windows PowerShell).
+사진 묶음 그림(경쟁 제품)은 `python tools/report/photos.py`로 `tools/report/photos/`에 만든다(원본은 `30-근거/첨부`).
 
-```powershell
-$w = New-Object -ComObject Word.Application; $d = $w.Documents.Open("<출력.docx>")
-$d.Fields.Update() | Out-Null; $d.TablesOfContents.Item(1).Update()
-$d.SaveAs2("<최종.docx>", 16); $d.ExportAsFixedFormat("<최종.pdf>", 17); $d.Close($false); $w.Quit()
+워드 마무리(목차·필드 갱신, 표 제목·머리말 행만 쪽 끝에 남은 곳 정리, docx·pdf 저장)는 `finish_word.py`가 한다. 사용자 워드와 분리된 새 인스턴스(DispatchEx)를 숨긴 채 쓰고 그 인스턴스만 종료하며, 빈 쪽이 있으면 출력에 표시한다.
+
+```bash
+python tools/report/finish_word.py <빌드.docx> "<최종 보고서 폴더>/그날의 류 보고서 YYYY-MM-DD vX.Y.docx" "<…>.pdf"
 ```
+
+## 양식·표기 (v10.13부터, 기준: `00-운영/보고서 워드 작업 기준.md` 2·4·6장)
+
+- 양식 값(여백 좌우 1.2/위 2.2/아래 1.5cm, 맑은 고딕 9pt·줄간격 1.075·양쪽 맞춤, 장 제목 10pt·절 제목 9.5pt, 글머리 「글머리 1단계」▪·「글머리 2단계」-, 각주 8pt 1줄, 표 8pt, 목차 2수준)은 `build_fullreport.py` 앞부분에 있다.
+- 출처는 원고 문장 안에 `[^출처(시점). 근거 성격.]`으로 쓰면 그 쪽 아래 워드 각주가 된다. 근거 등급 A~D 글자는 쓰지 않고 말(공식 자료·학술지 논문·언론 보도·업체 자료·직접 관측·당사 추정)로 적는다. 웹 보고서에서는 문장 뒤 작은 회색 글씨로 보인다.
+- 표·그림 아래 「자료: …」 한 줄은 유지한다. 표 제목은 표의 반복 머리글 행, 그림 제목은 그림과 같은 문단에 넣어 제목만 쪽 끝에 남지 않게 한다.
+- '다음 문단과 함께'·'현재 문단을 나누지 않음'·'앞에서 쪽 나누기'는 쓰지 않는다. 장 앞 쪽 나누기는 앞 장 마지막 문장 끝에 붙인다(`page_break()`).
+- 절(h2)이 하나뿐인 장은 절 번호를 붙이지 않는다. 절 제목은 "주제: 결론", `s1`은 목차에 들어가지 않는 굵은 소제목 줄이다.
 
 필요 패키지: `python-docx`, `matplotlib`. 글꼴은 맑은 고딕.
 
@@ -23,7 +31,7 @@ $d.SaveAs2("<최종.docx>", 16); $d.ExportAsFixedFormat("<최종.pdf>", 17); $d.
 
 - 본문의 숫자·주장은 `10-지식`, `20-리서치`, `30-근거`, `10-지식/시장/시장 수치 대장.md`에서 확인할 수 있어야 한다.
 - 분석 보고서에는 추진조건·추진 현황·팀 구성·회사 개요(진행 단계·요청 규모)·발표 전 과제·개정 이력을 넣지 않는다. 기준: [최종 보고서 설계](<../../80-산출물/최종 보고서/최종 보고서 설계.md>)
-- 표·그림은 `table()`·`figure()`로 넣고 출처 줄에 근거 등급을 적는다.
+- 표·그림은 `table()`·`figure()`로 넣고 「자료:」 줄에 출처를 적는다(등급 글자 대신 근거 성격을 말로).
 - 새 판은 기존 파일을 덮어쓰지 않고 날짜·버전을 올려 저장한다.
 
 ## 웹 보고서 (GitHub Pages, 팀원 공유용)
