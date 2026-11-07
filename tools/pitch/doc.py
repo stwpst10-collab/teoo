@@ -30,7 +30,7 @@ import excel_link  # noqa: E402
 
 ROOT = excel_link.ROOT
 OUT_DIR = ROOT / '80-산출물' / '해커톤'
-DOC = OUT_DIR / '그날의 류 투자 보고서 해커톤용.docx'
+DOC = Path(__import__('os').environ.get('PITCH_DOC') or OUT_DIR / '그날의 류 투자 보고서 해커톤용.docx')  # 시험용 경로 지정 가능
 SRC_MD = ROOT / '80-산출물' / '투자자 보고서' / '그날의 류 투자자 보고서 2026-11-07.md'
 FONT = 'Malgun Gothic'
 INK, MUTED, ACCENT = RGBColor(0x0B, 0x0B, 0x0B), RGBColor(0x5F, 0x5F, 0x5C), RGBColor(0x2A, 0x78, 0xD6)
@@ -282,6 +282,129 @@ def build(force=False):
     print(f'생성: {DOC}\n엑셀: {xl["file"].name}')
 
 
+# ---------- 각주: 본문 [n] → 쪽 아래 각주, 맨 끝 번호 목록 삭제 ----------
+FN_CT = 'application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml'
+FN_RT = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes'
+W_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+SOURCES_HEAD = '자료 및 유의사항'
+CITE = re.compile(r'\s?\[(\d+)\]')
+
+
+def footnotes_part(doc):
+    from docx.opc.packuri import PackURI
+    from docx.opc.part import XmlPart
+    from docx.oxml import parse_xml
+    for rel in doc.part.rels.values():
+        if rel.reltype == FN_RT:
+            return rel.target_part
+    xml = (f'<w:footnotes xmlns:w="{W_NS}">'
+           '<w:footnote w:type="separator" w:id="-1"><w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr><w:r><w:separator/></w:r></w:p></w:footnote>'
+           '<w:footnote w:type="continuationSeparator" w:id="0"><w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr><w:r><w:continuationSeparator/></w:r></w:p></w:footnote>'
+           '</w:footnotes>')
+    part = XmlPart(PackURI('/word/footnotes.xml'), FN_CT, parse_xml(xml), doc.part.package)
+    doc.part.relate_to(part, FN_RT)
+    return part
+
+
+def _fn_run(text=None, ref=None, size=None, mark=False):
+    r = OxmlElement('w:r')
+    rpr = OxmlElement('w:rPr')
+    rf = OxmlElement('w:rFonts')
+    for a in ('w:ascii', 'w:hAnsi', 'w:eastAsia', 'w:cs'):
+        rf.set(qn(a), FONT)
+    rpr.append(rf)
+    if not mark and ref is None:
+        col = OxmlElement('w:color'); col.set(qn('w:val'), '5F5F5C'); rpr.append(col)
+    if size:
+        sz = OxmlElement('w:sz'); sz.set(qn('w:val'), str(int(size * 2))); rpr.append(sz)
+    if ref is not None or mark:
+        va = OxmlElement('w:vertAlign'); va.set(qn('w:val'), 'superscript'); rpr.append(va)
+    r.append(rpr)
+    if mark:
+        r.append(OxmlElement('w:footnoteRef'))
+    elif ref is not None:
+        e = OxmlElement('w:footnoteReference'); e.set(qn('w:id'), str(ref)); r.append(e)
+    else:
+        t = OxmlElement('w:t'); t.set('{http://www.w3.org/XML/1998/namespace}space', 'preserve'); t.text = text; r.append(t)
+    return r
+
+
+def _all_paragraphs(doc):
+    yield from doc.paragraphs
+    for t in doc.tables:
+        for row in t.rows:
+            for c in row.cells:
+                yield from c.paragraphs
+
+
+def footnotes():
+    ensure_closed(DOC)
+    doc = Document(DOC)
+    paras = doc.paragraphs
+    head = next((i for i, p in enumerate(paras) if p.text.strip() == SOURCES_HEAD), None)
+    sources = {}
+    if head is not None:
+        for p in paras[head + 1:]:
+            m = re.match(r'^(\d+)\.\s*(.+)', p.text.strip())
+            if m:
+                sources[int(m.group(1))] = m.group(2)
+                p._p.getparent().remove(p._p)
+        hp = paras[head]
+        if sources and hp.runs:
+            hp.runs[0].text = '유의사항'
+            for r in hp.runs[1:]:
+                r.text = ''
+    store = Path(__file__).with_name('sources.json')
+    import json
+    if sources:  # 목록을 지운 뒤에도 새 [n]을 각주로 바꿀 수 있게 보관
+        store.write_text(json.dumps(sources, ensure_ascii=False, indent=1), encoding='utf-8')
+    elif store.exists():
+        sources = {int(k): v for k, v in json.loads(store.read_text(encoding='utf-8')).items()}
+    if not sources:
+        sys.exit('출처 목록을 찾지 못함')
+    part = footnotes_part(doc)
+    root = part.element
+    ids = [int(f.get(qn('w:id'))) for f in root.findall(qn('w:footnote'))]
+    nid = max(ids + [0]) + 1
+    made, missing = 0, set()
+    for p in _all_paragraphs(doc):
+        for r in list(p.runs):
+            t = r.text
+            if not CITE.search(t):
+                continue
+            pieces = CITE.split(t)  # [글, 번호, 글, 번호, 글…]
+            anchor = r._element
+            for k, piece in enumerate(pieces):
+                if k % 2 == 0:
+                    if not piece:
+                        continue
+                    nr = __import__('copy').deepcopy(r._element)
+                    for child in list(nr):
+                        if child.tag != qn('w:rPr'):
+                            nr.remove(child)
+                    tt = OxmlElement('w:t'); tt.set('{http://www.w3.org/XML/1998/namespace}space', 'preserve'); tt.text = piece
+                    nr.append(tt)
+                else:
+                    n = int(piece)
+                    if n not in sources:
+                        missing.add(n); continue
+                    fn = OxmlElement('w:footnote'); fn.set(qn('w:id'), str(nid))
+                    fp = OxmlElement('w:p')
+                    ppr = OxmlElement('w:pPr'); sp = OxmlElement('w:spacing')
+                    sp.set(qn('w:after'), '0'); sp.set(qn('w:line'), '240'); sp.set(qn('w:lineRule'), 'auto')
+                    ppr.append(sp); fp.append(ppr)
+                    fp.append(_fn_run(mark=True, size=8))
+                    fp.append(_fn_run(' ' + sources[n], size=8))
+                    fn.append(fp); root.append(fn)
+                    nr = _fn_run(ref=nid)
+                    nid += 1; made += 1
+                anchor.addnext(nr); anchor = nr
+            r._element.getparent().remove(r._element)
+    doc.save(DOC)
+    print(f'각주 {made}개 생성, 맨 끝 출처 목록 {len(sources) if head is not None else 0}줄 정리'
+          + (f', 목록에 없는 번호: {sorted(missing)}' if missing else ''))
+
+
 # ---------- sync / add / list ----------
 def iter_charts(doc):
     for shape in doc.inline_shapes:
@@ -350,8 +473,8 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     b = sub.add_parser('build'); b.add_argument('--force', action='store_true')
-    sub.add_parser('sync'); sub.add_parser('list')
+    sub.add_parser('sync'); sub.add_parser('list'); sub.add_parser('footnotes')
     a = sub.add_parser('add'); a.add_argument('cid'); a.add_argument('--after', required=True); a.add_argument('--source')
     args = ap.parse_args()
-    {'build': lambda: build(args.force), 'sync': sync, 'list': list_items,
+    {'build': lambda: build(args.force), 'sync': sync, 'list': list_items, 'footnotes': footnotes,
      'add': lambda: add(args.cid, args.after, args.source)}[args.cmd]()

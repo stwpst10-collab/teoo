@@ -47,7 +47,7 @@ def _eok(v):
 
 @chart('pms_gap', '심한 PMS 경험률과 진료 비중')
 def pms_gap(_=None):
-    labels = ['19~39세 여성\n심한 PMS 경험률 [1]', '10~49세 여성 중\nPMS 진료 인원 비중 [2]']
+    labels = ['19~39세 여성\n심한 PMS 경험률', '10~49세 여성 중\nPMS 진료 인원 비중']
     vals = [48.3, 0.14]
     fig, ax = plt.subplots(figsize=(W, 1.9))
     _frame(ax)
