@@ -288,7 +288,7 @@ def footnotes():
 def renumber():
     """장(제목 1, 'N. ' 시작) 아래 절(제목 2)에 N.1, N.2 … 번호. 절이 하나뿐인 장은 번호 없음. 목차 갱신."""
     app, doc = word_doc()
-    prefix = re.compile(r'^\d+\.\d+\s+')
+    prefix = re.compile(r'^\d+\.\d+[ 	]+')  # \s를 쓰면 빈 제목의 문단 기호까지 지워 다음 문단과 합쳐짐(2026-11-08)
     chapters, cur = [], None
     for i in range(1, doc.Paragraphs.Count + 1):
         p = doc.Paragraphs(i)
@@ -298,7 +298,7 @@ def renumber():
         if p.OutlineLevel == 1 and re.match(r'^\d+\. ', t):
             cur = [int(t.split('.')[0]), []]
             chapters.append(cur)
-        elif p.OutlineLevel == 2 and cur is not None:
+        elif p.OutlineLevel == 2 and cur is not None and prefix.sub('', t + ' ').strip():  # 글자 없는 빈 제목은 번호를 매기지 않음
             cur[1].append(p)
     changed = 0
     with Undo(app, '절 번호 정리'):
