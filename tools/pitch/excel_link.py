@@ -26,7 +26,7 @@ def latest_workbook():
     return max(files, key=ver)
 
 
-def excel_values(path):
+def excel_values(path, sheet=None):
     """엑셀에서 이 파일이 열려 있으면 엑셀이 계산한 값을 {'C5': 값} 으로 돌려준다(없으면 None).
     엑셀이 직접 계산하므로 IF·VLOOKUP 같은 함수도 그대로 반영된다."""
     try:
@@ -41,7 +41,7 @@ def excel_values(path):
         wb = app.Workbooks(i)
         if wb.FullName.lower() != target:
             continue
-        used = wb.Worksheets(1).UsedRange
+        used = wb.Worksheets(sheet or 1).UsedRange
         r0, c0 = used.Row, used.Column
         grid = used.Value2
         if not isinstance(grid, tuple):
@@ -112,7 +112,7 @@ def load(path=None):
     wb = openpyxl.load_workbook(path)
     # 회의용 시트(excel_meeting.py)가 있으면 그 시트를 읽는다
     ws = wb['해커톤 회의'] if '해커톤 회의' in wb.sheetnames else wb.worksheets[0]
-    sh = Sheet(ws, excel_values(path))
+    sh = Sheet(ws, excel_values(path, ws.title))
     # 연차 헤더 행: C열부터 1,2,3... 이 있는 첫 행
     year_row, cols = None, []
     for r in range(1, ws.max_row + 1):
