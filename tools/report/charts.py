@@ -141,8 +141,84 @@ def expansion(name, d):
     fig.savefig(OUT / name, facecolor=SURF, dpi=200); plt.close(fig)
 
 
+ROAD_FILL = {'go': ('#d6e6f8', BLUE, INK), 'try': ('white', BLUE, INK),
+             'turn': ('#fbe1d6', ORANGE, INK), 'hold': ('#efefeb', '#efefeb', MUTED)}
+
+
+def roadmap(name, d):
+    """Scenario × stage grid: rows are scenarios, columns the same stages; cell state says how each scenario passes."""
+    from matplotlib.patches import FancyBboxPatch
+    br = lambda s: s.replace('|', '\n')  # noqa: E731
+    n = len(d['stages'])
+    fig = plt.figure(figsize=(7.0, 5.6), facecolor=SURF)
+    ax = fig.add_axes([0.005, 0.005, 0.99, 0.99]); ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis('off')
+    lw_, rw, gap = 0.1, 0.12, 0.008
+    cw = (1 - lw_ - rw - gap * (n + 1)) / n
+    cx = [lw_ + gap + i * (cw + gap) for i in range(n)]
+    rx = cx[-1] + cw + gap
+
+    def cell(x, y, w, h, state, text, fs=7, bold=False, dashed=False):
+        fc, ec, tc = ROAD_FILL[state]
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0,rounding_size=0.006', fc=fc, ec=ec,
+                                    lw=1.1 if state in ('go', 'try', 'turn') else 0, ls='--' if dashed or state == 'try' else '-'))
+        ax.text(x + w / 2, y + h / 2, br(text), fontsize=fs, color=tc, ha='center', va='center',
+                linespacing=1.3, weight='bold' if bold else 'normal')
+
+    # legend + note
+    x = 0
+    for st, lab in d['legend']:
+        fc, ec, _ = ROAD_FILL[st]
+        ax.add_patch(FancyBboxPatch((x, 0.962), 0.022, 0.022, boxstyle='round,pad=0,rounding_size=0.003', fc=fc, ec=ec,
+                                    lw=1 if st != 'hold' else 0, ls='--' if st == 'try' else '-'))
+        ax.text(x + 0.03, 0.973, lab, fontsize=7.5, color=INK, va='center'); x += 0.03 + 0.012 * len(lab) + 0.035
+    ax.text(1, 0.973, d['note'], fontsize=7.5, color=MUTED, va='center', ha='right')
+
+    # header: stage, timing
+    hy, hh = 0.83, 0.115
+    ax.text(lw_ / 2, hy + hh / 2, '시나리오', fontsize=8, color=MUTED, ha='center', va='center')
+    ax.text(rx + rw / 2, hy + hh / 2, '사업 구조', fontsize=8, color=MUTED, ha='center', va='center')
+    for i, (k, t, when) in enumerate(d['stages']):
+        ax.add_patch(FancyBboxPatch((cx[i], hy), cw, hh, boxstyle='round,pad=0,rounding_size=0.006', fc='white', ec=GRID, lw=1))
+        ax.add_patch(FancyBboxPatch((cx[i], hy + hh - 0.01), cw, 0.01, boxstyle='square,pad=0', fc=BLUE, ec='none'))
+        ax.text(cx[i] + cw / 2, hy + hh - 0.02, f'{k} {br(t)}', fontsize=7.4, weight='bold', color=INK, ha='center', va='top', linespacing=1.25)
+        ax.text(cx[i] + cw / 2, hy + 0.012, when, fontsize=6.8, color=MUTED, ha='center', va='bottom')
+    # gate row
+    gy, gh = 0.73, 0.085
+    ax.text(lw_ / 2, gy + gh / 2, '다음 단계\n진입 조건', fontsize=7, color=MUTED, ha='center', va='center')
+    for i, g in enumerate(d['gates']):
+        ax.text(cx[i] + cw / 2, gy + gh / 2, br(g), fontsize=6.6, color=INK, ha='center', va='center', linespacing=1.25)
+        ax.annotate('', xy=(cx[i + 1] + 0.004, gy + gh / 2), xytext=(cx[i] + cw - 0.004, gy + gh / 2),
+                    arrowprops=dict(arrowstyle='-|>', color=MUTED, lw=0.8))
+    ax.plot([0, 1], [gy - 0.008, gy - 0.008], color=GRID, lw=1)
+
+    # scenario rows
+    rh, rg, y = 0.15, 0.022, gy - 0.03
+    for sc in d['scenarios']:
+        y -= rh
+        ax.text(0.006, y + rh * 0.62, sc['name'], fontsize=9, weight='bold', color=INK, va='center')
+        ax.text(0.006, y + rh * 0.3, br(sc['cond']), fontsize=6.4, color=MUTED, va='center', linespacing=1.25)
+        for i, (st, txt) in enumerate(sc['cells']):
+            cell(cx[i], y, cw, rh, st, txt, fs=6.9)
+            if i and st != 'hold' and sc['cells'][i - 1][0] != 'hold':
+                ax.annotate('', xy=(cx[i] + 0.001, y + rh / 2), xytext=(cx[i] - gap - 0.001, y + rh / 2),
+                            arrowprops=dict(arrowstyle='-|>', color=MUTED, lw=0.8, shrinkA=0, shrinkB=0))
+        ax.text(rx + 0.006, y + rh / 2, br(sc['result']), fontsize=6.9, color=INK, va='center', linespacing=1.3)
+        y -= rg
+    # precedents row
+    ax.plot([0, 1], [y + rg / 2, y + rg / 2], color=GRID, lw=1)
+    ph = 0.11
+    y -= ph - 0.005
+    ax.text(lw_ / 2, y + ph / 2, '선례\n(확인된 회사)', fontsize=7, color=MUTED, ha='center', va='center', linespacing=1.25)
+    for i, c in enumerate(d['cases']):
+        ax.text(cx[i] + cw / 2, y + ph / 2, br(c), fontsize=6.6, color=INK if c != '확인 중' else MUTED,
+                ha='center', va='center', linespacing=1.25)
+    fig.savefig(OUT / name, facecolor=SURF, dpi=220, bbox_inches='tight', pad_inches=0.06); plt.close(fig)
+
+
 for name, d in CHARTS.items():
-    if d['kind'] == 'map':
+    if d['kind'] == 'roadmap':
+        roadmap(name, d)
+    elif d['kind'] == 'map':
         expansion(name, d)
     elif d['kind'] == 'hbar':
         hbar(name, d['labels'], d['values'], d['unit'], d['vmax'], d['note'])
