@@ -40,3 +40,7 @@ Thumbs.db
 
 # Web report build output (GitHub Pages artifact)
 /_site/
+
+# 강연 실습 자료(코드 열람, 공개 금지)
+25-고객조사/베타랩 실습 프롬프트 원문.md
+25-고객조사/합성패널 테스트 제출물 요약.md
