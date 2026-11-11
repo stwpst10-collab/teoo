@@ -1,0 +1,237 @@
+<title>그날의 류 합성패널 제출본</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* 제출 문서: 왼쪽 목차 레일 + 본문 4장 + 팀 내부 점검. 컨셉보드와 같은 자두색 계열, 밝은 한 가지 모습 */
+:root{
+  --bg:#f6f5f8; --paper:#ffffff; --ink:#22202a; --ink-2:#5e5a68; --line:#e4e1ea;
+  --plum:#6a3d68; --plum-soft:#f3ecf3; --sage:#5f8572; --sage-soft:#eaf1ec; --warn:#a2581f; --warn-soft:#fbf0e6;
+  --f-display:"Noto Serif KR", "Apple SD Gothic Neo", serif;
+  --f-body:"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.1em;color:var(--plum);font-weight:700}
+h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,36px);margin:0;line-height:1.3}
+.meta{color:var(--ink-2);font-size:14px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.flow a{text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px}
+.flow a b{color:var(--plum);margin-right:6px}
+section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px 32px;display:grid;gap:18px;min-width:0}
+h2{font-family:var(--f-display);font-size:22px;margin:0;display:flex;gap:12px;align-items:baseline}
+h2 .n{font-family:var(--f-body);font-size:13px;font-weight:700;color:#fff;background:var(--plum);border-radius:6px;padding:2px 8px}
+h3{font-size:14px;margin:6px 0 0;color:var(--ink-2);letter-spacing:.04em}
+p{margin:0}
+.hyp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hcard{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:8px;align-content:start}
+.hcard.core{grid-column:1 / -1;background:var(--plum-soft);border-color:transparent}
+.tag{font-size:12px;font-weight:700;color:var(--plum);letter-spacing:.04em}
+.hcard.core p{font-size:17px;font-weight:500}
+.why{color:var(--ink-2);font-size:14px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--ink-2);font-weight:700;letter-spacing:.04em;border-top:0;background:var(--bg)}
+.quota{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;max-width:520px;font-size:14px}
+.quota div{padding:12px;border-radius:8px;text-align:center}
+.quota .h{background:transparent;color:var(--ink-2);font-size:12px;font-weight:700}
+.quota .c{background:var(--plum-soft);font-weight:700;font-variant-numeric:tabular-nums}
+.quota .r{text-align:left;color:var(--ink-2);font-size:13px;font-weight:700;padding-left:0}
+.star{display:grid;gap:12px}
+.tkl{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px}
+.tkl.s{border-color:var(--plum);border-width:1.5px}
+.tkl .q{font-weight:700;font-size:15px}
+.tkl .q .k{color:var(--plum);margin-right:6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts span{font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.hy{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.hy div{background:var(--bg);border-radius:8px;padding:8px 10px;font-size:13px;min-width:0}
+.hy b{display:block;font-size:11px;color:var(--plum);letter-spacing:.06em;margin-bottom:2px}
+.hy .f{background:var(--warn-soft)}
+.hy .f b{color:var(--warn)}
+.use{font-size:13px;color:var(--ink-2)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.list{margin:0;padding-left:20px;display:grid;gap:4px}
+.price{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+.pbox{background:var(--plum);color:#fff;border-radius:12px;padding:14px 20px;display:grid}
+.pbox small{opacity:.8;font-size:12px}
+.pbox b{font-size:24px;font-variant-numeric:tabular-nums}
+.pbox.alt{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.promise{font-family:var(--f-display);font-size:clamp(22px,3vw,30px);font-weight:700;line-height:1.35}
+.sub{color:var(--plum);font-weight:500;font-size:17px}
+.cuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cut{background:var(--bg);border-radius:12px;padding:14px;display:grid;gap:6px;align-content:start}
+.cut .no{font-size:12px;font-weight:700;color:var(--plum)}
+.cut .scene{font-size:13px;color:var(--ink-2)}
+.internal{background:transparent;border:1.5px dashed var(--warn);}
+.internal h2 .n{background:var(--warn)}
+.chk{display:grid;gap:8px}
+.ok{color:var(--sage);font-weight:700}
+.no{color:var(--warn);font-weight:700}
+.todo{display:grid;gap:8px;counter-reset:t;margin:0;padding:0;list-style:none}
+.todo li{background:var(--warn-soft);border-radius:8px;padding:10px 14px}
+.note{background:var(--bg);border-radius:10px;padding:12px 14px;font-size:14px}
+@media (max-width:780px){
+  section{padding:22px 18px}
+  .hyp,.cuts,.grid2{grid-template-columns:1fr}
+  .hy{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">ONLYONE FRONTIER 3기 · 합성패널 테스트</span>
+    <h1>그날의 류 제출물</h1>
+    <span class="meta">사업 유형: 소비재·제품 · 제출일 2026-11-12 · 응답자 300명</span>
+    <nav class="flow" aria-label="순서">
+      <a href="#h"><b>1</b>핵심 가설</a><a href="#t"><b>2</b>타깃과 세그먼트</a><a href="#k"><b>3</b>TKL</a><a href="#c"><b>4</b>컨셉보드 문구</a><a href="#x"><b>!</b>제출 전 점검</a>
+    </nav>
+  </header>
+
+  <section id="h">
+    <h2><span class="n">1</span>핵심 가설</h2>
+    <div class="hyp">
+      <div class="hcard core">
+        <span class="tag">핵심 가설 · 왜 바꾸나</span>
+        <p>생리 전 몸 불편 때문에 진통제를 먹지만 약이 꺼림칙한 20~30대 여성은, 먹지 않고 발목에 차는 지압 밴드를, 진통제를 계속 먹는 것보다 더 써 보고 싶어 할 것이다.</p>
+        <p class="why">왜냐하면 매달 반복해서 약을 먹는 것이 부담스럽지만 대신 쓸 방법을 찾지 못했기 때문이다.</p>
+      </div>
+      <div class="hcard">
+        <span class="tag">받쳐 주는 가설 1 · 누가 먼저</span>
+        <p>생리 관련 약을 먹고 속 쓰림·졸림 같은 불편을 겪어 본 여성은, 그런 경험이 없는 여성보다 이 밴드를 더 먼저 써 보고 싶어 할 것이다.</p>
+        <p class="why">약을 줄이고 싶은 이유를 몸으로 겪어서 분명하기 때문이다.</p>
+      </div>
+      <div class="hcard">
+        <span class="tag">받쳐 주는 가설 2 · 계속 쓰나</span>
+        <p>써 보고 싶은 여성은 생리 전 일주일마다 루틴으로 쓰는 쪽을, 증상이 심한 달에만 꺼내 쓰는 쪽보다 더 많이 고를 것이다.</p>
+        <p class="why">생리 전 불편이 매달 반복되고, 예정일 알림에 맞춰 시작하면 챙기기 쉽기 때문이다.</p>
+      </div>
+      <div class="hcard" style="background:var(--bg);border-color:transparent">
+        <span class="tag">타깃 한 줄</span>
+        <p>생리 전마다 몸 불편을 겪고, 이미 약·찜질·마사지 등에 돈을 써 온 20~30대 여성</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="t">
+    <h2><span class="n">2</span>타깃과 세그먼트</h2>
+    <h3>스크리너</h3>
+    <div class="tw"><table>
+      <tr><th style="width:56px">#</th><th>조건</th></tr>
+      <tr><td><b>S1</b></td><td>만 20~39세 여성. 최근 3개월 안에 생리를 했다. 현재 임신 중이거나 임신을 준비 중이지 않다</td></tr>
+      <tr><td><b>S2</b></td><td>최근 3번의 생리 중 2번 이상, 생리 시작 며칠 전부터 몸이 불편해서(붓기·무거움·더부룩함·허리 등) 무언가를 했다 (약 먹기, 찜질, 마사지, 일정 조정 등)</td></tr>
+      <tr><td><b>S3</b></td><td>최근 1년 안에 생리 전후 불편 때문에 약·영양제·찜질용품·마사지 기기 중 하나에 2회 이상 돈을 썼다</td></tr>
+    </table></div>
+    <h3>분류 문항</h3>
+    <div class="tw"><table>
+      <tr><th style="width:56px">#</th><th>문항</th><th style="width:130px">용도</th></tr>
+      <tr><td><b>C1</b></td><td>최근 1년 안에 생리 관련 약(진통제·생리 전 증상용 일반약)을 먹고 불편(속 쓰림·졸림·두근거림 등)을 겪은 적이 있나? — 있다 / 먹었지만 불편은 없었다 / 약을 먹지 않았다</td><td>쿼터 (있다 vs 나머지)</td></tr>
+      <tr><td><b>C2</b></td><td>생리 전 불편할 때 주로 하는 방법은? (하나만) — 진통제 / 생리 전 증상용 일반약 / 영양제 / 핫팩·찜질팩 / 전기 찜질기·온열 벨트 / 마사지 기기 / 손·도구로 지압 / 기타</td><td>결과에서 나눠 보기 (약 위주 vs 약 외)</td></tr>
+    </table></div>
+    <h3>쿼터 300명</h3>
+    <div class="quota" role="table" aria-label="쿼터">
+      <div class="h"></div><div class="h">약 불편 경험 있음<br>(C1 = 있다)</div><div class="h">약 불편 경험 없음<br>(C1 = 그 외)</div>
+      <div class="r">만 20~29세</div><div class="c">75명</div><div class="c">75명</div>
+      <div class="r">만 30~39세</div><div class="c">75명</div><div class="c">75명</div>
+    </div>
+  </section>
+
+  <section id="k">
+    <h2><span class="n">3</span>TKL</h2>
+    <div class="star">
+      <article class="tkl s">
+        <p class="q"><span class="k">★1</span>생리 전에 지금 쓰는 방법과 비교해, 이 밴드를 더 써 보고 싶은가?</p>
+        <p class="use">보조: 진통제를 먹을 때 드는 생각 — 괜찮다 / 매달 먹는 게 찜찜하다 / 효과가 약해졌다 / 부작용이 걱정된다 · 활용처: '먹지 않고'를 첫 줄 메시지로 둘지</p>
+        <div class="hy"><div><b>누가</b>진통제를 먹지만 약이 꺼림칙한 20~30대 여성</div><div><b>무엇을</b>발목 지압 밴드를</div><div><b>무엇보다 더</b>진통제만 계속 먹는 것보다 더 써 보고 싶어 함</div><div><b>왜</b>매달 약 먹는 부담은 큰데 대안이 없어서</div><div class="f"><b>틀리면</b>'먹지 않고'를 내리고 '일하면서 손 안 쓰고'를 첫 줄로</div></div>
+      </article>
+      <article class="tkl s">
+        <p class="q"><span class="k">★2</span>약 불편 경험이 있는 사람과 없는 사람 중 누가 이 밴드를 더 써 보고 싶어 하나? 그 이유는?</p>
+        <p class="use">활용처: 첫 고객 정의, 처음 찾아갈 채널</p>
+        <div class="hy"><div><b>누가</b>약을 먹고 속 쓰림·졸림 같은 불편을 겪어 본 여성</div><div><b>무엇을</b>이 밴드를</div><div><b>무엇보다 더</b>그런 경험이 없는 여성보다 더 먼저 써 보고 싶어 함</div><div><b>왜</b>약을 줄이고 싶은 이유를 몸으로 겪어서</div><div class="f"><b>틀리면</b>첫 고객을 반응이 더 큰 집단(찜질·지압 사용자, 앉아서 일하는 사람 등)으로, 채널도 그쪽으로</div></div>
+      </article>
+      <article class="tkl s">
+        <p class="q"><span class="k">★3</span>이 밴드가 있다면 언제 쓰겠나? 그렇게 고른 이유는?</p>
+        <div class="opts"><span>매 생리 전 일주일마다</span><span>증상이 심한 달에만</span><span>생리 중에도</span><span>생리와 상관없이 다리가 피곤할 때</span><span>몇 번 쓰다 말 것 같다</span></div>
+        <p class="use">활용처: 패치를 정기 배송(구독)으로 팔지, 필요할 때 사게 할지</p>
+        <div class="hy"><div><b>누가</b>이 밴드를 써 보고 싶은 여성</div><div><b>무엇을</b>'매 생리 전 일주일마다'를</div><div><b>무엇보다 더</b>'증상이 심한 달에만'보다 더 많이 고름</div><div><b>왜</b>불편이 매달 반복되고, 예정일 알림에 맞추면 챙기기 쉬워서</div><div class="f"><b>틀리면</b>구독 대신 '필요할 때 사는 패치'를 기본으로, 메시지는 '힘든 달을 위한 준비'로. '다리 피곤할 때'가 많으면 생리 외 사용 장면 추가</div></div>
+      </article>
+    </div>
+    <div class="tw"><table>
+      <tr><th style="width:44px">#</th><th>알고 싶은 것</th><th style="width:30%">활용처</th></tr>
+      <tr><td>4</td><td>아래 장점 중 가장 중요한 것 1~3순위는? — 혈자리를 몰라도 됨 / 손을 쓰지 않아도 됨 / 먹지 않아도 됨 / 일하거나 공부하면서 쓸 수 있음 / 발목에 차서 잘 안 보임 / 황토볼 패치 / 생리 전 일주일만 쓰면 됨 <span class="use">(표준 틀 05와 겹침, 순위형으로 더 묻기. 예상: '혈자리 몰라도·손 안 써도' 1순위)</span></td><td>한 줄 약속과 상세페이지 첫 장점</td></tr>
+      <tr><td>5</td><td>아래 걱정 중 가장 망설여지는 것 1~3순위는? — 효과가 있을지 모르겠음 / 가격 / 밖에서 보이거나 소리가 남 / 패치를 계속 사야 함 / 일주일 동안 챙겨 차기 번거로움 / 안전 걱정 / 마사지기와 차이를 모르겠음 <span class="use">(표준 틀 05와 겹침. 예상: 효과 의심 > 가격)</span></td><td>먼저 풀어야 할 걱정, 체험·환불 장치</td></tr>
+      <tr><td>6</td><td>이 밴드를 보면 어떤 제품과 비교하게 되나? — 생리 전후 찜질기·온열 벨트 / 공기압·전동 마사지기 / 지압 도구 / 진통제·영양제 / 비교할 것이 없음 <span class="use">(예상: 3만 원대 찜질기)</span></td><td>가격 설득 기준, 판매 카테고리</td></tr>
+      <tr><td>7</td><td>어떤 상황에서 쓸 것 같나? — 출근해서 일할 때 / 공부할 때 / 집에서 쉴 때 / 잘 때 / 이동할 때</td><td>사용 장면, 크기·소음 기준</td></tr>
+      <tr><td>8</td><td>기기만 vs 기기+패치 중 어느 쪽이 끌리나? 패치는 어떻게 사고 싶나? — 필요할 때만 / 정기 배송 / 생리 예정일 맞춤 배송</td><td>패치 판매 방식 (★3과 함께)</td></tr>
+    </table></div>
+    <div class="note"><b>결과에서 가장 먼저 볼 ★ 3줄</b> — ① '지금 방법보다 써 보고 싶다'가 높은가, 진통제가 '찜찜하다·걱정된다'인 사람에게서 더 높은가 ② 약 불편 경험 '있음'이 '없음'보다 더 써 보고 싶어 하는가 ③ '매 생리 전 일주일마다'가 '심한 달에만'보다 많은가</div>
+    <div class="grid2">
+      <div>
+        <h3>비교하고 싶은 집단</h3>
+        <ul class="list"><li>약 불편 경험 있음 vs 없음 (C1, 쿼터) → ★2, ★1</li><li>약 위주 vs 약 외 방법 위주 (C2, 결과에서 나눠 보기) → ★1, 4번</li><li>20대 vs 30대 (쿼터) → 전체</li></ul>
+        <h3 style="margin-top:14px">가격안</h3>
+        <div class="price" style="margin-top:8px"><div class="pbox"><small>지압 밴드</small><b>99,000원</b></div><div class="pbox alt"><small>전용 황토볼 패치 8개입 · 선택</small><b>8,000원</b></div></div>
+      </div>
+      <div>
+        <h3>보기에 꼭 넣을 지금 쓰는 방법</h3>
+        <ol class="list"><li>그냥 참는다</li><li>진통제를 먹는다</li><li>생리 전 증상용 일반약·영양제를 먹는다</li><li>핫팩·찜질팩·온열 패치를 붙인다</li><li>전기 찜질기·온열 벨트를 쓴다</li><li>공기압·전동 마사지기를 쓴다</li><li>손이나 지압 도구로 혈자리를 누른다</li><li>병원·한의원 진료를 받는다</li><li>운동·스트레칭·반신욕을 한다</li></ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="c">
+    <h2><span class="n">4</span>컨셉보드 문구</h2>
+    <p class="use">이미지는 따로 첨부 (컨셉보드 v1)</p>
+    <div style="display:grid;gap:6px">
+      <p class="promise">생리 전 일주일, 먹지 않고 발목에 차는 지압 루틴</p>
+      <p class="sub">혈자리를 몰라도, 손을 쓰지 않아도</p>
+      <p class="why">생리 전마다 몸이 붓고 무거운데, 매달 약을 먹기는 망설여지는 20~30대 여성을 위해</p>
+    </div>
+    <div class="cuts">
+      <div class="cut"><span class="no">컷 1</span><p>생리 예정일 일주일 전, 패치를 밴드 안쪽에 붙여요</p><p class="scene">장면: 휴대폰 달력 'D-7' 알림, 책상 위 밴드와 동그란 패치</p></div>
+      <div class="cut"><span class="no">컷 2</span><p>안쪽 복사뼈 표시에 맞춰 발목에 차요</p><p class="scene">장면: 의자에 앉아 발목에 밴드를 감는 사람, 복사뼈 위 점 표시</p></div>
+      <div class="cut"><span class="no">컷 3</span><p>버튼을 누르면 일하는 동안 정해진 자리를 꾹꾹 눌러 줘요</p><p class="scene">장면: 노트북을 치는 사람, 책상 아래 발목에 밴드</p></div>
+    </div>
+    <div class="grid2">
+      <div>
+        <h3>구성과 규격</h3>
+        <ul class="list"><li>발목에 감는 밴드형 공기압 지압기 1개 (안쪽 복사뼈 표시, 둘레 조절)</li><li>황토볼이 들어간 1회용 지압 패치 (밴드 전용, 선택)</li><li>판매처: 온라인 몰, 헬스·뷰티 매장</li><li>가격: 밴드 99,000원 / 패치 8개입 8,000원<br><span class="use">참고: 생리 전후 찜질기 3만 원대 · 전동 마사지기 10만 원 안팎</span></li></ul>
+      </div>
+      <div class="tw">
+        <h3>지금 쓰는 방법과 다른 점</h3>
+        <table>
+          <tr><td>진통제·영양제는 먹어야 해요</td><td><b>먹지 않고 발목에 차요</b></td></tr>
+          <tr><td>핫팩·찜질팩은 따뜻하게만 해 줘요</td><td><b>정해진 자리를 눌러 줘요</b></td></tr>
+          <tr><td>손 지압은 자리를 찾고 계속 눌러야 해요</td><td><b>표시에 맞추면 자리가 잡히고, 두 손이 자유로워요</b></td></tr>
+          <tr><td>다리 공기압 마사지기는 앉아서 쉬어야 해요</td><td><b>발목 밴드라 일하거나 공부하면서 써요</b></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="x" class="internal">
+    <h2><span class="n">!</span>제출 전 점검 <span style="font-family:var(--f-body);font-size:13px;color:var(--warn);font-weight:500">팀 내부용 · 제출할 때 빼기</span></h2>
+    <div class="tw"><table>
+      <tr><th>점검</th><th style="width:120px">결과</th><th>메모</th></tr>
+      <tr><td>가설 조합</td><td class="ok">팀 추천 반영</td><td>`02 팀 프로젝트 수렴 분석`의 추천: 핵심 11 · 받쳐 주는 15(누가 먼저)·5(계속 쓰나). 이전 잠정안의 장점·망설임 가설은 TKL 4·5번으로 남김</td></tr>
+      <tr><td>양식 항목 (핵심 가설 · TKL ★3 · 스크리너·분류 · 현재 행동 보기 · 쿼터 · 가격 · 먼저 볼 ★3줄)</td><td class="ok">모두 있음</td><td>TKL 8줄, 스크리너 3 + 분류 2</td></tr>
+      <tr><td>컨셉보드 정지 이미지</td><td class="no">빠짐</td><td>컨셉보드 v1 화면을 캡처해 첨부</td></tr>
+      <tr><td>소비재 필수 항목 (규격·속성·채널·팩당 가격·기존 대비)</td><td class="ok">있음</td><td>무게·충전 방식·소음·1회 사용 시간은 미정이라 빠짐</td></tr>
+      <tr><td>★3줄 · 쿼터 · 컨셉보드가 같은 핵심 가설을 향하나</td><td class="ok">향함</td><td>★2와 쿼터가 약 불편 경험 있음 vs 없음을 비교. 보드의 '먹지 않고'·진통제 비교가 핵심 가설을, 'D-7 알림'·'생리 전 일주일 루틴'이 ★3을 보여 줌. 다만 보드가 '일주일 루틴'을 앞세워 ★3이 '매 생리 전'으로 쏠릴 수 있고, ★1의 약 위주 vs 약 외 비교는 쿼터가 아니라 C2로 나눠 봐서 집단 크기가 고르지 않을 수 있음</td></tr>
+      <tr><td>숫자 가설</td><td class="ok">없음</td><td>숫자는 가격·나이·쿼터 인원뿐</td></tr>
+      <tr><td>브랜드명·회사명</td><td class="ok">없음</td><td>팀명은 제출자 표시로만 있음</td></tr>
+      <tr><td>효과 보장·질병명</td><td class="ok">없음</td><td>'먹지 않고'·진통제 비교는 패널 확인용. 판매 문구에는 쓰지 않음</td></tr>
+    </table></div>
+    <h3>제출 전 팀이 정할 것</h3>
+    <ol class="todo">
+      <li><b>가설 조합 확정과 고른 이유</b> — 지금은 팀 프로젝트 추천(11·15·5)을 넣은 잠정안. 결정기록에 이유를 적는다</li>
+      <li><b>가격 확정</b> — 린캔버스 v2: 99,000원·8개입 8,000원 / 채택 모델 장표: 5매 6,900원</li>
+      <li><b>공기압 기기로 낼지</b> — 지금 시연품은 수동 목업</li>
+      <li><b>컨셉보드 정지 이미지 캡처</b></li>
+    </ol>
+  </section>
+</div>

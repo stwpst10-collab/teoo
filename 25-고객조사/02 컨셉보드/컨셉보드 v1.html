@@ -1,0 +1,146 @@
+<title>발목 지압 밴드 컨셉보드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* 한 장 보드: 위 약속·가격 / 가운데 사용 장면 3컷 / 아래 구성·비교. 패널 캡처용이라 밝은 한 가지 모습으로 고정 */
+:root{
+  --bg:#f6f5f8; --paper:#ffffff; --ink:#22202a; --ink-2:#5e5a68; --line:#e4e1ea;
+  --plum:#6a3d68; --plum-soft:#efe6ef; --sage:#7f9d8c; --sand:#e9dccb; --skin:#e8c9b0;
+  --f-display:"Noto Serif KR", "Apple SD Gothic Neo", serif;
+  --f-body:"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px}
+.board{max-width:1080px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:40px 44px;display:grid;gap:32px}
+.top{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:start}
+.who{font-size:14px;color:var(--ink-2);letter-spacing:.02em;margin:0 0 10px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4.2vw,44px);line-height:1.25;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:14px 0 0;font-size:clamp(17px,2vw,21px);color:var(--plum);font-weight:500}
+.price{background:var(--plum);color:#fff;border-radius:14px;padding:20px 24px;min-width:230px;display:grid;gap:10px}
+.price .lbl{font-size:12px;letter-spacing:.08em;opacity:.8}
+.price .main{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.price .main small{font-size:15px;font-weight:500;margin-left:2px}
+.price .opt{font-size:14px;border-top:1px solid rgba(255,255,255,.25);padding-top:10px}
+.price .opt b{font-variant-numeric:tabular-nums}
+.price .ref{font-size:12px;opacity:.75}
+.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.scene{display:grid;gap:10px}
+.scene svg{width:100%;height:auto;background:var(--plum-soft);border-radius:12px;display:block}
+.step{font-size:12px;font-weight:700;color:var(--plum);letter-spacing:.06em}
+.scene p{margin:0;font-size:15px}
+.bottom{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px}
+h2{font-size:13px;letter-spacing:.08em;color:var(--ink-2);font-weight:700;margin:0 0 10px}
+ul{margin:0;padding-left:18px;display:grid;gap:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{color:var(--ink-2);width:48%}
+td:last-child{font-weight:500}
+tr:first-child td{border-top:0}
+.tw{overflow-x:auto}
+@media (max-width:760px){
+  .board{padding:26px 20px}
+  .top,.bottom{grid-template-columns:1fr}
+  .scenes{grid-template-columns:1fr}
+  .price{min-width:0}
+}
+</style>
+
+<main class="board">
+  <section class="top">
+    <div>
+      <p class="who">생리 전마다 몸이 붓고 무거운데, 매달 약을 먹기는 망설여지는 20~30대 여성을 위해</p>
+      <h1>생리 전 일주일,<br>먹지 않고 발목에 차는 지압 루틴</h1>
+      <p class="sub">혈자리를 몰라도, 손을 쓰지 않아도</p>
+    </div>
+    <aside class="price" aria-label="가격">
+      <span class="lbl">지압 밴드</span>
+      <span class="main">99,000<small>원</small></span>
+      <span class="opt">전용 황토볼 패치 8개입 <b>8,000원</b><br>따로 구매 · 선택</span>
+      <span class="ref">참고: 생리 전후 찜질기 3만 원대 · 전동 마사지기 10만 원 안팎</span>
+    </aside>
+  </section>
+
+  <section class="scenes" aria-label="사용 장면">
+    <figure class="scene" style="margin:0">
+      <svg viewBox="0 0 300 180" role="img" aria-label="달력 알림과 밴드, 패치">
+        <rect x="0" y="138" width="300" height="42" fill="#e9dccb"/>
+        <rect x="40" y="30" width="70" height="120" rx="12" fill="#22202a"/>
+        <rect x="46" y="40" width="58" height="96" rx="6" fill="#ffffff"/>
+        <rect x="52" y="50" width="46" height="10" rx="3" fill="#6a3d68"/>
+        <text x="75" y="95" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#6a3d68">D-7</text>
+        <text x="75" y="118" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-size="9" fill="#5e5a68">생리 예정</text>
+        <rect x="150" y="112" width="96" height="26" rx="13" fill="#7f9d8c"/>
+        <circle cx="198" cy="125" r="7" fill="#ffffff"/>
+        <circle cx="268" cy="128" r="10" fill="#c99a6b"/>
+        <circle cx="268" cy="128" r="4" fill="#e9dccb"/>
+      </svg>
+      <span class="step">1 · 생리 예정 일주일 전</span>
+      <p>패치를 밴드 안쪽에 붙여요</p>
+    </figure>
+
+    <figure class="scene" style="margin:0">
+      <svg viewBox="0 0 300 180" role="img" aria-label="의자에 앉아 발목에 밴드를 차는 사람">
+        <rect x="0" y="150" width="300" height="30" fill="#e9dccb"/>
+        <rect x="90" y="96" width="84" height="10" rx="4" fill="#5e5a68"/>
+        <rect x="96" y="106" width="6" height="44" fill="#5e5a68"/>
+        <rect x="162" y="106" width="6" height="44" fill="#5e5a68"/>
+        <circle cx="128" cy="34" r="16" fill="#e8c9b0"/>
+        <rect x="112" y="52" width="32" height="46" rx="10" fill="#6a3d68"/>
+        <rect x="128" y="88" width="56" height="14" rx="7" fill="#22202a"/>
+        <rect x="174" y="96" width="14" height="50" rx="7" fill="#22202a"/>
+        <rect x="170" y="126" width="22" height="14" rx="5" fill="#7f9d8c"/>
+        <circle cx="181" cy="133" r="3" fill="#ffffff"/>
+        <rect x="172" y="144" width="26" height="8" rx="4" fill="#22202a"/>
+        <path d="M150 64 Q170 100 176 126" stroke="#e8c9b0" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="step">2 · 안쪽 복사뼈 표시에 맞춰</span>
+      <p>발목에 차요</p>
+    </figure>
+
+    <figure class="scene" style="margin:0">
+      <svg viewBox="0 0 300 180" role="img" aria-label="책상에서 노트북을 치는 사람, 발목에 밴드">
+        <rect x="0" y="150" width="300" height="30" fill="#e9dccb"/>
+        <rect x="140" y="70" width="150" height="8" rx="3" fill="#5e5a68"/>
+        <rect x="276" y="78" width="6" height="72" fill="#5e5a68"/>
+        <rect x="186" y="50" width="54" height="20" rx="3" fill="#22202a"/>
+        <rect x="180" y="66" width="66" height="5" rx="2" fill="#5e5a68"/>
+        <circle cx="110" cy="34" r="16" fill="#e8c9b0"/>
+        <rect x="94" y="52" width="32" height="46" rx="10" fill="#6a3d68"/>
+        <path d="M122 64 L182 64" stroke="#e8c9b0" stroke-width="8" stroke-linecap="round"/>
+        <rect x="80" y="96" width="54" height="10" rx="4" fill="#5e5a68"/>
+        <rect x="110" y="90" width="58" height="14" rx="7" fill="#22202a"/>
+        <rect x="156" y="98" width="14" height="48" rx="7" fill="#22202a"/>
+        <rect x="152" y="126" width="22" height="14" rx="5" fill="#7f9d8c"/>
+        <circle cx="163" cy="133" r="3" fill="#ffffff"/>
+        <rect x="154" y="144" width="26" height="8" rx="4" fill="#22202a"/>
+        <path d="M184 120 q8 -6 0 -12 M192 124 q12 -10 0 -20" stroke="#6a3d68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="step">3 · 버튼을 누르면</span>
+      <p>일하는 동안 정해진 자리를 꾹꾹 눌러 줘요</p>
+    </figure>
+  </section>
+
+  <section class="bottom">
+    <div>
+      <h2>구성과 규격</h2>
+      <ul>
+        <li>발목에 감는 밴드형 공기압 지압기 1개<br><span style="color:var(--ink-2);font-size:14px">안쪽 복사뼈에 맞추는 표시 · 둘레 조절</span></li>
+        <li>황토볼이 들어간 1회용 지압 패치<br><span style="color:var(--ink-2);font-size:14px">밴드 전용 · 선택</span></li>
+        <li>판매처: 온라인 몰, 헬스·뷰티 매장</li>
+      </ul>
+    </div>
+    <div>
+      <h2>지금 쓰는 방법과 다른 점</h2>
+      <div class="tw">
+        <table>
+          <tr><td>진통제·영양제는 먹어야 해요</td><td>먹지 않고 발목에 차요</td></tr>
+          <tr><td>핫팩·찜질팩은 따뜻하게만 해 줘요</td><td>정해진 자리를 눌러 줘요</td></tr>
+          <tr><td>손 지압은 자리를 찾고 계속 눌러야 해요</td><td>표시에 맞추면 자리가 잡히고, 두 손이 자유로워요</td></tr>
+          <tr><td>다리 공기압 마사지기는 앉아서 쉬어야 해요</td><td>발목 밴드라 일하거나 공부하면서 써요</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
