@@ -431,7 +431,7 @@ def page_field(p):
 
 hp = sec.header.paragraphs[0]
 hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.16)', size=8, color=MUTED)
+runs(hp, '그날의 류  |  산업·기업 분석 보고서  |  2026.11 (v10.17)', size=8, color=MUTED)
 para_border(hp, 'bottom', 4, RULE, 3)
 fp = sec.footer.paragraphs[0]; fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
 page_field(fp)
@@ -445,7 +445,7 @@ runs(p, '그날의 류', size=34, color=NAVY, bold=True)
 p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(14)
 runs(p, 'PMS 일주일, 아무도 맡지 않은 시장 — 두 손을 자유롭게! 발목 혈자리 지압기 & 전용 패치 형태의 생리전 케어 디바이스', size=13, color=INK)
 para_border(p, 'bottom', 18, NAVY, 10)
-kv_table([('작성일', '2026년 11월 9일 (v10.16)'), ('형식', '산업분석 + 기업분석 풀리포트')])
+kv_table([('작성일', '2026년 11월 11일 (v10.17)'), ('형식', '산업분석 + 기업분석 풀리포트')])
 callout('그날의 류는 생리 전 7일(PMS)을 겨냥한 착용형 셀프케어 디바이스 브랜드. 19~39세 여성의 48.3%가 심한 PMS를 경험하나 진료율은 0.14%에 불과해, '
         '약 외에 일상에서 쓸 관리 수단이 사실상 없다고 판단. 첫 제품은 혈자리를 몰라도, 손을 쓰지 않아도 발목에 착용하면 되는 혈자리 지압 기기와 디바이스 전용 패치이며, '
         '기기 1회 판매 + 패치 구독으로 반복 매출을 확보할 계획. PMS는 고객 언어로 쓰는 메시지의 첫 진입점이며, 확장은 부위가 아닌 고객의 주기를 축으로 단계별 진입 조건을 충족할 때만 진행. 효능은 표방하지 않음.',
