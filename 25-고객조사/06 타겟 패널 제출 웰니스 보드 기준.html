@@ -1,0 +1,186 @@
+<title>타깃 패널 제출 웰니스 보드판</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 단일 문서 칼럼(최대 900px), 제출 4항목 + 점선 상자의 팀 내부 구역 */
+:root{
+  --bg:#f6f7f7; --surface:#ffffff; --fg:#1b2122; --muted:#5b6566; --line:#dde3e3;
+  --accent:#1f5f63; --accent-soft:#e4f0ef; --star:#a5521f; --warn-bg:#fbf3e6; --warn-line:#e4c99a;
+  --f-head:"IBM Plex Sans KR","Noto Sans KR",system-ui,sans-serif;
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141819; --surface:#1c2223; --fg:#e6eded; --muted:#9daaab; --line:#2f393a;
+  --accent:#86c9c4; --accent-soft:#1b2b2b; --star:#e5a06f; --warn-bg:#2a2218; --warn-line:#5c4a2c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141819; --surface:#1c2223; --fg:#e6eded; --muted:#9daaab; --line:#2f393a;
+  --accent:#86c9c4; --accent-soft:#1b2b2b; --star:#e5a06f; --warn-bg:#2a2218; --warn-line:#5c4a2c; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;line-height:1.35;margin:0}
+h1{font-size:1.85rem;font-weight:700}
+h2{font-size:1.3rem;font-weight:700;display:flex;gap:10px;align-items:baseline}
+h2 .n{color:var(--accent);font-variant-numeric:tabular-nums}
+h3{font-size:1.02rem;font-weight:600;margin-top:4px}
+p,ul,ol{margin:0}
+ul,ol{padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+section{display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--line);padding-bottom:24px}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;color:var(--accent);font-weight:700}
+.meta{color:var(--muted);font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+.meta b{color:var(--fg)}
+.thesis{padding:14px 16px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 8px 8px 0;font-weight:500}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:4px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-head);font-weight:600;font-size:.82rem;color:var(--muted);background:var(--bg)}
+td.num{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;color:var(--accent)}
+td.num.star{color:var(--star)}
+.hyp{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:.86rem;margin:0}
+.hyp dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.hyp dd{margin:0}
+.hyp dd.fail{color:var(--star)}
+.note{font-size:.84rem;color:var(--muted)}
+.pricebar{display:flex;flex-wrap:wrap;gap:8px 20px;padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.pricebar b{font-variant-numeric:tabular-nums}
+.promise{padding:20px;border-radius:10px;background:var(--accent-soft);display:flex;flex-direction:column;gap:8px}
+.promise .big{font-family:var(--f-head);font-size:1.3rem;font-weight:700;color:var(--fg)}
+.promise .sub{color:var(--accent);font-weight:700}
+.cuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cut{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cut .k{font-family:var(--f-head);font-weight:700;color:var(--accent);font-size:.85rem}
+.cut .c{font-weight:700}
+.cut .s{font-size:.85rem;color:var(--muted)}
+.quota td,.quota th{text-align:center}
+.quota td:first-child,.quota th:first-child{text-align:left}
+.internal{border:1px dashed var(--warn-line);background:var(--warn-bg);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.internal .flag{font-size:.8rem;font-weight:700;color:var(--star);letter-spacing:.04em}
+code{font-size:.85em;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
+@media (max-width:640px){.cuts{grid-template-columns:1fr}h1{font-size:1.5rem}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">그날의 류 · 타깃 패널 컨셉 테스트 · 웰니스 보드 기준판</div>
+  <h1>타깃 패널 제출 1~3항목</h1>
+  <div class="meta">
+    <span><b>제출</b> 11월 12일(목) 10:30까지 · ke.lim@intellicia.co (메일 제목에 조 이름)</span>
+    <span><b>기준</b> 팀이 바꾼 컨셉보드 "웰니스 셀프케어 · 첫 번째 루틴 · 발목 혈자리". 4항목(컨셉보드)은 팀 보드를 그대로 낸다. 가설 조합은 <b>잠정(팀 확정 전)</b>.</span>
+  </div>
+  <p class="thesis">몸으로 해 오던 셀프 지압을, 앱이 자리를 짚고 기기가 대신 눌러 주는 루틴으로 바꾸고 싶어 하는가.</p>
+</header>
+
+<section>
+  <h2><span class="n">1</span>알고 싶은 항목 (To-Know list)</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th style="min-width:230px">알고 싶은 것</th><th>활용처</th><th style="min-width:290px">가설</th></tr></thead>
+    <tbody>
+      <tr><td class="num star">★1</td>
+        <td>지금 다리·발이 무거운 날 하는 방법과 비교해, 앱이 발목 혈자리를 짚고 기기가 대신 눌러 주는 이 루틴을 더 써 보고 싶은가? 그렇게 답한 이유는?</td>
+        <td>한 줄 약속("몸으로 해 오던 번거로운 셀프케어")을 그대로 둘지</td>
+        <td><dl class="hyp"><dt>누가</dt><dd>다리·발이 무거운 날 손이나 도구로 직접 눌러 온 사람이</dd><dt>무엇을</dt><dd>앱이 자리를 짚고 기기가 대신 눌러 주는 발목 루틴을</dd><dt>무엇보다 더</dt><dd>손으로 직접 누르거나 넓게 주무르는 마사지기보다 더 써 보고 싶어 할 것</dd><dt>왜</dt><dd>지금은 자리를 알려 주는 것도 영상뿐이고, 한 지점을 계속 눌러 주는 것도 내 손뿐이어서</dd><dt>틀리면</dt><dd class="fail">'번거로움을 덜어 준다'를 내리고, 마사지기와 다른 점(한 지점·일정한 힘)이나 쉬는 시간의 경험을 첫 줄로 올린다</dd></dl></td></tr>
+      <tr><td class="num star">★2</td>
+        <td>손이나 도구로 혈자리·다리를 눌러 본 적이 있나? 그만뒀거나 가끔만 한다면 가장 큰 이유는? — 맞는 자리인지 몰라서 / 허리를 숙여 손으로 누르기 힘들어서 / 오래 누르면 손이 아파서 / 일하거나 다른 일을 하면서 못 해서 / 할 때마다 영상을 다시 찾아야 해서 / 시간이 없어서 / 효과를 못 느껴서 / 지금도 꾸준히 한다</td>
+        <td>앱(자리 안내)과 기기(대신 누르기) 중 무엇을 앞세울지, 효과 확인(체험·환불)을 먼저 할지</td>
+        <td><dl class="hyp"><dt>누가</dt><dd>셀프 지압을 해 본 사람이</dd><dt>무엇을</dt><dd>그만둔 이유로</dd><dt>무엇보다 더</dt><dd>'효과를 못 느껴서'보다 '자리를 몰라서·손으로 계속 누르기 힘들어서·일하면서 못 해서'를 더 많이 꼽을 것</dd><dt>왜</dt><dd>지압은 같은 자리를 같은 힘으로 오래 눌러야 하는데, 발목처럼 허리를 숙여야 하는 자리는 손으로 이어 가기 어려워서</dd><dt>틀리면</dt><dd class="fail">'힘들이지 않고, 닿지 않던 곳까지'를 내리고 체험·환불로 효과 의심부터 푼다</dd></dl></td></tr>
+      <tr><td class="num star">★3</td>
+        <td>셀프 지압 경험이 있는 사람과 없는 사람 중 누가 이 루틴을 더 써 보고 싶어 하나? 주로 서서 일하는 사람과 앉아서 일하는 사람 중에서는? 그 이유는?</td>
+        <td>첫 고객 정의, 첫 장면(퇴근 후 / 일하는 중)</td>
+        <td><dl class="hyp"><dt>누가</dt><dd>셀프 지압을 해 본 사람이</dd><dt>무엇을</dt><dd>이 루틴을</dd><dt>무엇보다 더</dt><dd>해 본 적 없는 사람보다 더 써 보고 싶어 할 것</dd><dt>왜</dt><dd>이미 하던 관리를 대신해 주는 것이라 쓰임을 바로 이해해서</dd><dt>틀리면</dt><dd class="fail">경험 없는 쪽 반응이 같거나 크면 첫 고객을 넓히고 메시지를 '처음 시작하는 쉼 루틴'으로 바꾼다</dd></dl></td></tr>
+      <tr><td class="num">4</td><td>앱만 먼저 무료로 써 볼 수 있다면? — 앱만 먼저 써 보고 기기를 고민하겠다 / 바로 기기까지 사겠다 / 앱만 쓰고 기기는 안 살 것 같다 / 둘 다 관심 없다</td><td>앱 무료 → 기기 구매 흐름을 첫 판매 경로로 둘지</td><td>셀프 지압 경험자는 '앱만 먼저'를 가장 많이 고를 것</td></tr>
+      <tr><td class="num">5</td><td>이 루틴을 언제 쓰겠나? (모두) — 퇴근 후 / 앉아서 일하는 중 / 잠들기 전 / 오래 걷거나 서 있은 날 / 운동 후 / 몇 번 쓰다 말 것 같다</td><td>첫 사용 장면, 알림 시점</td><td>'퇴근 후'와 '잠들기 전'이 '일하는 중'보다 많을 것</td></tr>
+      <tr><td class="num">6</td><td>장점 중 가장 중요한 것 1~3순위 — 앱이 자리를 짚어 줌 / 기기가 대신 눌러 줌 / 두 손이 자유로움 / 일정한 힘으로 눌러 줌 / 내 자리와 방법이 앱에 저장됨 / 셀프케어 기록 / 황토볼 패치 / 앱은 무료</td><td>상세페이지 첫 장점, 앱과 기기 중 무엇이 구매 이유인지</td><td>경험자는 '앱이 자리를 짚어 줌'과 '기기가 대신 눌러 줌'을 함께 상위에 꼽을 것</td></tr>
+      <tr><td class="num">7</td><td>걱정 중 가장 망설여지는 것 1~3순위 — 효과가 있을지 모르겠음 / 가격 / 충전·착용이 번거로움 / 카메라로 자리를 제대로 짚을지 / 패치를 계속 사야 할 것 같음 / 안전 걱정 / 마사지기와 차이를 모르겠음. 무엇이 있으면 안심하겠나? — 무료 체험 / 환불 / 사용 후기 / 전문가 설명</td><td>먼저 풀 걱정, 체험·환불 장치</td><td>'효과가 있을지 모르겠음'이 가격보다 클 것</td></tr>
+      <tr><td class="num">8</td><td>이 루틴을 보면 어떤 것과 비교하게 되나? — 손으로 직접 누르기 / 영상 따라 하기 / 수동 지압·괄사 도구 / 마사지볼·폼롤러 / 공기압·전동 다리 마사지기 / 안마의자 / 마사지샵·한의원 / 비교할 것이 없음</td><td>가격 기준점, 판매 카테고리</td><td>공기압·전동 다리 마사지기와 비교할 것</td></tr>
+      <tr><td class="num">9</td><td>기기 + 패치 1팩 99,000원이면 어떤가? — 살 만하다 / 비싸지만 고민해 보겠다 / 비싸다. 비싸다면 얼마면 사겠나? — 3만 원대 / 5만 원대 / 7만 원대</td><td>가격 설득 문구, 가격 시험안</td><td>마사지기 경험자는 '살 만하다', 손 지압만 해 본 사람은 '비싸다'가 많을 것</td></tr>
+      <tr><td class="num">10</td><td>교체용 패치(8,000원)는 어떻게 사겠나? — 기기만 쓰고 패치는 안 산다 / 필요할 때만 / 패치 교체 알림을 받으면 산다 / 정기 배송</td><td>패치 판매 방식, 교체 알림</td><td></td></tr>
+      <tr><td class="num">11</td><td>이 루틴에서 무엇을 기대하나? (모두) — 무거운 다리를 시원하게 / 붓기를 덜고 싶어서 / 잠들기 전 쉬는 시간 / 피로를 풀고 싶어서 / 통증 치료</td><td>효능 오인 위험 확인("의료기기가 아닌 웰니스 생활용품" 문구가 통하는지)</td><td>'통증 치료'를 고르는 사람은 적을 것. <span style="color:var(--star)">많으면 효능 오인 위험으로 보고 문구를 고친다</span></td></tr>
+      <tr><td class="num">12</td><td>같은 앱·같은 방식으로 다음 루틴이 나온다면 관심이 있나? — 일하는 중 어깨·목 / 잠들기 전 쉼 / 부모님 선물 / 성장기 아이 잠들기 전 / 관심 없음</td><td>확장 순서(보드 하단 ①~④)</td><td>'일하는 중 어깨·목'이 가장 많을 것</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>타깃 조건 (3개)</h2>
+  <ol>
+    <li>만 20~49세 성인(성별 무관). 임신 중이거나 임신 가능성이 있지 않고, 발목 부상·당뇨 등 발의 감각 이상이 없다</li>
+    <li>일주일에 3일 이상, 하루 대부분을 서 있거나 앉아서 일한다</li>
+    <li>최근 1개월 안에 다리나 발이 무겁거나 붓는다고 느낀 날이 여러 번 있다</li>
+  </ol>
+  <h3>분류 문항</h3>
+  <ul>
+    <li><b>C1</b> 다리·발이 무거운 날 해 본 방법을 모두 고르세요. — 그냥 쉬거나 참기 / 손으로 직접 누르기 / 영상 보고 따라 하기 / 지압·괄사 도구 / 마사지볼·폼롤러 / 공기압·전동 다리 마사지기 / 안마의자 / 찜질·족욕·반신욕 / 압박 스타킹 / 스트레칭·운동 / 마사지샵·한의원·물리치료 / 파스·진통제 <span class="tag">쿼터</span><br><span class="note">'손으로 직접 누르기', '영상 보고 따라 하기', '지압·괄사 도구' 중 하나 이상이면 '셀프 지압 경험 있음'</span></li>
+    <li><b>C2</b> 일할 때 주로 어떻게 있나? — 주로 서서 / 주로 앉아서 / 반반 <span class="tag">쿼터</span> <span class="note">반반은 더 긴 쪽으로 다시 물음</span></li>
+    <li><b>C3</b> 성별, 나이(20대 / 30대 / 40대) <span class="tag">결과에서 나눠 보기</span></li>
+  </ul>
+  <h3>쿼터 (300명)</h3>
+  <div class="tbl"><table class="quota" style="min-width:420px">
+    <thead><tr><th></th><th>셀프 지압 경험 있음</th><th>셀프 지압 경험 없음</th></tr></thead>
+    <tbody>
+      <tr><td>주로 서서 일함</td><td class="num">75명</td><td class="num">75명</td></tr>
+      <tr><td>주로 앉아서 일함</td><td class="num">75명</td><td class="num">75명</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">결과에서 나눠 볼 집단: 성별, 연령대(C3), 마사지기 사용 경험 있음 vs 없음(C1)</p>
+</section>
+
+<section>
+  <h2><span class="n">3</span>경쟁 서비스 / 꼭 확인하고 싶은 문항</h2>
+  <h3>보기에 꼭 넣을 경쟁·대체 방법</h3>
+  <ol>
+    <li>그냥 쉬거나 참는다</li><li>손으로 직접 누른다</li><li>영상을 보고 지압·마사지를 따라 한다</li><li>지압·괄사 도구를 쓴다</li>
+    <li>마사지볼·폼롤러를 쓴다</li><li>공기압·전동 다리 마사지기를 쓴다</li><li>안마의자를 쓴다</li><li>찜질·족욕·반신욕을 한다</li>
+    <li>압박 스타킹을 신는다</li><li>스트레칭·운동을 한다</li><li>마사지샵·한의원·물리치료를 받는다</li><li>파스나 진통제를 쓴다</li>
+  </ol>
+  <h3>꼭 확인하고 싶은 문항 (결과에서 먼저 볼 ★ 3줄)</h3>
+  <ol>
+    <li><b>★1</b> 이 루틴을 '지금 방법보다 더 써 보고 싶다'가 높은가. 특히 손으로 직접 누르거나 영상을 따라 해 온 사람에게서 높은가</li>
+    <li><b>★2</b> 그만둔 이유에서 '자리를 몰라서·손으로 계속 누르기 힘들어서·일하면서 못 해서'가 '효과를 못 느껴서'보다 많은가</li>
+    <li><b>★3</b> 셀프 지압 경험 '있음' 집단이 '없음' 집단보다 더 써 보고 싶어 하는가. 서서 일하는 집단과 앉아서 일하는 집단 중 어디가 더 높은가</li>
+  </ol>
+  <div class="pricebar"><span>보여 줄 가격</span><span>기기 + 패치 1팩 <b>99,000원</b></span><span>교체용 패치 1팩 <b>8,000원</b></span><span>웰니스 앱 <b>무료</b> (앱만 먼저 써 볼 수 있음)</span></div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>컨셉보드</h2>
+  <p>팀이 만든 보드 "웰니스 셀프케어 · 첫 번째 루틴 · 발목 혈자리"를 그대로 낸다. 파일: <code>02 컨셉보드/컨셉보드 v2 웰니스.png</code></p>
+</section>
+
+<section class="internal">
+  <span class="flag">팀 내부용 · 제출 시 이 아래는 빼기</span>
+  <h2>제출 전 팀이 정할 것</h2>
+  <h3>이 판의 전제 (2026-11-12)</h3>
+  <ul>
+    <li>PMS는 빼고 시장을 넓힌다. 생리·PMS 관련 문항, 보기, 분류 문항을 모두 뺐다.</li>
+    <li>대상을 25~39세 여성에서 <b>20~49세 성인(성별 무관)</b>으로 넓혔다. 보드 장면(서 있거나 앉아 일한 날, 퇴근 후, 일하는 중)에 맞춰 일하는 성인으로 잡았다. 성별과 연령대는 결과에서 나눠 본다.</li>
+  </ul>
+  <h3>팀이 정할 것</h3>
+  <ol>
+    <li>연령 범위: 20~49세로 둘지, 다른 범위로 둘지</li>
+    <li>가설 조합 확정과 고른 이유(<code>결정기록.md</code>)</li>
+  </ol>
+  <h3>보드와 저장소가 다른 곳 (패널 제출과 별개로 갱신 필요)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>보드</th><th>저장소</th><th>출처</th></tr></thead>
+    <tbody>
+      <tr><td>PMS 제외, 일하는 성인의 다리 피로·쉼 루틴</td><td>첫 제품 타깃 증상은 생리 전 증후군</td><td><code>40-결정/첫 제품 타깃 증상 생리전 증후군.md</code>(11/5 채택), 두 보고서</td></tr>
+      <tr><td>확장: 어깨·목 → 잠들기 전 쉼 → 가족의 하루(성장기 아이, 부모님 선물)</td><td>PMS 지압기 → 인접 수요 → 여성 건강 웨어러블</td><td>최종 보고서 1.5, 해커톤 보고서 3.3</td></tr>
+      <tr><td>카메라로 혈자리를 짚는 웰니스 앱</td><td>자체 앱 개발 없이 QR 기록·W케어 연동 우선</td><td>해커톤 보고서 3.2·3.4</td></tr>
+      <tr><td>밴드형 충전식 기기, 자동으로 눌러 줌</td><td>기기 형태 미정, 12월 시연은 수동 목업</td><td>최종 보고서 3.2, <code>40-결정/수동 시연 목업 결정.md</code></td></tr>
+      <tr><td>교체용 황토볼 패치</td><td>1회용 온열 패치(황토볼 + 쑥 시트 + 발열층)</td><td><code>40-결정/기기+패치 구독 모델 채택.md</code></td></tr>
+      <tr><td>기기 + 패치 1팩 99,000원</td><td>재무 기준 13.2만 원, 팀 제출안 9.9만 원(기기만)</td><td>최종 보고서 3.2</td></tr>
+    </tbody>
+  </table></div>
+  <h3>결과 읽을 때 주의</h3>
+  <ul>
+    <li>응답자는 AI 가상 소비자다. 결과는 확인된 사실이 아니라 다음에 확인할 가설로 다룬다.</li>
+    <li>발목 안쪽 혈자리(삼음교)는 한의학 문헌상 임신 중 금기 혈자리다. 타깃 조건 1로 뺐고, 판매 시 주의 문구가 필요하다. 성장기 아이 사용은 안전 확인 전이다.</li>
+    <li>효과 체감과 패치 재구매는 패널로 확인할 수 없다.</li>
+  </ul>
+</section>
+</div>
