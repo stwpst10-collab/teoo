@@ -4,7 +4,7 @@
 
 | 스킬 | 하는 일 | 파일 |
 |---|---|---|
-| `/idea-criteria` | 팀원의 새 아이템 발굴 기준과 아이템 정리 템플릿 6조건을 불러온다. 아이디어를 함께 주면 기준마다 맞는지 표로 대 본다 | [idea-criteria.zip](idea-criteria.zip) |
+| `/idea-criteria` | 팀원의 새 아이템 발굴 기준, 아이템 정리 템플릿 6조건, 해커톤 심사위원·멘토 피드백 기준을 불러온다. 아이디어를 함께 주면 기준마다 맞는지 표로 대 본다 | [idea-criteria.zip](idea-criteria.zip) |
 
 ## 쓰는 법
 
