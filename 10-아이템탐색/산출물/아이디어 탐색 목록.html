@@ -3,50 +3,58 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
-/* 레이아웃: 상단 요약 띠 → 거름망 → 필터 막대 → 후보 카드 목록(상태별 색 띠) */
+/* 레이아웃: 요약 띠 → 거름망 → 필터 막대 → 연역형 카드 → 후보 카드(상태별 색 띠, 거름망 7칸 표시) */
 :root{
   --bg:#f6f7f5; --surface:#ffffff; --fg:#1d2420; --muted:#5d6862; --line:#dde2de;
   --accent:#2f6b57; --pass:#2f7d4f; --pass-bg:#e5f3ea; --hold:#9a6a12; --hold-bg:#fbf1dc;
-  --drop:#8a3b3b; --drop-bg:#f6e4e4; --chip:#eef1ee;
+  --drop:#8a3b3b; --drop-bg:#f6e4e4; --ded:#3a5a8c; --ded-bg:#e6edf8; --chip:#eef1ee;
   --font:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#141917; --surface:#1c2320; --fg:#e4ebe7; --muted:#9aa7a0; --line:#2e3833;
   --accent:#7cc3a6; --pass:#7fd3a0; --pass-bg:#1f3a2b; --hold:#e5b65c; --hold-bg:#3a2f18;
-  --drop:#e59a9a; --drop-bg:#3d2222; --chip:#26302b; color-scheme:dark}}
+  --drop:#e59a9a; --drop-bg:#3d2222; --ded:#9dbbeb; --ded-bg:#1f2b3d; --chip:#26302b; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141917; --surface:#1c2320; --fg:#e4ebe7; --muted:#9aa7a0; --line:#2e3833;
   --accent:#7cc3a6; --pass:#7fd3a0; --pass-bg:#1f3a2b; --hold:#e5b65c; --hold-bg:#3a2f18;
-  --drop:#e59a9a; --drop-bg:#3d2222; --chip:#26302b; color-scheme:dark}
+  --drop:#e59a9a; --drop-bg:#3d2222; --ded:#9dbbeb; --ded-bg:#1f2b3d; --chip:#26302b; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
 h1{font-size:1.7rem;margin:0;text-wrap:balance;letter-spacing:-.01em}
-h2{font-size:1.1rem;margin:0 0 10px}
+h2{font-size:1.1rem;margin:0 0 10px;text-wrap:balance}
 .sub{color:var(--muted);margin:6px 0 0;max-width:68ch}
 .stats{display:flex;flex-wrap:wrap;gap:10px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:110px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:100px}
 .stat b{display:block;font-size:1.4rem;font-variant-numeric:tabular-nums}
 .stat span{color:var(--muted);font-size:.85rem}
-.stat.pass b{color:var(--pass)} .stat.hold b{color:var(--hold)} .stat.drop b{color:var(--drop)}
+.stat.pass b{color:var(--pass)} .stat.hold b{color:var(--hold)} .stat.drop b{color:var(--drop)} .stat.ded b{color:var(--ded)}
 ol.filters{margin:0;padding-left:1.3em;display:grid;gap:4px;max-width:80ch}
-.note{color:var(--muted);font-size:.88rem}
+.note{color:var(--muted);font-size:.88rem;max-width:80ch;margin:8px 0 0}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:5;border-bottom:1px solid var(--line)}
 .bar button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 14px;cursor:pointer}
 .bar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .bar button:focus-visible,.bar input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .bar input{font:inherit;font-size:.9rem;flex:1 1 180px;min-width:0;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:6px 10px}
 .list{display:grid;gap:12px}
+.group-title{margin:10px 0 0;font-size:1rem;color:var(--muted);font-weight:600}
 .card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:8px;min-width:0}
-.card.pass{border-left-color:var(--pass)} .card.hold{border-left-color:var(--hold)} .card.drop{border-left-color:var(--drop)}
+.card.pass{border-left-color:var(--pass)} .card.hold{border-left-color:var(--hold)} .card.drop{border-left-color:var(--drop)} .card.ded{border-left-color:var(--ded)}
 .head{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
 .head h3{margin:0;font-size:1.02rem;flex:1 1 220px;min-width:0}
 .pill{font-size:.78rem;padding:2px 10px;border-radius:999px;font-weight:600;letter-spacing:.02em}
-.pill.pass{background:var(--pass-bg);color:var(--pass)} .pill.hold{background:var(--hold-bg);color:var(--hold)} .pill.drop{background:var(--drop-bg);color:var(--drop)}
+.pill.pass{background:var(--pass-bg);color:var(--pass)} .pill.hold{background:var(--hold-bg);color:var(--hold)} .pill.drop{background:var(--drop-bg);color:var(--drop)} .pill.ded{background:var(--ded-bg);color:var(--ded)}
 .src{font-size:.78rem;background:var(--chip);color:var(--muted);padding:2px 9px;border-radius:999px}
+.marks{display:flex;flex-wrap:wrap;gap:4px}
+.mk{font-size:.75rem;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted);font-variant-numeric:tabular-nums}
+.mk b{font-weight:700;margin-left:3px}
+.mk.o b{color:var(--pass)} .mk.t b{color:var(--hold)} .mk.x b{color:var(--drop)}
 dl{display:grid;grid-template-columns:minmax(90px,max-content) 1fr;gap:4px 14px;margin:0;font-size:.92rem}
 dt{color:var(--muted)} dd{margin:0;min-width:0}
 .reason{margin:0;font-size:.92rem}
 .next{font-weight:600}
+.ded-line{margin:0;font-size:.9rem;background:var(--ded-bg);color:var(--fg);border-radius:6px;padding:6px 10px}
+.ded-line b{color:var(--ded)}
 .empty{color:var(--muted)}
 footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
 @media (max-width:520px){dl{grid-template-columns:1fr}dt{margin-top:6px}}
@@ -56,7 +64,7 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
 <div class="wrap">
   <header>
     <h1>아이디어 탐색 목록</h1>
-    <p class="sub">2026-11-14~15에 탐색한 아이디어를 모두 모았습니다. 하나를 골라 <code>/business-idea-simulation</code>으로 다시 키울 때 여기서 출발합니다. 후보는 고를 재료이며 팀이 확정한 것이 아닙니다.</p>
+    <p class="sub">2026-11-14~15에 탐색하고 논의한 아이디어를 모두 모았습니다. 11-15에 새 거름망 7개로 다시 판정했고, 연역 구성으로 새로 낸 아이디어도 넣었습니다. 후보는 고를 재료이며 팀이 확정한 것이 아닙니다.</p>
   </header>
 
   <section class="stats" id="stats" aria-label="판정별 개수"></section>
@@ -64,80 +72,88 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
   <section>
     <h2>거름망</h2>
     <ol class="filters">
-      <li>일반 AI 채팅으로 바로 풀리면 탈락. 몸·현장·물건이 들어가야 유리</li>
-      <li>반복매출(소모품·구독·정기 공급·서비스)이 있는 구조인가. 디바이스·앱은 필수 아님</li>
-      <li>효능·의료 표현 없이 팔리는가</li>
-      <li>이미 잘 해결하는 대체재·대기업·공공 무료 서비스가 없는가</li>
-      <li>첫 고객의 페인포인트가 명확한가: 누가·언제·무엇을 하다가, 근거가 있는가</li>
-      <li>시장 확장성: 첫 시장 → 다음 시장 → 큰 시장을 같은 제품·역량으로 말할 수 있는가</li>
-      <li>시장 성장성: 첫 시장과 다음 시장이 최근 3~5년 커지고 있는가</li>
-      <li>(있으면 좋음) 팀이 직접 해 볼 일이 있는가. 필수 아님, 기한 없음</li>
-      <li>(있으면 좋음) 계열사 자산과 닿는 지점이 있는가. 완전히 이어지지 않아도 됨</li>
-      <li>(A 추가) 허가 장벽, 한 계절 쏠림, 이미 돈을 내는 행동이 있는가</li>
+      <li>첫 고객의 페인포인트가 명확한가(누가·언제·무엇을 하다가, 근거 있음)</li>
+      <li>반복매출이 처음부터 중심인가(한 계절 쏠림 포함)</li>
+      <li>이미 잘 해결하는 대체재·대기업·공공 무료 서비스가 없고, 그보다 편하거나 싼가</li>
+      <li>따라 하기 어렵고 해자가 있는가</li>
+      <li>문제와 솔루션이 맞물리는가</li>
+      <li>시장 확장성: 첫 시장 → 다음 시장 → 큰 시장, 같은 자산을 다시 쓰는가</li>
+      <li>시장 성장성: 최근 3~5년 고객 수·지출 추세</li>
     </ol>
-    <p class="note"><strong>판정 시점 주의:</strong> 아래 판정은 옛 거름망(2~4주 시험 필수, 확장성·성장성 없음)으로 매겼습니다. 5~7번으로는 아직 다시 판정하지 않았습니다. 팀 역량과 앱-디바이스 연결 조건은 쓰지 않습니다. 출처 표시: 첫 = 11-14 첫 탐색(검색 1~2회, 가벼운 판정), A = 폴더 미참고 탐색, B = 폴더 참고 탐색, 팀원 = 팀원 순위표·기존 노트, C = 11-14 Claude 심층 리서치(16~22차·덱 평가)에서 상위권이던 후보(같은 거름망으로 다시 판정).</p>
+    <p class="note">보조: 일반 AI 채팅으로 바로 풀리면 탈락, 법·허가가 시작부터 막으면 보류. 효능·의료 표현과 2~4주 시험, 팀 역량, 앱-디바이스 연결은 쓰지 않습니다. 카드의 칸은 거름망 번호이고 ○ 충족, △ 부분·근거 약함, ✕ 미충족입니다. "재판정 전" 표시가 붙은 C 후보(11-14 Claude 심층 리서치 16~22차·덱 평가 상위권)는 다른 세션에서 옛 거름망으로 판정한 것이라 확장성·성장성을 아직 보지 않았습니다.</p>
   </section>
 
   <nav class="bar" aria-label="필터">
     <button type="button" data-f="all" aria-pressed="true">전체</button>
+    <button type="button" data-f="ded" aria-pressed="false">연역형</button>
     <button type="button" data-f="pass" aria-pressed="false">통과</button>
     <button type="button" data-f="hold" aria-pressed="false">보류</button>
     <button type="button" data-f="drop" aria-pressed="false">탈락</button>
-    <input id="q" type="search" placeholder="검색 (예: 요양, 식당, 부모)" aria-label="아이디어 검색">
+    <input id="q" type="search" placeholder="검색 (예: 요양, AI, 외국인)" aria-label="아이디어 검색">
   </nav>
 
   <section class="list" id="list" aria-live="polite"></section>
 
   <footer>
-    <span>원문: venture 저장소 <code>10-아이템탐색/아이디어 탐색 목록.md</code>, <code>근거/아이템 탐색 A 폴더 미참고 2026-11-15.md</code>, <code>근거/아이템 탐색 B 폴더 참고 2026-11-15.md</code>. 숫자의 출처 URL은 각 원문 끝에 있습니다.</span>
-    <span>팀원 후보 점수는 옛 점수에서 팀 역량 몫을 추정해 뺀 판단값(100점 / CJ 연계 120점)입니다.</span>
+    <span>원문: venture 저장소 <code>10-아이템탐색/아이디어 탐색 목록.md</code>, 숫자 출처는 <code>근거/확장성·성장성 재판정 2026-11-15.md</code>와 탐색 A·B 근거 노트.</span>
     <span>C 후보 원문: 프로젝트 문서 <code>몸으로느끼는페인_트렌드_부모님에어컨</code>, <code>느껴지는페인_2차_넓혀찾기</code>, <code>SNS반응_페인_노쇼사기</code>, <code>세상에없는_아이디어100_AI</code>, <code>스토리후킹_고객군_아빠의냉장고</code>, <code>햇빛직장인_빛복지_B2B</code>, <code>BackToBasic_고객군_전문가패널</code>, <code>재미로뒤집기_휘핑선크림방식_아이디어22</code>, <code>그날의류_전문가평가</code>.</span>
+    <span>연역형 아이디어는 숫자를 아직 검증하지 않았습니다. 고르면 소전제부터 웹으로 검증합니다.</span>
   </footer>
 </div>
 
 <script>
 const D=[
-{n:"원거리 부모 냉장고 채움·정리 구독",s:"A",st:"pass",who:"차로 1시간 넘게 떨어진 70대 이상 부모의 40~50대 자녀. 주말 통화에서 \"먹을 게 없다\"를 들었을 때",pain:"노인 독거 32.8%, 고령 1인가구 245.6만(언론, 공식 통계 인용)",gap:"반찬 배송은 문 앞까지만. 냉장고 안 정리·채움 서비스는 검색 안 됨",rev:"주 1회 방문 월 구독 + 식재료 원가",test:"자녀 5~10명, 4주 매주 방문, 냉장고 전후 사진, 선결제 수 세기",next:"부모가 남이 냉장고 여는 것을 받아들이는가"},
-{n:"식당 후드·덕트 정기 청소 구독",s:"A",st:"pass",who:"튀김·볶음 많은 1~2호점 사장. 근처 화재 소식이나 건물주·보험사 요구가 있을 때",pain:"서울 음식점 화재 연평균 620건 중 덕트·연통 7.7%(서울시)",gap:"영세 업체 건당 거래(숨고 평균 15만~26만 원). 정기 일정·작업 기록·소모품 묶음 없음",rev:"분기 방문 구독 + 필터 교체",test:"한 동네 30곳 방문 조사, 5곳 시범 청소, 다음 분기 선결제율",next:"보험·건물주 요구처럼 정기 결제 동기가 실제로 있는가"},
-{n:"경로당 '조리 없는 점심' 정기 공급",s:"B",st:"pass",who:"회원 30~50명 경로당 회장·총무. 조리 인력이 없어 점심을 못 차리는 날. 돈은 구청이 냄",pain:"회원 수 상위 480곳 중 51.9%가 주5일 미운영, 노원구 242곳 중 19%만 주5회(언론)",gap:"구 단위 소규모 사업뿐, 전국 표준 공급자는 안 보임(가설)",rev:"1식 단가 × 인원 × 주 n회, 연간 계약",test:"경로당 1곳에서 2주 동안 주 2회 직접 점심 차리기",next:"구청에 외부 조리·반찬 예산 항목이 있나, 노인일자리 사업과 부딪히나"},
-{n:"급식 조리실 '쉬었다는 기록'",s:"B",st:"pass",who:"6~9월 오전에 튀김·볶음을 맡는 조리원. 사는 사람은 위탁급식 점장·교육청",pain:"급식·청소 노동자 585명 중 80% 온열 증상, 61.5% 휴식 지침 미준수(노조 설문)",gap:"사람 단위 휴식 기록·증명(가설). 쉼표(택배기사)를 법 적용이 분명한 곳으로 옮긴 안",rev:"조리실당 월 구독 + 여름 냉각 소모품",test:"위탁급식장 1곳 2주 온습도 기록 + 하루 주방 보조 + 조리원 10명 인터뷰",next:"사업주가 이 기록을 원하나, 법 위반 증거로 여겨 피하나"},
-{n:"요양원 기저귀·배변 케어(시설 B2B)",s:"첫",st:"pass",who:"요양시설. 밤에 요양보호사 1명이 24명을 맡을 때",pain:"낮 8~10명·밤 24명 담당 증언, 하루 19번 교체 사례(언론), 기저귀 교체는 신체 부담 업무 3위(논문)",gap:"국내 시설용 기저귀 젖음 센서 업체는 검색 안 됨(해외 DignaCare)",rev:"기저귀·소모품 정기 공급 + 교체 기록, 2단계에 센서",test:"시설 1곳 교체 기록지 디지털화 + 정기 공급",next:"배뇨 기록이 의료기기에 해당하나(유권해석), 시설이 공급처를 바꿀 동기"},
-{n:"어린이집 식품 알레르기 대체식",s:"첫",st:"pass",who:"알레르기 아이가 있는 어린이집 조리원·원장",pain:"은평구 어린이집 19곳 알레르기 아이 55명(2022 논문), 교사·조리원 교육 부족(2018 논문)",gap:"아이별 대체식 정기 공급(가설)",rev:"대체식 정기 공급 + 식단 확인",test:"어린이집 3~5곳 인터뷰",next:"최신 사고 통계와 대체식 제공률. 근거가 오래된 논문 위주"},
-{n:"부모님 집 사계절 지킴이(냉방 선물권 포함)",s:"C · 22차",st:"pass",who:"지방에 혼자 사는 60~70대 부모를 둔 도시의 30~40대 자녀. 열대야에 \"엄마 집 에어컨 안 켰대\"를 들었을 때",pain:"2026년 7월 열대야 9.7일 역대 1위(기상청), 38도 이상 날 자택 온열질환 비중 6.2%→12.8%(재난안전연구원), 2025-26 겨울 한랭질환 364명·65세 이상 22%가 집에서(질병청)",gap:"정부 응급안전안심서비스는 화재·응급호출·활동 미감지만, 실내 온도는 안 봄. 일반 가정 자녀용 묶음은 검색 안 됨",rev:"'엄마 방 + 내 방' 월 구독, 자녀가 보내는 냉방·난방 선물권(가격 공란)",test:"팀원 부모님 집 2~3곳에 기성 온도 로거·스마트 리모컨 4주, 자녀 10명 인터뷰",next:"부모님이 정말 요금 때문에 아껴 트는가, 원격 제어·감시를 받아들이는가"},
-{n:"사칭 노쇼 사기 '통화 방패'",s:"C · 21차",st:"pass",who:"전화로 단체 주문·예약을 받는 1인·가족 운영 식당 사장님. 기관 사칭 대량 주문 전화를 받은 순간",pain:"2026 상반기 3,936건·1,155억 원, 건당 2,934만 원(+51.8%)(언론, 경찰 통계 인용)",gap:"계좌 정지·노쇼 보험은 송금 '뒤' 장치. 전화 받는 순간~송금 사이를 다루는 서비스는 공개 자료에서 못 찾음",rev:"월 구독(비교: KT AI 통화비서 월 5천~2만 원) + 예약금 링크 수수료",test:"사장님 10명 인터뷰, 사기 수법 50건 규칙화, 지인 식당 3곳 2주 '의심 전화 대신 확인' 수작업 대행",next:"제3자 통화 처리의 통신비밀보호법·음성권, 통신사가 바로 따라오는가"},
-{n:"주방·포장대 AI 눈(배달 출고 증거 카메라)",s:"C · 20차",st:"pass",who:"배달 비중 높은 소형 식당 사장님. 누락·이물 환불 요청을 받았는데 증거가 없을 때",pain:"AI로 만든 환불 사진 사기 보도, 배민·쿠팡이츠 모두 판별 전용 시스템 없음(언론). 손해 금액은 공란",gap:"해외 Deliverect Resolve·Agot AI는 있으나 국내는 검색 안 됨",rev:"매장당 월 구독 + 거치 카메라 렌탈, 조리 코칭은 2단계",test:"휴대폰 거치대 + 기성 영상 기록으로 지인 식당 5곳 1주 포장대 촬영, 환불 분쟁에 써 보기",next:"배달앱 분쟁 절차가 가게 영상을 증거로 받아 주는가, 직원 촬영 동의"},
-{n:"아빠의 냉장고(반찬 + 문 열림 알림)",s:"C · 17차",st:"pass",who:"혼자 사는 50~60대 아버지를 둔 30~40대 자녀. \"밥 먹었어?\"에 \"먹었다\"만 돌아올 때",pain:"2024 고독사 3,924명 중 60대 남성 27.8% 최다, 최초 발견자 가족 34.8%→26.6%(복지부 실태조사)",gap:"스마트싱스 문 닫힘 알림은 삼성 냉장고 필요·반찬 없음, 반찬 구독은 먹었는지 모름. 둘을 묶은 곳 없음",rev:"아빠 입맛 1인분 반찬 정기배송(자녀 결제) + 사진 마그넷 문 열림 센서",test:"아버지 10명에게 반찬 4주 선물 + 기성 문 센서, 자녀 50명 가격 설문",next:"아버지 본인이 동의하는가. 위 '원거리 부모 냉장고 채움'과 합칠지"},
-{n:"틀니 세척기 + 세정정 정기배송",s:"C · 16차",st:"pass",who:"틀니를 치약·소금물로 대충 닦는 60~80대 부모(구매는 30~40대 자녀 선물)",pain:"65세 이상 2명 중 1명 틀니(2018 논문), 사용자 65% 이상이 치약·주방세제 사용(치과신문), 식약처는 하루 1회 세정제 권고",gap:"세정정·세척기는 따로 팔 뿐, 매일 쓰게 만드는 기기 + 기록 + 자동 재주문 묶음은 없음",rev:"세정정 30일분 + 교체 바스켓 정기배송(1인 연 약 6.1만~10.3만 원 계산값)",test:"틀니 쓰는 부모 10명 인터뷰, 기성 초음파 세척기 + 세정정 4주 배송",next:"세정정은 어디서나 사는 범용품인데 우리 구독에 남을 이유가 있나"},
-{n:"1인가구 음식물쓰레기 냉동 보관·수거",s:"A",st:"hold",r:"생활폐기물은 지자체 대행 구조라 허가가 먼저"},
-{n:"노령견 생활 케어(소모품 + 방문)",s:"A · 팀원",st:"hold",r:"의료 경계, 펫시터 경쟁. 노령견만의 빈자리를 찾아야 함. 팀원 '본가 노견 야간 케어'(92/104)와 겹침"},
-{n:"캠핑 장비 세척·건조·보관",s:"A",st:"hold",r:"봄·가을에 몰림, 이지캠핑 등 비슷한 서비스 있음"},
-{n:"반려식물 방문 관리 구독",s:"A",st:"hold",r:"지불 의사 신호 없음, 지자체 무료 클리닉"},
-{n:"맞벌이 초등 자녀 저녁 도시락",s:"A",st:"hold",r:"늘봄 석식 제공률 공란, 아동 식품안전 책임이 큼"},
-{n:"학원가 저녁 도시락 정기 픽업",s:"B",st:"hold",r:"근거가 2017년. 학원가 앞에서 2주 직접 팔아 보면 빠르게 판정 가능"},
-{n:"외국인 근로자 기숙사 '고향 밥'",s:"B",st:"hold",r:"식사가 이직 이유인지 근거 없음. 공장 3곳 인터뷰가 먼저"},
-{n:"삼킴장애 부모를 돌보는 가족",s:"팀원",st:"hold",r:"연하곤란은 진단 영역(의료 표현), CJ 헬씨누리 연화식이 대안. 92/109(옛 110/127)"},
-{n:"입덧 임신 초기 여성",s:"팀원",st:"hold",r:"반복 기간 약 12주로 짧음, 임신부라 의료 표현 위험. 93/109"},
-{n:"영유아 아토피 부모",s:"팀원",st:"hold",r:"'아토피'는 질환명이라 표현 범위부터 확인. 91/106"},
-{n:"겨울밤 등 가려움 60~70대('등닿')",s:"팀원",st:"hold",r:"'가려움' 표현 범위. 원문도 '건조 케어'로 바꿀 것을 권함. 86"},
-{n:"쉼표 폭염 휴식 기록(택배기사)",s:"팀원 노트",st:"hold",r:"특수고용인에게 산업안전보건규칙 제560조가 적용되는지 미확인. 급식 조리실로 옮긴 안이 통과"},
-{n:"무독성 해충 관리",s:"팀원 노트",st:"hold",r:"살충제 기피 가구 비율 공란, 살생물제품 규제, 포드 교체 주기 공란"},
-{n:"요실금 엄마 / 갱년기 비약물 관리",s:"팀원",st:"hold",r:"질환 연상, 대체재 많음. 패션 MD 역량에 기대던 후보라 점수 하락"},
-{n:"식품알레르기 아이(부모 대상)",s:"팀원",st:"hold",r:"성분 확인은 AI 채팅으로 상당 부분 풀림. 어린이집 대상 대체식(통과)과는 고객이 다름"},
-{n:"고령 아버지 운전",s:"팀원",st:"hold",r:"운전 능력 판정은 의료·법 영역, 반복매출 약함"},
-{n:"뒤통수 아래 두통 직장인",s:"팀원",st:"hold",r:"'두통'은 의료 표현, 목·어깨 마사지기로 포화"},
-{n:"매장 레시피 '조리 단계 코칭 카메라'",s:"C · 20차",st:"hold",r:"알바가 바뀌어도 같은 맛. 조리 로봇은 있으나 사람을 코칭하는 카메라는 국내에서 못 찾음(20차 공동 1위 43/50). 다만 맛 편차·알바 교체로 인한 손해 금액 근거가 공란이고, 프랜차이즈 본사 교육·레시피 영상이 대체재. 지인 식당 5곳 관찰 + 사장님 10명 인터뷰가 먼저. 통과 후보 '주방·포장대 AI 눈'의 2단계로 합칠 수 있음"},
-{n:"햇빛 못 보는 직장인 '빛 복지' B2B",s:"C · 18차",st:"hold",r:"회사가 내는 좌석 구독(콜센터부터)은 선명하나 '빛 착용 기록'이 근로자 감시로 읽힐 위험, 이직 감소 효과 근거 없음, LYS Technologies가 가장 가까운 경쟁자"},
-{n:"소형견 양치 기기 + 기록",s:"C · 16차",st:"hold",r:"마취 스케일링 20만~35만 원을 피하려는 동기는 선명. 다만 반려견 치약 소모품은 이미 많고, 기기로 매일 하게 되는지는 10마리 2주 수용도 시험이 먼저"},
-{n:"GLP-1 끊은 뒤 유지(오프램프)",s:"C · 22차",st:"hold",r:"처방약 옆이라 의료 경계, '요요 방지'는 효능 표현. 체성분 체중계 + 단백질 식단 구독 구조는 좋음"},
-{n:"작은 사무실 점심 냉장고",s:"C · 22차 2부",st:"hold",r:"CJ프레시웨이 키친리스와 맞지만 그랜마찬·런치랩 등 이미 붐빔, 소량 배송 단가와 무인판매 규정 확인 필요"},
-{n:"짠맛 마법 숟가락 + 저염 반찬",s:"C · 재미 뒤집기",st:"hold",r:"기린 전기 소금 숟가락이 먼저 있어 따라 하기 쉬움, 혈압·건강 효과 표현 금지, 전기 식기 KC·식품용 기구 기준 확인 필요"},
-{n:"그날의 류(생리 전 혈자리 지압 밴드)",s:"C · 덱 평가",st:"hold",r:"반복매출이 없음(본체 판매 100%), 타깃은 PMS인데 삼음교 근거는 생리통, '생리통 완화' 문구는 의료 표현. '그날 키트' 정기배송을 붙이면 다시 볼 만함"},
+{n:"AI 장바구니 기본값 선점",s:"연역 · AI",st:"ded",pre:"AI 에이전트가 장을 대신 본다",mid:"AI는 한 번 정한 기본값을 바꾸지 않는다. 처음 자리 잡은 브랜드가 평생 고객을 갖는다",con:"집 소모품을 AI가 남은 양을 보고 채우는 구독. 기본값 자리를 먼저 잡는다",cj:"햇반·비비고, 대한통운 정기 배송",atk:"쿠팡·네이버가 에이전트를 쥐면 기본값은 플랫폼이 정함",rank:1},
+{n:"올리브영 브랜드의 AI 진열대",s:"연역 · AI",st:"ded",pre:"소비자가 검색 대신 AI에게 추천을 묻는다",mid:"AI는 상세페이지가 아니라 읽을 수 있는 데이터만 본다. 중소 브랜드는 AI 추천에서 통째로 사라진다",con:"상품 정보를 AI가 읽기 좋게 만들고 AI 노출을 측정하는 B2B 구독",cj:"올리브영 입점 브랜드가 첫 고객",atk:"마케팅 대행사들이 비슷한 서비스 시작",rank:2},
+{n:"AI 시대의 실측 인증 연구소",s:"연역 · AI",st:"ded",pre:"AI가 리뷰와 상세페이지를 무한히 만든다",mid:"글은 신뢰를 잃고, 직접 실험해 잰 숫자만 신뢰받는 화폐가 된다",con:"뷰티·식품 실측 인증. 브랜드 연간 인증료 + AI 쇼핑 서비스 데이터 사용료",cj:"올리브영·제일제당 연구 역량",atk:"자기 회사가 인증하면 공정한가",rank:3},
+{n:"언어가 사라진 뒤 남는 국경",s:"연역 · AI",st:"ded",pre:"AI 번역·상담으로 언어 장벽이 사라진다",mid:"국경은 물류·통관·현지 인증만 남는다. 중소 브랜드가 막히는 곳은 물건이 건너가는 단계뿐",con:"중소 식품·뷰티 수출 대행 구독(통관·인증·배송·반품)",cj:"대한통운 해외 물류망",atk:"대한통운 기존 사업과 겹침",rank:4},
+{n:"신입이 배울 곳이 사라진다",s:"연역 · AI",st:"ded",pre:"AI가 주니어 업무를 대신한다",mid:"신입이 일을 배우던 계단이 사라져 3~5년 뒤 판단할 중간 관리자가 없다",con:"가상 회사에서 실제 업무를 굴리는 실무 훈련을 기업에 구독",cj:"CJ 인재원(연결 약함)",atk:"교육 사업은 넘기 어려운 장벽을 만들기 힘듦",rank:5},
+{n:"AI 식단을 그대로 실행",s:"연역 · AI",st:"ded",pre:"식단·레시피 정보는 AI가 공짜로 준다",mid:"정보는 공짜가 됐는데 장보기·손질 같은 실행은 그대로 어렵다",con:"AI가 짠 내 식단을 재료 키트로 정기 배송",cj:"제일제당·프레시웨이",atk:"밀키트와 거의 같아 놀라움이 약함",rank:6},
+
+{n:"급식 조리실 '쉬었다는 기록'",s:"B",st:"pass",m:"oottooo",who:"여름 오전 튀김·볶음 조리원. 사는 사람은 위탁급식 점장·교육청",pain:"학교 조리종사자 산재 729건(2020) → 1,794건(2023), 585명 중 80% 온열 증상(노조 설문)",rev:"조리실당 월 구독 + 냉각 소모품",exp:"위탁급식 → 학교 급식실·교육청 → 물류센터·제조 폭염작업장",gro:"온열질환 산재 승인 13건(2020) → 77건(2025), 2025.7 폭염작업 규칙",next:"사업주가 기록을 원하나 피하나, 대형 급식사가 직접 만들지 않나",ded:"더위는 매년 더 오고 법은 이미 쉬라고 한다. 그런데 쉬었다는 걸 증명할 방법이 없다. 프레시웨이 위탁급식장이 첫 고객"},
+{n:"원거리 부모 냉장고 채움 구독",s:"A",st:"pass",m:"tottooo",who:"멀리 사는 70대 이상 부모의 40~50대 자녀",pain:"노인 독거 19.8%(2020) → 32.8%(2023), 자녀 동거 20.1% → 10.3%",rev:"주 1회 방문 월 구독 + 식재료",exp:"냉장고 → 안부·정리·병원 동행 → 기업 복지·통합돌봄 위탁",gro:"고령자 가구 522.5만(2022) → 1,003만(2038 전망)",next:"원거리 자녀 비율(공란), 부모가 남이 냉장고 여는 걸 받아들이나",ded:"부모는 혼자 살고 자녀는 멀리 산다. 반찬 배송은 문 앞까지만 간다. 제일제당 간편식 + 대한통운"},
+{n:"요양원 배변 케어(시설 B2B)",s:"첫",st:"pass",m:"ootttoo",who:"요양시설, 야간 근무자 한 명이 많은 입소자를 맡을 때",pain:"야간 24명 담당 증언(공단 가산 기준은 1인당 20명 이하), 기저귀 교체는 신체 부담 업무 3위(논문)",rev:"기저귀·소모품 정기 공급 + 교체 기록",exp:"요양시설 → 주야간보호·재가(자녀 결제) → 일본 등",gro:"노인요양시설 3,604곳(2019) → 4,758곳(2025), 성인 기저귀 공급 +6%(2025)",next:"기저귀값을 누가 내나, 교체 기록이 평가지표와 이어지나, 배뇨 기록 의료기기 여부",ded:"노인은 늘고 돌볼 손은 못 늘린다. 프레시웨이가 이미 납품하는 시설에 같은 트럭으로 소모품을 싣는다"},
+{n:"식당 후드·덕트 정기 청소 구독",s:"A",st:"pass",m:"tottoot",who:"튀김·볶음 많은 1~2호점 사장",pain:"서울 음식점 화재 중 덕트·연통 7.7%(2018~2020, 서울시)",rev:"분기 방문 구독 + 필터 교체",exp:"1~2호점 → 같은 방문에 소화기·배수 → 프랜차이즈 본사·급식장",gro:"한식 음식점 41.1만(2024) → 40.6만(2025) 감소 전환, 청소 의무 법령 없음",next:"보험·건물주 요구 같은 정기 결제 동기가 있나"},
+{n:"겨울밤 등 가려움 60~70대('등닿')",s:"팀원",st:"pass",m:"tttttoo",who:"혼자 등에 보습제를 못 바르는 60~70대",pain:"가려움증 진료 36만 → 42만(2015 기사, 오래됨), 피부건조증 70대 이상 21.5%",rev:"도구 + 보습제 리필(10~12월 쏠림)",exp:"등 보습 → 노인 피부 관리 → 시니어 셀프케어·위생용품",gro:"65세 이상 1,051만(2025, 20.3%) → 2036년 30% 전망",next:"이미 팔리는 등 보습 도구 조사, 연령별 최신 진료인원"},
+
+{n:"부모님 집 사계절 지킴이(냉방 선물권 포함)",s:"C · 22차",st:"pass",old:1,who:"지방에 혼자 사는 60~70대 부모를 둔 도시의 30~40대 자녀. 열대야에 \"엄마 집 에어컨 안 켰대\"를 들었을 때",pain:"2026년 7월 열대야 9.7일 역대 1위(기상청), 38도 이상 날 자택 온열질환 비중 6.2%→12.8%(재난안전연구원), 2025-26 겨울 한랭질환 364명·65세 이상 22%가 집에서(질병청)",gap:"정부 응급안전안심서비스는 화재·응급호출·활동 미감지만, 실내 온도는 안 봄. 일반 가정 자녀용 묶음은 검색 안 됨",rev:"'엄마 방 + 내 방' 월 구독, 자녀가 보내는 냉방·난방 선물권(가격 공란)",test:"팀원 부모님 집 2~3곳에 기성 온도 로거·스마트 리모컨 4주, 자녀 10명 인터뷰",next:"부모님이 정말 요금 때문에 아껴 트는가, 원격 제어·감시를 받아들이는가"},
+{n:"사칭 노쇼 사기 '통화 방패'",s:"C · 21차",st:"pass",old:1,who:"전화로 단체 주문·예약을 받는 1인·가족 운영 식당 사장님. 기관 사칭 대량 주문 전화를 받은 순간",pain:"2026 상반기 3,936건·1,155억 원, 건당 2,934만 원(+51.8%)(언론, 경찰 통계 인용)",gap:"계좌 정지·노쇼 보험은 송금 '뒤' 장치. 전화 받는 순간~송금 사이를 다루는 서비스는 공개 자료에서 못 찾음",rev:"월 구독(비교: KT AI 통화비서 월 5천~2만 원) + 예약금 링크 수수료",test:"사장님 10명 인터뷰, 사기 수법 50건 규칙화, 지인 식당 3곳 2주 '의심 전화 대신 확인' 수작업 대행",next:"제3자 통화 처리의 통신비밀보호법·음성권, 통신사가 바로 따라오는가"},
+{n:"주방·포장대 AI 눈(배달 출고 증거 카메라)",s:"C · 20차",st:"pass",old:1,who:"배달 비중 높은 소형 식당 사장님. 누락·이물 환불 요청을 받았는데 증거가 없을 때",pain:"AI로 만든 환불 사진 사기 보도, 배민·쿠팡이츠 모두 판별 전용 시스템 없음(언론). 손해 금액은 공란",gap:"해외 Deliverect Resolve·Agot AI는 있으나 국내는 검색 안 됨",rev:"매장당 월 구독 + 거치 카메라 렌탈, 조리 코칭은 2단계",test:"휴대폰 거치대 + 기성 영상 기록으로 지인 식당 5곳 1주 포장대 촬영, 환불 분쟁에 써 보기",next:"배달앱 분쟁 절차가 가게 영상을 증거로 받아 주는가, 직원 촬영 동의"},
+{n:"아빠의 냉장고(반찬 + 문 열림 알림)",s:"C · 17차",st:"pass",old:1,who:"혼자 사는 50~60대 아버지를 둔 30~40대 자녀. \"밥 먹었어?\"에 \"먹었다\"만 돌아올 때",pain:"2024 고독사 3,924명 중 60대 남성 27.8% 최다, 최초 발견자 가족 34.8%→26.6%(복지부 실태조사)",gap:"스마트싱스 문 닫힘 알림은 삼성 냉장고 필요·반찬 없음, 반찬 구독은 먹었는지 모름. 둘을 묶은 곳 없음",rev:"아빠 입맛 1인분 반찬 정기배송(자녀 결제) + 사진 마그넷 문 열림 센서",test:"아버지 10명에게 반찬 4주 선물 + 기성 문 센서, 자녀 50명 가격 설문",next:"아버지 본인이 동의하는가. '원거리 부모 냉장고 채움'과 합칠지"},
+{n:"틀니 세척기 + 세정정 정기배송",s:"C · 16차",st:"pass",old:1,who:"틀니를 치약·소금물로 대충 닦는 60~80대 부모(구매는 30~40대 자녀 선물)",pain:"65세 이상 2명 중 1명 틀니(2018 논문), 사용자 65% 이상이 치약·주방세제 사용(치과신문), 식약처는 하루 1회 세정제 권고",gap:"세정정·세척기는 따로 팔 뿐, 매일 쓰게 만드는 기기 + 기록 + 자동 재주문 묶음은 없음",rev:"세정정 30일분 + 교체 바스켓 정기배송(1인 연 약 6.1만~10.3만 원 계산값)",test:"틀니 쓰는 부모 10명 인터뷰, 기성 초음파 세척기 + 세정정 4주 배송",next:"세정정은 어디서나 사는 범용품인데 우리 구독에 남을 이유가 있나"},
+
+{n:"외국인 근로자 기숙사 '고향 밥'",s:"B",st:"hold",e:"oo",r:"상주 외국인 169.2만 명 +8.4%(2025). 확장·성장은 가장 좋지만 첫 고객 고통 근거가 없다(식사가 이직 이유인지). 고용주 지불 의사부터",ded:"한국 공장은 외국인 없이 안 돌아가고, 그들은 하루 세 끼를 먹는다"},
+{n:"무독성 해충 관리",s:"팀원 노트",st:"hold",e:"oo",r:"세스코 매출 3,989억(2022) → 5,098억(2025). 2026.7부터 미승인 살충제 판매 금지라 물리적 방법만으로 피할 수 있는지 확인"},
+{n:"경로당 '조리 없는 점심'",s:"B",st:"hold",e:"tt",r:"경로당 수 정체, 반찬값 예산 미확정. 구청이 1식 2,000~6,000원 도시락을 이미 시작"},
+{n:"노령견 생활 케어",s:"A · 팀원",st:"hold",e:"tt",r:"반려견 556만 → 546만 첫 감소, 노령 비중·치료비는 증가. 정기배송·펫시터보다 나은지"},
+{n:"맞벌이 초등 저녁 도시락",s:"A",st:"hold",e:"ot",r:"맞벌이 60.4%로 상승, 학생 수 감소. 늘봄 저녁 식비 지원·지자체 도시락이 공공 대체재"},
+{n:"어린이집 알레르기 대체식",s:"첫",st:"hold",e:"tx",r:"어린이집 3.7만(2019) → 2.6만(2025). 첫 시장을 학교 급식 대체식으로 바꾸면 재검토"},
+{n:"영유아 아토피 부모",s:"팀원",st:"hold",e:"ot",r:"9세 이하 환자 감소, 성인 증가. 보습제 포화라 기존 제품이 못 푸는 불편을 찾아야 함"},
+{n:"반려식물 방문 관리",s:"A",st:"hold",e:"ot",r:"성장 추세 공란(2025 첫 조사). 서울 무료 식물병원 14곳, B2B 기존 업체"},
+{n:"쉼표 폭염 휴식 기록(택배기사)",s:"기존 노트",st:"hold",e:"to",r:"폭염 휴식 의무는 특수고용직 미적용 보도, CJ대한통운 자체 규정. 급식 조리실 안으로 옮김"},
+
+{n:"매장 레시피 '조리 단계 코칭 카메라'",s:"C · 20차",st:"hold",old:1,r:"알바가 바뀌어도 같은 맛. 조리 로봇은 있으나 사람을 코칭하는 카메라는 국내에서 못 찾음(20차 공동 1위 43/50). 다만 맛 편차·알바 교체로 인한 손해 금액 근거가 공란이고, 프랜차이즈 본사 교육·레시피 영상이 대체재. 통과 후보 '주방·포장대 AI 눈'의 2단계로 합칠 수 있음"},
+{n:"햇빛 못 보는 직장인 '빛 복지' B2B",s:"C · 18차",st:"hold",old:1,r:"회사가 내는 좌석 구독(콜센터부터)은 선명하나 '빛 착용 기록'이 근로자 감시로 읽힐 위험, 이직 감소 효과 근거 없음, LYS Technologies가 가장 가까운 경쟁자"},
+{n:"소형견 양치 기기 + 기록",s:"C · 16차",st:"hold",old:1,r:"마취 스케일링 20만~35만 원을 피하려는 동기는 선명. 다만 반려견 치약 소모품은 이미 많고, 기기로 매일 하게 되는지 수용도 확인이 먼저"},
+{n:"GLP-1 끊은 뒤 유지(오프램프)",s:"C · 22차",st:"hold",old:1,r:"처방약 옆이라 의료 경계(의료 표현 거름망은 삭제됨), 체성분 체중계 + 단백질 식단 구독 구조는 좋음"},
+{n:"작은 사무실 점심 냉장고",s:"C · 22차 2부",st:"hold",old:1,r:"CJ프레시웨이 키친리스와 맞지만 그랜마찬·런치랩 등 이미 붐빔, 소량 배송 단가와 무인판매 규정 확인 필요"},
+{n:"짠맛 마법 숟가락 + 저염 반찬",s:"C · 재미 뒤집기",st:"hold",old:1,r:"기린 전기 소금 숟가락이 먼저 있어 따라 하기 쉬움, 전기 식기 KC·식품용 기구 기준 확인 필요"},
+{n:"그날의 류(생리 전 혈자리 지압 밴드)",s:"C · 덱 평가",st:"hold",old:1,r:"반복매출이 없음(본체 판매 100%), 타깃은 PMS인데 삼음교 근거는 생리통. '그날 키트' 정기배송을 붙이면 다시 볼 만함"},
+{n:"삼킴장애 부모를 돌보는 가족",s:"팀원",st:"drop",e:"to",r:"의료 기준을 빼도 대기업(CJ 헬씨누리·현대그린푸드 등) 선점"},
+{n:"입덧 임신 초기 여성",s:"팀원",st:"drop",e:"tt",r:"쓰는 기간이 짧고 입덧약 건강보험 적용(2024.6)"},
+{n:"요실금 엄마 / 갱년기",s:"팀원",st:"drop",e:"ot",r:"대기업이 같은 고객을 같은 채널로 공략, 진료 인원 정체"},
+{n:"뒤통수 아래 두통 직장인",s:"팀원",st:"drop",e:"tt",r:"반복매출 약함, 마사지기 포화"},
+{n:"고령 아버지 운전",s:"팀원",st:"drop",e:"xo",r:"반복매출 없음, 경찰청 무료 운전능력 진단 시범(2026.2)"},
+{n:"식품알레르기 아이(부모 대상)",s:"팀원",st:"drop",e:"tt",r:"AI 채팅으로 풀림, 실물로 바꾸면 어린이집 대체식과 겹침"},
+{n:"학원가 저녁 도시락",s:"B",st:"drop",e:"tt",r:"편의점 구독·배달앱 대체재, 사교육 참여율 감소. 초등 저녁의 다음 시장으로만"},
+{n:"1인가구 음식물쓰레기 수거",s:"A",st:"drop",e:"tt",r:"폐기물관리법이 시작부터 막음, 처리기 보조금이라는 대체재"},
+{n:"캠핑 장비 세척·보관",s:"A",st:"drop",e:"tx",r:"시장이 2023 정점 이후 축소, 계절 쏠림"},
 {n:"투자 이해 앱",s:"사용자 씨앗",st:"drop",r:"일반 AI 채팅으로 대체돼 접음(11-14)"},
 {n:"러닝화 교체 시기 관리",s:"첫",st:"drop",r:"기존 러닝 앱에 신발 등록·교체 알림 있음"},
-{n:"러너 보급품 정기배송",s:"A",st:"drop",r:"대체재가 넘치고 효능 주장으로 흐름"},
-{n:"요양시설·연하곤란 케어푸드",s:"첫 · A",st:"drop",r:"대기업(현대그린푸드·CJ) 선점, 의료·영양 표현이 핵심"},
+{n:"러너 보급품 정기배송",s:"A",st:"drop",r:"대체재가 넘침"},
+{n:"요양시설·연하곤란 케어푸드",s:"첫 · A",st:"drop",r:"대기업(현대그린푸드·CJ) 선점"},
 {n:"차례상·제사음식 대행",s:"A",st:"drop",r:"빈도 낮고 차례 자체가 줄며 경쟁 많음"},
-{n:"공동 김장 작업장·키트",s:"A",st:"drop",r:"연 1회라 반복매출 없음, 포장김치가 강한 대체재"},
+{n:"공동 김장 작업장·키트",s:"A",st:"drop",r:"연 1회라 반복매출 없음"},
 {n:"배달 다회용기 세척·회수",s:"A",st:"drop",r:"공공 무료 서비스와 경쟁, 지불자 불분명"},
 {n:"계절 의류·이불 보관",s:"A",st:"drop",r:"런드리고·크린토피아가 이미 해결"},
 {n:"식당 리뷰 답글 대행",s:"A",st:"drop",r:"AI로 바로 해결되는 글쓰기 고통"},
@@ -147,34 +163,64 @@ const D=[
 {n:"층간흡연 피해 부모",s:"팀원",st:"drop",r:"원인이 집 밖, 반복매출 구조 불명"},
 {n:"엄마 음식 저염",s:"팀원",st:"drop",r:"계열사 저염식이 이미 대체재"},
 {n:"혼자 발톱 못 깎는 부모",s:"팀원",st:"drop",r:"반복매출 없음(방문 서비스로 바꾸면 다시 볼 수 있음)"},
-{n:"가령취 / 과민성장 / 지팡이 거부",s:"팀원",st:"drop",r:"대체재 많음 / 질환 영역 / 반복매출 없음"},
+{n:"가령취 / 과민성장 / 지팡이 거부",s:"팀원",st:"drop",r:"대체재 많음 / 질환 영역(의료 기준 삭제로 재검토 여지) / 반복매출 없음"},
 {n:"늘봄학교 간식 조달 대행",s:"B",st:"drop",r:"고통 주체 불분명, 납품업체 이미 있음"},
 {n:"중고거래 포장재 키트",s:"B",st:"drop",r:"고통 근거 없음"},
 {n:"냉동 택배 아이스팩 회수",s:"B",st:"drop",r:"아이스팩 99%가 이미 물팩으로 전환"},
 {n:"1인가구 대형 폐기물 운반",s:"B",st:"drop",r:"구청·앱이 이미 제공, 반복매출 없음"},
 {n:"소형 식당 냉장고 온도 기록",s:"B",st:"drop",r:"국내 의무·과태료 근거 없음"}
 ];
-const L={pass:"통과",hold:"보류",drop:"탈락"};
+const L={ded:"연역형 · 검증 전",pass:"통과",hold:"보류",drop:"탈락"};
+const G={ded:"연역형 아이디어 (대전제: AI가 사무직 일을 대신한다)",pass:"통과",hold:"보류",drop:"탈락"};
+const FN=["페인","반복","대체재","해자","정렬","확장","성장"];
+const SYM={o:"○",t:"△",x:"✕"};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mk=(lab,c)=>`<span class="mk ${c}">${lab}<b>${SYM[c]}</b></span>`;
 let f="all";
 function stats(){
-  const c={pass:0,hold:0,drop:0};D.forEach(d=>c[d.st]++);
+  const c={ded:0,pass:0,hold:0,drop:0};D.forEach(d=>c[d.st]++);
   document.getElementById("stats").innerHTML=`<div class="stat"><b>${D.length}</b><span>전체 아이디어</span></div>`+
-  ["pass","hold","drop"].map(k=>`<div class="stat ${k}"><b>${c[k]}</b><span>${L[k]}</span></div>`).join("");
+  ["ded","pass","hold","drop"].map(k=>`<div class="stat ${k}"><b>${c[k]}</b><span>${k==="ded"?"연역형":L[k]}</span></div>`).join("");
 }
-function render(){
-  const q=document.getElementById("q").value.trim();
-  const rows=D.filter(d=>(f==="all"||d.st===f)&&(!q||JSON.stringify(d).includes(q)));
-  document.getElementById("list").innerHTML=rows.length?rows.map(d=>{
-    const body=d.st==="pass"?`<dl>
+function card(d){
+  let marks="",body="";
+  if(d.m) marks=`<div class="marks" aria-label="거름망 판정">${[...d.m].map((c,i)=>mk(`${i+1} ${FN[i]}`,c)).join("")}</div>`;
+  else if(d.e) marks=`<div class="marks" aria-label="확장성·성장성">${mk("6 확장",d.e[0])}${mk("7 성장",d.e[1])}</div>`;
+  if(d.st==="ded") body=`<dl>
+      <dt>대전제</dt><dd>${esc(d.pre)}</dd>
+      <dt>소전제</dt><dd class="next">${esc(d.mid)}</dd>
+      <dt>결론</dt><dd>${esc(d.con)}</dd>
+      <dt>왜 CJ</dt><dd>${esc(d.cj)}</dd>
+      <dt>공격받을 곳</dt><dd>${esc(d.atk)}</dd></dl>`;
+  else if(d.st==="pass"&&d.old) body=`<dl>
       <dt>첫 고객</dt><dd>${esc(d.who)}</dd>
       <dt>고통 근거</dt><dd>${esc(d.pain)}</dd>
       <dt>빈자리</dt><dd>${esc(d.gap)}</dd>
       <dt>반복매출</dt><dd>${esc(d.rev)}</dd>
       <dt>해 볼 시험(선택)</dt><dd>${esc(d.test)}</dd>
-      <dt>먼저 확인</dt><dd class="next">${esc(d.next)}</dd></dl>`:`<p class="reason">${esc(d.r)}</p>`;
-    return `<article class="card ${d.st}"><div class="head"><h3>${esc(d.n)}</h3><span class="src">${esc(d.s)}</span><span class="pill ${d.st}">${L[d.st]}</span></div>${body}</article>`;
-  }).join(""):`<p class="empty">조건에 맞는 아이디어가 없습니다. 검색어를 지우거나 '전체'를 눌러 보세요.</p>`;
+      <dt>먼저 확인</dt><dd class="next">${esc(d.next)}</dd></dl>`;
+  else if(d.st==="pass") body=`<dl>
+      <dt>첫 고객</dt><dd>${esc(d.who)}</dd>
+      <dt>고통 근거</dt><dd>${esc(d.pain)}</dd>
+      <dt>반복매출</dt><dd>${esc(d.rev)}</dd>
+      <dt>확장 경로</dt><dd>${esc(d.exp)}</dd>
+      <dt>성장 추세</dt><dd>${esc(d.gro)}</dd>
+      <dt>먼저 확인</dt><dd class="next">${esc(d.next)}</dd></dl>`;
+  else body=`<p class="reason">${esc(d.r)}</p>`;
+  const ded=d.ded?`<p class="ded-line"><b>연역 구성</b> ${esc(d.ded)}</p>`:"";
+  const tag=d.st==="ded"?`<span class="src">Claude 순위 ${d.rank}</span>`:(d.old?`<span class="src">새 거름망 재판정 전</span>`:"");
+  return `<article class="card ${d.st}"><div class="head"><h3>${esc(d.n)}</h3><span class="src">${esc(d.s)}</span>${tag}<span class="pill ${d.st}">${L[d.st]}</span></div>${marks}${body}${ded}</article>`;
+}
+function render(){
+  const q=document.getElementById("q").value.trim();
+  const rows=D.filter(d=>(f==="all"||d.st===f)&&(!q||JSON.stringify(d).includes(q)));
+  if(!rows.length){document.getElementById("list").innerHTML=`<p class="empty">조건에 맞는 아이디어가 없습니다. 검색어를 지우거나 '전체'를 눌러 보세요.</p>`;return;}
+  let h="";
+  ["ded","pass","hold","drop"].forEach(k=>{
+    const g=rows.filter(d=>d.st===k); if(!g.length) return;
+    h+=`<h2 class="group-title">${G[k]} · ${g.length}개</h2>`+g.map(card).join("");
+  });
+  document.getElementById("list").innerHTML=h;
 }
 document.querySelectorAll(".bar button").forEach(b=>b.addEventListener("click",()=>{
   f=b.dataset.f;document.querySelectorAll(".bar button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render();
