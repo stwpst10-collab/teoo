@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>그날의 류 최적 프로토타입 제안</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F7F5F0;--ink:#24272A;--sub:#686B6E;--line:#DAD6CD;--acc:#2F6B5E;--acc-l:#E1EDE9;--clay:#B07A5A;--clay-l:#F3E6DC;--warn:#A4483B;--warn-l:#F7E5E1;--card:#fff}
+html,body{width:1920px;height:1200px;background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","맑은 고딕",sans-serif;font-size:14.5px;line-height:1.45}
+.wrap{padding:30px 42px 18px;height:100%;display:flex;flex-direction:column;gap:14px}
+header{display:flex;align-items:flex-end;gap:20px;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.brand{font-size:36px;font-weight:800;letter-spacing:-1px}
+.ttl{font-size:28px;font-weight:700;letter-spacing:-.5px}
+.meta{margin-left:auto;text-align:right;color:var(--sub);font-size:13.5px}
+.chips{display:flex;gap:8px;justify-content:flex-end;margin-top:5px}
+.chip{border:1px solid var(--ink);border-radius:99px;padding:1px 11px;font-size:12.5px;font-weight:700}
+.chip.w{background:var(--warn);border-color:var(--warn);color:#fff}
+.hero{background:var(--ink);color:#fff;border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:26px}
+.hero .lab{font-size:13px;font-weight:800;color:#9FD3C5;letter-spacing:1px;white-space:nowrap}
+.hero .msg{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1.35}
+.hero .msg em{font-style:normal;color:#9FD3C5}
+.hero .pills{margin-left:auto;display:flex;flex-direction:column;gap:5px}
+.hero .pill{background:#ffffff1a;border-radius:6px;padding:3px 12px;font-size:13.5px;font-weight:700;white-space:nowrap}
+.grid{display:grid;grid-template-columns:1.02fr 1.12fr 1fr;gap:14px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px}
+h2{font-size:17.5px;font-weight:800;display:flex;align-items:center;gap:9px;margin-bottom:10px;letter-spacing:-.3px}
+h2 .n{background:var(--acc);color:#fff;border-radius:6px;font-size:13px;padding:1px 8px}
+h2 small{margin-left:auto;font-weight:500;color:var(--sub);font-size:12.5px}
+.lens{border-top:1px solid var(--line);padding:8px 0}
+.lens:first-of-type{border-top:none;padding-top:0}
+.lens .h{font-weight:800;font-size:14.5px;display:flex;gap:8px;align-items:baseline}
+.lens .h span{font-size:11.5px;font-weight:700;color:var(--acc);background:var(--acc-l);border-radius:4px;padding:0 6px}
+.lens p{font-size:13.5px;color:#3c3f42;margin-top:2px}
+.lens p b{color:var(--ink)}
+.lens .so{color:var(--clay);font-weight:700}
+.src{font-size:11.5px;color:var(--sub);margin-top:2px}
+.spec{list-style:none}
+.spec li{display:flex;gap:10px;padding:5px 0;border-top:1px dashed var(--line);font-size:13.5px}
+.spec li:first-child{border-top:none}
+.spec .k{background:var(--acc);color:#fff;border-radius:50%;width:21px;height:21px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px}
+.spec .k.d{background:#fff;color:var(--sub);border:1.5px dashed var(--sub)}
+.spec b{font-size:14px}
+.spec .why{display:block;color:var(--sub);font-size:12.5px}
+.ladder{display:flex;flex-direction:column;gap:7px}
+.step{display:grid;grid-template-columns:70px 1fr auto;gap:10px;align-items:center;border-radius:9px;padding:8px 12px;background:var(--bg)}
+.step.on{background:var(--acc-l);outline:2px solid var(--acc)}
+.step .s{font-size:11.5px;font-weight:800;color:var(--sub)}
+.step .nm{font-weight:800;font-size:14.5px}
+.step .nm small{display:block;font-weight:500;color:var(--sub);font-size:12px}
+.step .pr{font-size:19px;font-weight:800;letter-spacing:-.5px;text-align:right}
+.step .pr small{display:block;font-size:11px;font-weight:600;color:var(--sub)}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;padding:5px 5px;border-top:1px solid var(--line);font-size:13px;vertical-align:top}
+th{border-top:none;color:var(--sub);font-size:12px;padding-top:0}
+td.g{color:var(--acc);font-weight:700;white-space:nowrap}
+.demo{display:flex;gap:6px;margin-top:2px}
+.demo div{flex:1;background:var(--bg);border-radius:8px;padding:7px 9px;font-size:12.5px}
+.demo b{display:block;font-size:13.5px}
+.bot{display:grid;grid-template-columns:1.02fr 1.12fr 1fr;gap:14px}
+.risk{background:var(--warn-l);border-color:#EBCBC4}
+.risk h2 .n{background:var(--warn)}
+.risk li,.ask li,.chg li{font-size:13px;list-style:none;padding:3px 0}
+.risk li::before{content:"▲ ";color:var(--warn);font-weight:800}
+.ask{background:var(--clay-l);border-color:#E7D2C2}
+.ask h2 .n{background:var(--clay)}
+.ask li::before{content:"□ ";color:var(--clay);font-weight:800}
+.chg li{display:grid;grid-template-columns:96px 1fr;gap:8px}
+.chg li .a{color:var(--sub);text-decoration:line-through}
+.chg li .b{font-weight:700}
+footer{display:flex;gap:16px;font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:8px}
+footer b{color:var(--ink)} footer .r{margin-left:auto;white-space:nowrap}
+</style></head><body><div class="wrap">
+
+<header>
+  <div class="brand">그날의 류</div>
+  <div class="ttl">최적 프로토타입 제안</div>
+  <div class="meta">현재 온톨로지(고객·경쟁·가격·결정·리서치) 종합 · 2026.10.29
+    <div class="chips"><span class="chip w">Claude 독립 제안 · 토론용</span><span class="chip">팀 결정 아님</span><span class="chip">DEC-001 수동 범위 안</span></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="lab">한 줄 제안</div>
+  <div class="msg">13.2만 원 전동기기로 풀리오와 정면으로 붙기 전에,<br><em>“복사뼈에 맞추면 위치가 끝나는” 3만 원대 무동력 랩</em>으로 먼저 들어가 고객 반응을 검증한다.</div>
+  <div class="pills"><div class="pill">① 위치 가이드 — 혈자리를 몰라도 됨</div><div class="pill">② 무동력·무소음 — 사무실 책상 아래</div><div class="pill">③ 강제 소모품 없음 — 온열만 선택</div></div>
+</div>
+
+<div class="grid">
+<!-- COL 1 -->
+<div class="col">
+  <div class="card" style="flex:1">
+    <h2><span class="n">1</span>판단 근거 — 네 가지 관점<small>관측 · 가설 · 해석 구분</small></h2>
+    <div class="lens"><div class="h">경쟁 · 가격대<span>관측</span></div>
+      <p>국내 마사지기 7사 본품 판가 중앙값 <b>3.1만~12.9만 원</b>. 풀리오(공기압 하체) 중앙값 <b>12.9만 원</b>, 히트 상품 자사몰 리뷰 2.5만 건.</p>
+      <p class="so">→ 우리 13.2만 원 전동안은 검증된 강자와 같은 가격·같은 기능(공기압·온열)으로 맞붙는 구조.</p>
+      <div class="src">R-20261029-minkyung-01 · 2026-10-26 자사몰 관측, AI 보조 요약</div></div>
+    <div class="lens"><div class="h">빈자리<span>관측 · 7사 한정</span></div>
+      <p>145개 SKU 중 <b>‘자동 혈자리 탐색·위치 보정’ UX 상품은 확인되지 않음.</b> 경쟁사 셀링 포인트는 펌프 용량·에어셀 수·할인율 같은 스펙 중심.</p>
+      <p class="so">→ 우리가 이길 수 있는 축은 ‘세기’가 아니라 ‘위치를 쉽게 맞추는 것’.</p></div>
+    <div class="lens"><div class="h">업계의 확장 경로<span>해석</span></div>
+      <p>무동력 저가 → 전동 업셀 경로가 관측됨 (바르너 중앙값 3.1만, 발란스핏 3.3만 원).</p>
+      <p class="so">→ 무동력 진입은 ‘축소’가 아니라 검증된 진입 경로.</p></div>
+    <div class="lens"><div class="h">고객 · 사용 상황<span>가설 + 사례</span></div>
+      <p>앉아서 일하는 20~40대 여성. 온열·마사지 제품을 샀다가 <b>번거로워서 그만둔</b> 사람. Ovira 후기는 <b>“일을 계속하려고”</b> 구매했고, 불만은 <b>패드 교체비·케이블 고장</b>.</p>
+      <p class="so">→ 무소음 · 케이블 없음 · 소모품 강제 없음이 그 자체로 가치.</p>
+      <div class="src">CUS-001 · PROB-001 · R-20261029-codex-02 (자기보고, 대표성 미검증)</div></div>
+    <div class="lens"><div class="h">사업모델의 약점<span>원본 확인</span></div>
+      <p>황토볼 패치는 원래 <b>반복 수익</b>을 위해 교체형으로 설계됐지만, 같은 원본이 황토볼의 <b>내구성</b>을 강조함. 교체해야 하는 이유가 정의되지 않음.</p>
+      <p class="so">→ 패치를 수익의 축에서 빼고, 교체 이유가 분명한 온열 인서트를 선택형 소모품으로.</p></div>
+  </div>
+</div>
+
+<!-- COL 2 -->
+<div class="col">
+  <div class="card" style="flex:1">
+    <h2><span class="n">2</span>제안 프로토타입 — 류 랩 (가칭)<small>개념도 · 치수 아님</small></h2>
+    <svg viewBox="0 0 560 230" width="100%" style="display:block">
+      <defs><pattern id="hv" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0" stroke="#C9C2B6" stroke-width="1"/></pattern></defs>
+      <path d="M30 60 Q30 36 54 36 L370 36 Q392 36 402 48 L488 48 Q508 48 508 68 L508 98 Q508 110 496 110 L418 110 L418 134 L496 134 Q508 134 508 146 L508 176 Q508 196 488 196 L402 196 Q392 208 370 208 L54 208 Q30 208 30 184 Z" fill="#ECE8E1" stroke="#7E7A73" stroke-width="2"/>
+      <rect x="428" y="56" width="70" height="44" rx="8" fill="url(#hv)" stroke="#7E7A73"/>
+      <rect x="428" y="144" width="70" height="44" rx="8" fill="url(#hv)" stroke="#7E7A73"/>
+      <rect x="50" y="52" width="92" height="140" rx="10" fill="none" stroke="#B07A5A" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="96" y="118" font-size="12" text-anchor="middle" fill="#B07A5A" font-family="Malgun Gothic" font-weight="700">온열</text>
+      <text x="96" y="134" font-size="12" text-anchor="middle" fill="#B07A5A" font-family="Malgun Gothic" font-weight="700">포켓</text>
+      <circle cx="232" cy="122" r="30" fill="#F7F5F0" stroke="#2F6B5E" stroke-width="3"/>
+      <circle cx="232" cy="122" r="22" fill="none" stroke="#2F6B5E" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="232" y="126" font-size="11" text-anchor="middle" fill="#2F6B5E" font-family="Malgun Gothic" font-weight="700">복사뼈</text>
+      <line x1="262" y1="122" x2="350" y2="122" stroke="#2F6B5E" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <defs><pattern id="lp" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="#B9B1A4"/></pattern></defs>
+      <rect x="270" y="54" width="84" height="136" rx="10" fill="url(#lp)" stroke="#9C9488" stroke-width="1.2"/>
+      <g fill="none" stroke="#2F6B5E" stroke-width="1" stroke-dasharray="2 2">
+        <circle cx="291" cy="78" r="21"/><circle cx="335" cy="122" r="21"/><circle cx="291" cy="166" r="21"/>
+      </g>
+      <g font-family="Malgun Gothic" font-size="9" fill="#2F6B5E">
+        <text x="314" y="66">S M L</text><text x="314" y="186">S M L</text>
+      </g>
+      <circle cx="291" cy="78" r="15" fill="#C9A089" stroke="#8E5F44" stroke-width="2"/>
+      <circle cx="335" cy="122" r="15" fill="#C9A089" stroke="#8E5F44" stroke-width="2"/>
+      <circle cx="291" cy="166" r="15" fill="#C9A089" stroke="#8E5F44" stroke-width="2"/>
+      <rect x="360" y="70" width="44" height="104" rx="8" fill="none" stroke="#686B6E" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <g font-family="Malgun Gothic" font-size="12.5" fill="#24272A">
+        <text x="182" y="24" font-weight="700" fill="#2F6B5E">① 정렬 창</text>
+        <text x="262" y="24" font-weight="700">② 압박부 3 · 벨크로 필드</text>
+        <text x="40" y="226" font-weight="700" fill="#B07A5A">③ 온열 인서트 포켓</text>
+        <text x="250" y="226" fill="#686B6E">⑥ 후속 공압 모듈 자리</text>
+        <text x="448" y="226">벨크로 × 2</text>
+      </g>
+    </svg>
+    <ul class="spec" style="margin-top:8px">
+      <li><span class="k">1</span><div><b>복사뼈 정렬 창</b> — 안쪽 복사뼈를 창에 맞추면 압박부 위치가 자동으로 정해짐<span class="why">‘혈자리 위치 탐색 단순화’를 전자부품 없이 시연. 7사에 없던 축 · PROB-001 ③</span></div></li>
+      <li><span class="k">2</span><div><b>압박부 3개 · 벨크로 필드 부착</b> — 정렬 창 기준 S/M/L 가이드 표시 위에 붙이고, 첫 착용 때 맞춘 뒤 고정해서 사용<span class="why">사람마다 다른 간격을 자유롭게 대응(레일은 한 방향만 조절). 압박 시 밀림 방지 위해 후크면은 랩 쪽, 피부 쪽은 매끈하게 · 경도 3단계 비교</span></div></li>
+      <li><span class="k">3</span><div><b>온열 인서트 포켓 (선택)</b> — 시판 핫팩·젤팩을 끼우는 슬롯<span class="why">무동력으로 온열 수요 대응, ‘다 쓰면 교체’라는 소모품 이유가 분명 · 저온화상 차단층 필수 검토</span></div></li>
+      <li><span class="k">4</span><div><b>S / M / L 3사이즈</b> — 발목 둘레 차이 때문에 정렬이 어긋나는 것 방지</div></li>
+      <li><span class="k">5</span><div><b>슬림·무소음</b> — 실내화·긴 바지 안, 사무실 책상 아래 착용 기준으로 두께 설계<span class="why">PROB-001 ①② · 공기압 기기 대비 소리 없음</span></div></li>
+      <li><span class="k d">6</span><div><b>후속: 공압 모듈 도킹 자리</b> — 같은 프레임으로 전동형 업셀 (팀원 제안의 셀 3개와 위치 일치)</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- COL 3 -->
+<div class="col">
+  <div class="card">
+    <h2><span class="n">3</span>가격 · 라인업 사다리<small>가격은 테스트 가설</small></h2>
+    <div class="ladder">
+      <div class="step on"><div class="s">진입 · 지금</div><div class="nm">류 랩 (무동력)<small>정렬 창 + 벨크로 압박부 3</small></div><div class="pr">3.9만 원<small>테스트가 · 제안</small></div></div>
+      <div class="step"><div class="s">반복</div><div class="nm">온열 인서트 팩<small>쓰면 교체되는 소모품 · 선택</small></div><div class="pr">단가 테스트<small>원가 확인 후</small></div></div>
+      <div class="step"><div class="s">업셀 · 후속</div><div class="nm">류 에어 (전동)<small>공압 모듈 · 감지 기능 검토</small></div><div class="pr">13.2만 원<small>기존 린캔버스 가정</small></div></div>
+    </div>
+    <div class="src" style="margin-top:6px">3.9만 원 = 7사 무동력·저가 라인 중앙값(3.1만~3.3만)보다 위치 가이드만큼 높게 잡은 제안값. 원가 미확인.</div>
+  </div>
+  <div class="card" style="flex:1">
+    <h2><span class="n">4</span>이 시제품으로 검증할 것<small>EXP-001 목표와 연결</small></h2>
+    <table>
+      <tr><th>질문</th><th>측정</th><th>기존 목표</th></tr>
+      <tr><td>위치를 쉽게 맞추나</td><td>정렬 창 유무별 재착용 위치 차이 · 착용 시간</td><td class="g">Q02</td></tr>
+      <tr><td>일을 멈추지 않나</td><td>맨손 지압 vs 류 랩 착용 중 타이핑 지속</td><td class="g">PROB ①</td></tr>
+      <tr><td>계속 쓰나</td><td>4주차 실제 재사용</td><td class="g">18/30명</td></tr>
+      <tr><td>돈을 내나</td><td>3.9만 무동력 vs 13.2만 전동 예고 카드 선택 · 실결제</td><td class="g">9/30명</td></tr>
+      <tr><td>온열이 필요한가</td><td>인서트 사용 빈도 · 추가 구매 의향</td><td class="g">Q11·Q12</td></tr>
+    </table>
+    <div style="font-weight:800;font-size:13.5px;margin:9px 0 4px">12월 발표 시연 — 30초 시나리오</div>
+    <div class="demo"><div><b>10초</b>복사뼈를 창에 맞춤</div><div><b>10초</b>벨크로 두 번</div><div><b>10초</b>손을 떼고 바로 타이핑</div></div>
+  </div>
+</div>
+</div>
+
+<div class="bot">
+  <div class="card chg">
+    <h2><span class="n">5</span>기존안(v2 보드) 대비 바뀌는 점</h2>
+    <ul>
+      <li><span>압박부</span><span><span class="a">재배치형 탈부착</span> → <span class="b">정렬 창 가이드 + 벨크로, 한 번 맞추고 고정</span></span></li>
+      <li><span>패치</span><span><span class="a">비교 구성 C의 핵심</span> → <span class="b">제외 (선택 실험으로만)</span></span></li>
+      <li><span>소모품</span><span><span class="a">황토 패치 교체</span> → <span class="b">온열 인서트 (교체 이유 명확)</span></span></li>
+      <li><span>가격 메시지</span><span><span class="a">13.2만 단일</span> → <span class="b">3.9만 진입 → 13.2만 업셀</span></span></li>
+    </ul>
+  </div>
+  <div class="card risk">
+    <h2><span class="n">!</span>리스크 · 반대 근거</h2>
+    <ul>
+      <li>3만 원대 무동력은 발목보호대·깔창과 비교돼 ‘싸 보일’ 수 있음. 차별점이 정렬 창 하나뿐</li>
+      <li>객단가가 13.2만 → 3.9만으로 낮아져 ASM-001 매출 가정 재계산 필요. 12월 사업성 논리 약화 가능</li>
+      <li>핫팩 인서트는 저온화상·피부 접촉 안전 확인 전에는 시연 불가</li>
+      <li>복사뼈 기준이 실제로 같은 위치를 재현하는지 미측정. 7사 관측은 자사몰 한정·AI 보조 요약</li>
+    </ul>
+  </div>
+  <div class="card ask">
+    <h2><span class="n">?</span>팀이 정해야 할 것</h2>
+    <ul>
+      <li>진입 가격을 낮춰 검증할지 (ASM-001 변경 제안 · 기존 가정 유지 여부)</li>
+      <li>패치를 시제품에서 뺄지 (10.28 팀원 제안과 함께 판단)</li>
+      <li>온열 인서트를 이번 목업 범위에 넣을지 (DEC-001은 온열을 후속으로 둠 — 무동력 온열은 해석 필요)</li>
+      <li>업체에 ‘정렬 창’ 구조, 압박 시 벨크로가 밀리지 않는 고정력, 사이즈별 단가 문의</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <span><b>근거</b> DEC-001 · MILE-001 · CUS-001 · PROB-001 · ALT-001/002 · ASM-001 · EXP-001 · R-20261029-minkyung-01 (경쟁사 SKU) · R-20261029-codex-01/02 (Ovira) · SRC-20261028-01 (팀원 제안) · 원본 카톡 2026-09-23/25</span>
+  <span class="r">제안이며 확정 사양·도면 아님. 가격은 테스트 가설. 효능·안전성 미검증.</span>
+</footer>
+</div></body></html>

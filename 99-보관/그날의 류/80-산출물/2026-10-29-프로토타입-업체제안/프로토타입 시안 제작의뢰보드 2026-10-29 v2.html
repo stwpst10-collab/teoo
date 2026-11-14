@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>그날의 류 제작의뢰 보드 v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#FAF7F2;--ink:#2B2A28;--sub:#6B6660;--line:#DCD3C6;--clay:#B07A5A;--clay-l:#F1E4DA;--sage:#6F8370;--sage-l:#E6ECE4;--warn:#A4483B;--warn-l:#F6E3DF;--card:#FFFFFF}
+html,body{width:1920px;height:1090px;background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","맑은 고딕",sans-serif;font-size:15px;line-height:1.45}
+.wrap{padding:34px 44px 22px;height:100%;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:flex-end;gap:22px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+header .brand{font-size:40px;font-weight:800;letter-spacing:-1px}
+header .t{font-size:30px;font-weight:700;letter-spacing:-.5px}
+header .meta{margin-left:auto;text-align:right;color:var(--sub);font-size:14px}
+.chips{display:flex;gap:8px;margin-top:6px;justify-content:flex-end}
+.chip{border:1px solid var(--ink);border-radius:99px;padding:2px 12px;font-size:13px;font-weight:700;color:var(--ink)}
+.chip.s{background:var(--sage);border-color:var(--sage);color:#fff}
+.grid{display:grid;grid-template-columns:1.18fr 1fr 1fr;gap:18px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:18px;min-height:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+h2{font-size:19px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:12px;letter-spacing:-.3px}
+h2 .n{background:var(--ink);color:#fff;border-radius:6px;font-size:14px;padding:1px 8px}
+h2 small{font-weight:500;color:var(--sub);font-size:13px;margin-left:auto}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;vertical-align:top;padding:8px 6px;border-top:1px solid var(--line);font-size:14px}
+th{font-size:12.5px;color:var(--sub);font-weight:700;border-top:none;padding-top:0}
+td.src{width:30%;color:var(--sub)}
+td.src b{color:var(--ink);display:block;font-size:14px}
+td.arr{width:22px;color:var(--clay);font-weight:800;padding-left:0;padding-right:0}
+td.dec b{color:var(--clay)}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:4px;padding:0 6px;margin-left:4px;vertical-align:1px}
+.tag.h{background:var(--clay-l);color:var(--clay)} .tag.c{background:var(--sage-l);color:var(--sage)} .tag.p{background:#ECE9F5;color:#5B5585}
+ul.l{list-style:none} ul.l li{padding:5px 0;border-top:1px dashed var(--line);display:flex;gap:10px;font-size:14px}
+ul.l li:first-child{border-top:none}
+ul.l li .k{min-width:118px;font-weight:700}
+ul.l li .q{margin-left:auto;color:var(--clay);font-weight:800;white-space:nowrap}
+.mx{display:grid;grid-template-columns:86px repeat(3,1fr);gap:6px;font-size:13.5px}
+.mx div{background:var(--bg);border-radius:6px;padding:7px 8px;text-align:center}
+.mx .h{background:none;font-weight:700;color:var(--sub);text-align:left;padding-left:0}
+.cost{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.cost .b{background:var(--bg);border-radius:8px;padding:9px 12px}
+.cost .b .v{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.cost .b .d{font-size:12.5px;color:var(--sub)}
+.cost .b.ask{grid-column:1/3;background:var(--clay-l)}
+.cost .b.ask .v{color:var(--clay);font-size:17px}
+.road{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.st{border-radius:10px;padding:12px 14px;background:var(--bg);position:relative}
+.st.now{background:var(--ink);color:#fff}
+.st .p{font-size:12px;font-weight:800;letter-spacing:.5px;opacity:.75}
+.st .tt{font-size:16px;font-weight:800;margin:2px 0 4px}
+.st .dd{font-size:13px;line-height:1.4}
+.st.now .dd{color:#E9E4DC}
+.note{font-size:12.5px;color:var(--sub);margin-top:8px}
+.ask li .k{min-width:96px}
+.dont{background:var(--warn-l);border-color:#E8C6BF}
+.dont h2 .n{background:var(--warn)}
+.dont li{font-size:14px;padding:4px 0;list-style:none}
+.dont li::before{content:"✕  ";color:var(--warn);font-weight:800}
+.v1{display:flex;gap:14px;align-items:center}
+.v1 img{width:250px;border-radius:8px;border:1px solid var(--line)}
+footer{display:flex;gap:18px;font-size:12px;color:var(--sub);border-top:1px solid var(--line);padding-top:10px}
+footer b{color:var(--ink)}
+footer .r{margin-left:auto}
+</style></head><body><div class="wrap">
+
+<header>
+  <div class="brand">그날의 류</div>
+  <div class="t">1차 시연 목업 제작 의뢰 보드</div>
+  <div class="meta">업체 전달용 · v2 · 2026.10.29 · v1 외형 콘셉트 보드의 사양·근거 보완판
+    <div class="chips"><span class="chip s">수동식 · 전자부품 없음</span><span class="chip">PT · 사용성 평가용</span><span class="chip">12월 지주사 발표 시연</span></div>
+  </div>
+</header>
+
+<div class="grid">
+<!-- COL 1 -->
+<div class="col">
+  <div class="card">
+    <h2><span class="n">1</span>왜 이렇게 만드는가 — 근거 → 설계 결정<small>근거 = 사내 온톨로지 문서</small></h2>
+    <table>
+      <tr><th>근거 (출처)</th><th></th><th>목업 설계 결정</th></tr>
+      <tr><td class="src"><b>손 지압 = 하던 일을 멈춤</b>고객 문제 ①</td><td class="arr">→</td><td class="dec"><b>두 손이 자유로운 랩.</b> 앉은 자세에서 <b>한 손 착탈</b> 가능한 벨크로 + 큰 해제 탭<span class="tag h">가설</span></td></tr>
+      <tr><td class="src"><b>찜질·마사지기는 부피·고정이 불편</b>고객 문제 ② · 기존 대안</td><td class="arr">→</td><td class="dec"><b>얇고 가벼운 소프트 랩</b>, 뒤꿈치·발등 개방. 책상 아래·실내화 착용 중 사용<span class="tag h">가설</span></td></tr>
+      <tr><td class="src"><b>원하는 위치를 찾고 유지하기 번거로움</b>고객 문제 ③</td><td class="arr">→</td><td class="dec"><b>재배치형 압박부 3개 + 안쪽 위치 표시선.</b> 다시 감아도 같은 자리<span class="tag h">가설</span></td></tr>
+      <tr><td class="src"><b>수동 · 착용 형태와 압박감 우선 · 3D프린팅 검토</b>10.27 회의 결론</td><td class="arr">→</td><td class="dec"><b>펌프·배터리·온열·센서 없음.</b> 압박부는 3D프린팅/황토볼 후보로 교체 비교<span class="tag c">결정</span></td></tr>
+      <tr><td class="src"><b>본체 13.2만 + 교체 패치 1.1만 모델</b>수익과 비용 가정</td><td class="arr">→</td><td class="dec"><b>본체만으로 완성</b>, 패치는 선택. 패치를 붙일 <b>평면 인서트 자리</b>를 미리 설계<span class="tag p">팀원 제안</span></td></tr>
+      <tr><td class="src"><b>Ovira: 기기+교체 패드 모델 → 현재 공식몰은 보충제 중심</b>경쟁사 조사 10.29</td><td class="arr">→</td><td class="dec"><b>소모품보다 본체 단독 가치를 먼저 검증.</b> 효능·치료 표현은 목업·라벨에 일절 넣지 않음<span class="tag h">해석</span></td></tr>
+      <tr><td class="src"><b>후속 공압 셀 3개 구상</b>10.28 팀원 제안</td><td class="arr">→</td><td class="dec"><b>압박부 3개 위치 = 향후 셀 위치</b>와 맞물리도록 마운트 영역을 넓게 확보<span class="tag p">팀원 제안</span></td></tr>
+    </table>
+  </div>
+  <div class="card v1" style="margin-top:auto">
+    <img src="%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85%20%EC%8B%9C%EC%95%88%20%EC%88%98%EB%8F%99%EB%AA%A9%EC%97%85%202026-10-29%20v1.png" alt="v1 콘셉트">
+    <div><b style="font-size:15px">외형 참고: v1 콘셉트 보드 (별첨)</b><div class="note" style="margin-top:4px">아이보리 소프트 랩 · 웜그레이 안감 · 클레이색 압박부 · 뒤꿈치 개방형. 비례·치수는 제작 도면이 아니며 업체 실측 후 확정합니다.</div></div>
+  </div>
+</div>
+
+<!-- COL 2 -->
+<div class="col">
+  <div class="card">
+    <h2><span class="n">2</span>구조 도식 (펼친 안쪽)<small>개념도 · 치수 아님</small></h2>
+    <svg viewBox="0 0 520 250" width="100%" style="display:block">
+      <defs><pattern id="hv" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0" stroke="#C9BBA8" stroke-width="1"/></pattern></defs>
+      <path d="M40 60 Q40 40 60 40 L360 40 Q380 40 390 50 L470 50 Q490 50 490 70 L490 100 Q490 112 478 112 L400 112 L400 138 L478 138 Q490 138 490 150 L490 180 Q490 200 470 200 L390 200 Q380 210 360 210 L60 210 Q40 210 40 190 Z" fill="#EFE9E1" stroke="#8C8172" stroke-width="2"/>
+      <rect x="410" y="58" width="70" height="46" rx="8" fill="url(#hv)" stroke="#8C8172"/>
+      <rect x="410" y="146" width="70" height="46" rx="8" fill="url(#hv)" stroke="#8C8172"/>
+      <rect x="120" y="62" width="200" height="126" rx="12" fill="none" stroke="#B07A5A" stroke-width="2" stroke-dasharray="6 5"/>
+      <line x1="220" y1="66" x2="220" y2="184" stroke="#B07A5A" stroke-width="1" stroke-dasharray="2 4"/>
+      <circle cx="175" cy="94" r="20" fill="#C9A089" stroke="#8E5F44" stroke-width="2"/>
+      <circle cx="220" cy="125" r="20" fill="#C9A089" stroke="#8E5F44" stroke-width="2"/>
+      <circle cx="268" cy="156" r="20" fill="#E6E1DA" stroke="#8C8172" stroke-width="2"/>
+      <text x="268" y="160" font-size="11" text-anchor="middle" fill="#6B6660" font-family="Malgun Gothic">평면</text>
+      <rect x="54" y="110" width="40" height="30" rx="4" fill="#fff" stroke="#8C8172"/><text x="74" y="130" font-size="13" text-anchor="middle" font-weight="700" font-family="Malgun Gothic">류</text>
+      <g font-family="Malgun Gothic" font-size="13" fill="#2B2A28">
+        <text x="40" y="236">① 압박부 마운트 영역(탈부착·재배치)  ④ 평면 인서트(패치 비교용)</text>
+        <text x="120" y="22">② 위치 표시선 — 재착용 시 기준</text>
+        <text x="392" y="30">③ 조절 벨크로 × 2</text>
+        <text x="300" y="246" fill="#6B6660" font-size="12"></text>
+      </g>
+      <path d="M220 28 L220 60" stroke="#2B2A28" stroke-width="1"/>
+    </svg>
+    <div class="note">압박부는 돌기 위에 패치 볼을 겹치지 않음. 패치 비교 시 해당 칸은 평면 인서트로 교체.</div>
+  </div>
+  <div class="card">
+    <h2><span class="n">3</span>제작 구성품 · 샘플 수량<small>수량은 제안 · 협의</small></h2>
+    <ul class="l">
+      <li><span class="k">본체 랩</span><span>소프트 원단 + 안감, 발목 둘레 조절형 (원사이즈 or S/M 업체 제안)</span><span class="q">5개</span></li>
+      <li><span class="k">압박부 · 형상</span><span>반구형 / 둥근 끝 원추형 2종</span><span class="q">2종</span></li>
+      <li><span class="k">압박부 · 경도</span><span>부드러움 / 중간 / 단단함 3단계</span><span class="q">각 3개×세트</span></li>
+      <li><span class="k">압박부 · 소재</span><span>3D프린팅(TPU 등) · 실리콘 · 황토볼 중 구현 가능안</span><span class="q">업체 제안</span></li>
+      <li><span class="k">고정 방식</span><span>벨크로 패드 / 스냅 / 포켓 슬롯 중 1~2안</span><span class="q">업체 제안</span></li>
+      <li><span class="k">평면 인서트</span><span>압박부와 같은 체결부, 돌기 없음</span><span class="q">3개</span></li>
+      <li><span class="k">선택형 패치</span><span>피부 부착 소형 볼 패치 (시판품 활용 가능)</span><span class="q">20매</span></li>
+    </ul>
+    <div class="note">평가 조합 — A 본체 단독 · B 패치 단독 · C 본체+평면 인서트+패치</div>
+  </div>
+</div>
+
+<!-- COL 3 -->
+<div class="col">
+  <div class="card">
+    <h2><span class="n">4</span>원가 기준선 · 견적 요청<small>모두 계획 가정 · 실적 아님</small></h2>
+    <div class="cost">
+      <div class="b"><div class="v">132,000원</div><div class="d">본체 판매가 가설 (VAT 포함)</div></div>
+      <div class="b"><div class="v">11,000원</div><div class="d">교체 패치 1팩 가설</div></div>
+      <div class="b"><div class="v">6만 원</div><div class="d">린캔버스 본체 제조원가 가정</div></div>
+      <div class="b"><div class="v">4~4.5만 원</div><div class="d">10.27 회의 언급 · 만 세트 · 미확정</div></div>
+      <div class="b ask"><div class="v">요청: 이번 샘플 제작비와 수동 버전 양산 원가를 분리 견적</div><div class="d">수량 1천 / 1만 세트 기준 · 금형·봉제·포장·부대비용 포함 여부 명시 · 전자 버전 원가와 혼동 금지</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="n">5</span>단계 계획<small>2·3단계는 이번 범위 아님</small></h2>
+    <div class="road">
+      <div class="st now"><div class="p">STEP 1 · 지금</div><div class="tt">수동 목업</div><div class="dd">착용 형태 · 착탈 · 위치 유지 · 압박감 시연</div></div>
+      <div class="st"><div class="p">STEP 2 · 후속</div><div class="tt">압력 실측</div><div class="dd">볼 유무별 접촉압 감압필름 측정 (모형 우선)</div></div>
+      <div class="st"><div class="p">STEP 3 · 발표 후</div><div class="tt">전자 기능</div><div class="dd">공압 셀 · 온열 · 감지 · 배터리, KC 인증 검토</div></div>
+    </div>
+  </div>
+  <div class="card ask" style="flex:1">
+    <h2><span class="n">6</span>업체 회신 요청</h2>
+    <ul class="l">
+      <li><span class="k">제작 가능성</span><span>구성품별 가능 여부 · 대안 소재/형상</span></li>
+      <li><span class="k">치수·조절</span><span>적용 발목 둘레, 조절 범위, 패턴/도면 제공 여부</span></li>
+      <li><span class="k">일정</span><span>샘플 제작기간 · 수정 횟수 (12월 발표 역산)</span></li>
+      <li><span class="k">권리 관계</span><span>디자인·특허·도면 소유권, OEM 역할 — 착수 전 합의</span></li>
+    </ul>
+  </div>
+  <div class="card dont" style="margin-top:auto">
+    <h2><span class="n">!</span>넣지 말 것</h2>
+    <ul>
+      <li>생리통 완화·치료·혈자리 효능 등 의료 효능 문구, 의료기기 표기</li>
+      <li>날카로운 원추 · 돌기 위 패치 볼 중첩 구조</li>
+      <li>임의의 압력 수치·사용시간 표기, 경쟁사 로고·명칭</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<footer>
+  <span><b>근거</b> 07 결정/수동 시연 목업 결정 · 06 근거/10.27 개발 회의록 · 10.28 팀원 프로토타입 제안 · Ovira 사례 조사 · 02 고객/고객 문제 · 04 사업모델/수익과 비용 가정</span>
+  <span class="r">설계 제안이며 확정 사양·제작 도면이 아닙니다. 효능·안전성 미검증.</span>
+</footer>
+</div></body></html>

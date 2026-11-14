@@ -15,25 +15,25 @@
 Thumbs.db
 
 # Historical materials: share only explicit source/artifact sets.
-/90 작업자료/*
-!/90 작업자료/원본자료/
-/90 작업자료/원본자료/*
-!/90 작업자료/원본자료/그날의류_사업성시뮬레이션_20261026.xlsx
-!/90 작업자료/output/
-/90 작업자료/output/*
-!/90 작업자료/output/린캔버스_그날의류/
-!/90 작업자료/outputs/
-/90 작업자료/outputs/*
-!/90 작업자료/outputs/assumptions_20261027/
-!/90 작업자료/outputs/ovira_20261029/
-/90 작업자료/outputs/assumptions_20261027/*
-!/90 작업자료/outputs/assumptions_20261027/*.xlsx
-!/90 작업자료/outputs/assumptions_20261027/assumptions-to-profit.html
-!/90 작업자료/outputs/assumptions_20261027/explainer-model.js
-!/90 작업자료/outputs/assumptions_20261027/verification.json
-/90 작업자료/outputs/ovira_20261029/*
-!/90 작업자료/outputs/ovira_20261029/*.xlsx
-!/90 작업자료/outputs/ovira_20261029/verification.json
+/99-보관/그날의 류/90 작업자료/*
+!/99-보관/그날의 류/90 작업자료/원본자료/
+/99-보관/그날의 류/90 작업자료/원본자료/*
+!/99-보관/그날의 류/90 작업자료/원본자료/그날의류_사업성시뮬레이션_20261026.xlsx
+!/99-보관/그날의 류/90 작업자료/output/
+/99-보관/그날의 류/90 작업자료/output/*
+!/99-보관/그날의 류/90 작업자료/output/린캔버스_그날의류/
+!/99-보관/그날의 류/90 작업자료/outputs/
+/99-보관/그날의 류/90 작업자료/outputs/*
+!/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/
+!/99-보관/그날의 류/90 작업자료/outputs/ovira_20261029/
+/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/*
+!/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/*.xlsx
+!/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/assumptions-to-profit.html
+!/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/explainer-model.js
+!/99-보관/그날의 류/90 작업자료/outputs/assumptions_20261027/verification.json
+/99-보관/그날의 류/90 작업자료/outputs/ovira_20261029/*
+!/99-보관/그날의 류/90 작업자료/outputs/ovira_20261029/*.xlsx
+!/99-보관/그날의 류/90 작업자료/outputs/ovira_20261029/verification.json
 # Dependencies and lock files remain excluded even within allowlisted archives.
 **/node_modules/
 **/~$*
@@ -42,5 +42,5 @@ Thumbs.db
 /_site/
 
 # 강연 실습 자료(코드 열람, 공개 금지)
-25-고객조사/베타랩 실습 프롬프트 원문.md
-25-고객조사/합성패널 테스트 제출물 요약.md
+/99-보관/그날의 류/25-고객조사/베타랩 실습 프롬프트 원문.md
+/99-보관/그날의 류/25-고객조사/합성패널 테스트 제출물 요약.md
