@@ -84,6 +84,7 @@ table.all tr.cat td{background:var(--chip);font-weight:700;color:var(--accent);p
 .st.life{background:var(--ded-bg);color:var(--ded)} .st.new{background:var(--chip);color:var(--accent)} .st.ded{background:var(--ded-bg);color:var(--ded)}
 .st.pass{background:var(--pass-bg);color:var(--pass)} .st.hold{background:var(--hold-bg);color:var(--hold)} .st.drop{background:var(--drop-bg);color:var(--drop)}
 @media (max-width:640px){table.all td.one,table.all th.one{display:none}}
+.exh{margin:16px 0 4px;font-size:1.05rem} .exgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin:10px 0 16px} .ex{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:8px;padding:12px 14px;display:grid;gap:6px;min-width:0} .ex h3{margin:0;font-size:1rem} .ex dl{grid-template-columns:72px 1fr;font-size:.88rem}
 .empty{color:var(--muted)}
 footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
 @media (max-width:520px){dl{grid-template-columns:1fr}dt{margin-top:6px}}
@@ -115,6 +116,22 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
       <p><b>검증이 바꾼 것.</b> 앞의 1위 방과후 동선 대행은 자란다 '대치라이드'·아워스팟이 이미 하고, 정부가 워킹스쿨버스를 전국으로 넓혀 5위로 내림(지불자를 단지·학원 연합·지자체로 바꾸면 유지). 단지 세탁 허브는 '세탁은 기존 공장, 단지는 수거·반환 거점'으로 고쳐 4위. 가전·설비 주치의는 소비자 쪽 지출이 월 1.5만 원으로 작고 제조사가 무료 진단을 줘서 강등 직전 — 대신 같은 기사 병목을 <b>기사 쪽에서</b> 잡는 업무앱 + 일감 네트워크를 1위로 올림. 고양이 매트는 퓨리나가 이미 낸 제품이라 강등.</p>
       <p><b>왜 플랫폼이 위로 왔나.</b> 기기 + 소모품 후보는 검증할 때마다 "이미 있다, 대기업이 무료로 준다, 지출이 작다"에 걸렸습니다. 플랫폼은 네트워크 효과와 쌓이는 이력이 해자가 됩니다. 다만 1~3위는 <b>아직 검증 전</b>이라 흠을 못 찾았을 뿐일 수 있습니다(웹 검색 한도가 차서 다음 검증은 한도가 풀린 뒤).</p>
       <p class="muted">점수: 일상 변화 25 · 큰 판 20 · 왜 지금 15 · 10배 나음 15 · 반복매출(수수료 포함) 10 · 해자(네트워크 효과 포함) 10 · 시작 쉬움 5. 판단값입니다.</p></div>
+    <h3 class="exh">상위 6개 쉽게 보기: 고객 · 제품 · 하루 장면 · 돈</h3>
+    <p class="note">1·4·5위는 사업자·단지가 고객인 B2B에 가깝고, 2·3·6위는 소비자가 직접 쓰는 서비스입니다. 심사위원이 듣자마자 이해하는 쪽은 2·3·6위, 판이 크고 해자가 단단한 쪽은 1위입니다.</p>
+    <div class="exgrid">
+      <article class="ex"><p class="eyebrow">1위</p><h3>현장 기사용 업무앱 + 일감 네트워크</h3><p class="hook">집수리 기사를 위한 &#x27;일 처리 앱&#x27;을 먼저 깔게 하고, 그 위에서 일감까지 이어 준다.</p><dl>
+        <dt>고객</dt><dd>혼자 또는 2~5명이 일하는 배관·욕실·누수·설비 기사(돈 냄). 일을 맡기는 쪽은 집주인·세입자, 아파트 관리사무소, 동네 가게.</dd><dt>제품</dt><dd>기사 휴대폰 앱. 현장 사진 몇 장이면 AI가 견적서를 써서 고객에게 보냄. 일정·이동 경로·카드·분할 결제, 작업 전후 사진과 보증 기간 자동 기록.</dd><dt>하루 장면</dt><dd>아침에 앱으로 오늘 일정을 보고, 현장에서 사진을 찍으면 견적이 바로 나가고, 끝나면 그 자리에서 카드로 받음. 일이 빈 날엔 같은 앱에서 근처 일감(관리사무소 의뢰, 다른 기사가 넘긴 일)을 받음.</dd><dt>돈</dt><dd>기사 월 구독, 앱 안 결제 수수료, 일감 연결 수수료, 자재 공동구매.</dd><dt>걸리는 점</dt><dd class="next">국내 기사는 현금·지인 영업이 많아 앱에 돈을 낼지 미지수. 첫 시험: 한 구의 기사 20명에게 견적 자동화를 만들어 주고 4주간 실제로 쓰는지, 월 2~3만 원을 낼지.</dd></dl></article>
+      <article class="ex"><p class="eyebrow">2위</p><h3>수집품 라이브 경매 (한국판 Whatnot)</h3><p class="hook">포켓몬 카드 같은 수집품을 생방송으로 경매하는 앱.</p><dl>
+        <dt>고객</dt><dd>파는 쪽은 카드숍 사장님·수집품 판매자(방송 진행). 사는 쪽은 2030 수집가.</dd><dt>제품</dt><dd>방송 + 실시간 경매 + 결제·배송이 한 번에 되는 앱.</dd><dt>하루 장면</dt><dd>퇴근 후 밤 9시, 카드숍 방송을 켜 놓고 마음에 드는 카드가 나오면 몇 초 안에 입찰해 낙찰. 중고 앱에서 며칠 걸리던 가격 제안·채팅·택배 확인이 방송 안에서 끝남.</dd><dt>돈</dt><dd>낙찰가 수수료 + 결제 수수료.</dd><dt>걸리는 점</dt><dd class="next">가품·상태 분쟁, &#x27;도박 같다&#x27;는 시비. 첫 시험: 카드숍 5곳 × 주 3회 × 4주 방송.</dd></dl></article>
+      <article class="ex"><p class="eyebrow">3위</p><h3>부모님 동행 이웃 매니저</h3><p class="hook">바쁜 자녀 대신 같은 동네 사람이 부모님 병원·은행·장보기에 동행.</p><dl>
+        <dt>고객</dt><dd>돈 내는 사람은 직장 다니는 30~50대 자녀. 이용자는 혼자 사시는, 아직 건강한 부모님. 일하는 사람은 같은 동네 50~60대·경력 단절자.</dd><dt>제품</dt><dd>자녀용 예약 앱 + 동행 후 사진·메모 리포트.</dd><dt>하루 장면</dt><dd>자녀가 회사에서 &#x27;목요일 10시 엄마 병원·은행&#x27;을 예약하면, 동네 매니저가 집 앞에서 만나 같이 다녀오고 결과를 사진으로 보냄. 반차를 안 써도 됨.</dd><dt>돈</dt><dd>시간당 요금 수수료, 자녀용 월 구독(월 4회 기본).</dd><dt>걸리는 점</dt><dd class="next">이동 중 사고 책임, 의료 행위로 오해받지 않을 선 긋기. 노인 분야라 사용자 결과는 거리가 있음.</dd></dl></article>
+      <article class="ex"><p class="eyebrow">4위</p><h3>단지 세탁 수거·반환 거점</h3><p class="hook">아파트에서 밤에 빨래를 내놓으면 아침에 개켜져 돌아옴.</p><dl>
+        <dt>고객</dt><dd>신축 대단지 맞벌이 가정. 관리사무소·입주자대표회의는 공간을 허락하는 쪽.</dd><dt>제품</dt><dd>단지 안 수거·반환 거점 + 주문 앱. 세탁은 기존 세탁 공장에 맡기고 우리는 단지 안 수거·반환만.</dd><dt>하루 장면</dt><dd>밤에 빨래통을 문밖에 두면 다음 날 아침 사람별로 개켜져 돌아옴.</dd><dt>돈</dt><dd>쓴 만큼 내는 요금, 가구 월 정액.</dd><dt>걸리는 점</dt><dd class="next">단지 안에서 직접 빨면 공장 자동화 이점을 버려서 이렇게 고침. 시범 단지 4주에 맡긴 세대 5% 미만이면 접음.</dd></dl></article>
+      <article class="ex"><p class="eyebrow">5위</p><h3>방과후 동선 대행 (단지·학원·지자체가 돈 냄)</h3><p class="hook">초등학생을 학교→학원→집으로 걸어서 데려다줌. 돈은 부모가 아니라 단지·학원이 냄.</p><dl>
+        <dt>고객</dt><dd>이용자는 맞벌이 가정 초등 1~4학년. 돈 내는 쪽은 아파트 단지(관리비 복지), 학원 연합(&#x27;등원 보장&#x27;), 지자체 위탁.</dd><dt>제품</dt><dd>동행 선생님 + 단지 안 대기 거점 + 부모 앱 도착 알림.</dd><dt>하루 장면</dt><dd>학교가 끝나면 거점에 모였다가 각자 학원 시간에 맞춰 동행 선생님이 데려가고, 도착할 때마다 부모에게 알림.</dd><dt>돈</dt><dd>단지·학원 계약, 지자체 위탁.</dd><dt>걸리는 점</dt><dd class="next">부모 지불형은 자란다 &#x27;대치라이드&#x27;·아워스팟이 이미 하고 정부 워킹스쿨버스가 전국 무료 확대. 미국도 학교가 내는 회사만 생존. 사고 책임.</dd></dl></article>
+      <article class="ex"><p class="eyebrow">6위</p><h3>공부 책상 기기 (책상만 찍고 관리만)</h3><p class="hook">아이 책상 위 기기가 공부하는 모습을 보고, 원격 관리 선생님이 챙김.</p><dl>
+        <dt>고객</dt><dd>돈 내는 사람은 초등 자녀를 둔 맞벌이 부모(학원비 중 &#x27;앉혀 놓고 관리하는&#x27; 몫을 대신). 이용자는 집에서 숙제하는 초등학생.</dd><dt>제품</dt><dd>책상 위 카메라 기기(얼굴 말고 책상만) + 앱. AI가 먼저 보고 관리 선생님 1명이 10명 이상을 원격으로 챙김. 가르치지 않고 관리만.</dd><dt>하루 장면</dt><dd>부모 퇴근 전 아이가 숙제를 시작하면 기기가 알아보고, 딴짓이 길어지면 선생님이 말을 검. 저녁에 &#x27;오늘 몇 분 공부, 어디서 막힘&#x27; 리포트.</dd><dt>돈</dt><dd>기기 판매 + 월 구독.</dd><dt>걸리는 점</dt><dd class="next">중국 바이트댄스 같은 제품이 첫 4개월 1만 대+. 30일 넘는 원격 교습은 학원법 등록 대상 가능성, 엘리하이 등 추격.</dd></dl></article>
+    </div>
     <div class="tw"><table class="rank">
       <tr><th>#</th><th>아이디어</th><th>점수</th><th>왜 이 자리</th></tr>
       <tr><td>1</td><td><b>현장 기사용 업무앱 + 일감 네트워크 (집수리·설비부터)</b><br><span class="muted">5차 P2 공급자·B2B 플랫폼</span></td><td>86</td><td>검증 전. 가전 주치의 검증에서 '소비자 쪽 지출은 월 1.5만 원으로 작고 제조사가 무료 진단'이 나와, 같은 기사 병목을 공급자 쪽에서 잡는 그림으로 옮김. 미국 ServiceTitan(설비 업체 9,500곳, 그 위 거래 연 685억 달러). 숨고는 견적당 과금이라 기사의 하루를 안 잡음. 작업 이력·평판이 쌓여 옮기기 어려움. 국내 자영 기사가 업무 앱을 쓰게 만드는 게 최대 관문</td></tr>
