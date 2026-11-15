@@ -565,7 +565,7 @@ function card(d){
       <dt>먼저 확인</dt><dd class="next">${esc(d.next)}</dd></dl>`;
   else body=`<p class="reason">${esc(d.r)}</p>`;
   const ded=d.ded?`<p class="ded-line"><b>연역 구성</b> ${esc(d.ded)}</p>`:"";
-  const tag=(d.st==="new"||d.st==="life"||d.st==="persp"||d.st==="plat")?`${d.ver?`<span class="src rank">검증 후 ${d.rank}위 · ${d.sc}점</span>`:(d.rank?`<span class="src rank">Claude 순위 ${d.rank}</span>`:"")}`<span class="src">끌림 ${esc(d.pull)}</span>`:d.st==="ded"?`<span class="src">순위 ${d.rank} · 웹 검증 11-15</span>`:(d.old?`<span class="src">새 거름망 재판정 전</span>`:"");
+  const tag=(d.st==="new"||d.st==="life"||d.st==="persp"||d.st==="plat")?`${d.ver?`<span class="src rank">검증 후 ${d.rank}위 · ${d.sc}점</span>`:(d.rank?`<span class="src rank">Claude 순위 ${d.rank}</span>`:"")}<span class="src">끌림 ${esc(d.pull)}</span>`:d.st==="ded"?`<span class="src">순위 ${d.rank} · 웹 검증 11-15</span>`:(d.old?`<span class="src">새 거름망 재판정 전</span>`:"");
   return `<article class="card ${d.st}"><div class="head"><h3>${esc(d.n)}</h3><span class="src">${esc(d.cat)}</span><span class="src">${esc(d.s)}</span>${tag}<span class="pill ${d.st==="ded"?d.v:d.st}">${d.st==="ded"?"연역형 · "+L[d.v]:L[d.st]}</span></div>${marks}${body}${ded}</article>`;
 }
 function render(){
