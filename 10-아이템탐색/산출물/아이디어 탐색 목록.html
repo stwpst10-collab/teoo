@@ -59,6 +59,29 @@ dt{color:var(--muted)} dd{margin:0;min-width:0}
 .card.new{border-left-color:var(--accent)} .pill.new{background:var(--chip);color:var(--accent)} .stat.new b{color:var(--accent)} .hook{margin:0;font-weight:600} .src.rank{background:var(--accent);color:var(--bg)}
 .tw{overflow-x:auto} table.rank{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--surface)} table.rank th,table.rank td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top} table.rank td:nth-child(1),table.rank td:nth-child(3){text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap} .muted{color:var(--muted);font-size:.82rem}
 .best{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:16px 18px;display:grid;gap:8px;margin-bottom:14px} .best h3{margin:0;font-size:1.15rem} .best p{margin:0;max-width:80ch} .eyebrow{color:var(--accent);font-weight:700;font-size:.85rem}
+.bar{display:grid;gap:8px}
+.bar .row1{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button,.seg button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chips button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.chips button span{opacity:.7;margin-left:4px;font-variant-numeric:tabular-nums}
+.seg{display:flex;gap:4px}
+.chips button:focus-visible,.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+details.fold{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+details.fold>summary{cursor:pointer}
+details.fold[open]>summary{margin-bottom:12px}
+table.all{border-collapse:collapse;width:100%;font-size:.9rem;background:var(--surface)}
+table.all th,table.all td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.all th{color:var(--muted);font-weight:600;font-size:.8rem}
+table.all tr.it{cursor:pointer} table.all tr.it:hover td{background:var(--chip)}
+table.all td.nm{font-weight:600;min-width:150px} table.all td.one{color:var(--muted);min-width:220px}
+table.all td.sc{white-space:nowrap;font-variant-numeric:tabular-nums}
+table.all tr.det td{background:var(--bg);padding:10px}
+table.all tr.cat td{background:var(--chip);font-weight:700;color:var(--accent);padding:8px}
+.st{font-size:.75rem;padding:1px 8px;border-radius:999px;white-space:nowrap;font-weight:600}
+.st.life{background:var(--ded-bg);color:var(--ded)} .st.new{background:var(--chip);color:var(--accent)} .st.ded{background:var(--ded-bg);color:var(--ded)}
+.st.pass{background:var(--pass-bg);color:var(--pass)} .st.hold{background:var(--hold-bg);color:var(--hold)} .st.drop{background:var(--drop-bg);color:var(--drop)}
+@media (max-width:640px){table.all td.one,table.all th.one{display:none}}
 .empty{color:var(--muted)}
 footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
 @media (max-width:520px){dl{grid-template-columns:1fr}dt{margin-top:6px}}
@@ -68,11 +91,21 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
 <div class="wrap">
   <header>
     <h1>아이디어 탐색 목록</h1>
-    <p class="sub">2026-11-14~15에 탐색하고 논의한 아이디어를 모두 모았습니다. 11-15에 새 거름망 7개로 다시 판정했고, 연역 구성으로 새로 낸 아이디어도 넣었습니다. 후보는 고를 재료이며 팀이 확정한 것이 아닙니다.</p>
+    <p class="sub">2026-11-14~16에 탐색한 아이디어를 모두 모았습니다. 기본은 분야별로 한 줄씩 보는 "한눈에"이고, 줄을 누르면 자세히 펼쳐집니다. 단계·분야 버튼과 검색은 함께 걸립니다. 후보는 고를 재료이며 팀이 확정한 것이 아닙니다.</p>
   </header>
+
+  <nav class="bar" aria-label="검색과 필터">
+    <div class="row1">
+      <input id="q" type="search" placeholder="검색 (예: 수면, 아이, 단지, AI)" aria-label="아이디어 검색">
+      <div class="seg" role="group" aria-label="보기 방식"><button type="button" data-v="table" aria-pressed="true">한눈에</button><button type="button" data-v="card" aria-pressed="false">자세히</button></div>
+    </div>
+    <div class="chips" id="stchips" role="group" aria-label="단계"></div>
+    <div class="chips" id="catchips" role="group" aria-label="분야"></div>
+  </nav>
 
   <section class="stats" id="stats" aria-label="판정별 개수"></section>
 
+  <details class="fold"><summary><b>순위 보기 · 일상을 바꾸는가 (11-16)</b> <span class="muted">1위 단지 집안일 운영사 · 2위 방과후 동선 대행 · 수면은 7·10·11위</span></summary>
   <section>
     <h2>새 기준으로 다시 고른 순위: 일상을 바꾸는가 (2026-11-16)</h2>
     <div class="best"><p class="eyebrow">사용자: "하나같이 별로, 진짜 사람들의 일상을 바꾸는 아이디어는 없을까"</p>
@@ -97,7 +130,9 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
       <tr><td>12</td><td><b>병원비 0분 청구 (실손 자동 청구 대리인)</b><br><span class="muted">3차 K3 생활 행정</span></td><td>65</td><td>미청구 연 2,500억 원. 다만 연계율이 오르면 닫히는 창문</td></tr>
     </table></div>
   </section>
+  </details>
 
+  <details class="fold"><summary><b>이전 순위 · 최종 PT 기준 (11-15, 상위 5개 웹 검증)</b> <span class="muted">1위 숨은 누수 감지·원인 기록</span></summary>
   <section>
     <h2>Claude 우선순위 (상위 5개 웹 검증 반영, 2026-11-15)</h2>
     <div class="best"><p class="eyebrow">제가 사업을 한다면: 1위</p>
@@ -122,7 +157,9 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
       <tr><td>12</td><td><b>털린 내 정보 뒷정리 구독</b><br><span class="muted">2차 G 대중 고통</span></td><td>66</td><td>검증으로 강등: 유출 감시는 정부 '털린 내 정보 찾기'·카카오페이가 무료. 717%는 틀림(카카오페이 신규 183.6%). 대행은 계정·인증을 맡겨야 해 새 유출 위험</td></tr>
     </table></div>
   </section>
+  </details>
 
+  <details class="fold"><summary><b>거름망 · 판정 기준</b> <span class="muted">통과·보류·탈락은 이 7개로 판정</span></summary>
   <section>
     <h2>거름망</h2>
     <ol class="filters">
@@ -136,17 +173,8 @@ footer{color:var(--muted);font-size:.85rem;display:grid;gap:4px}
     </ol>
     <p class="note">보조: 일반 AI 채팅으로 바로 풀리면 탈락, 법·허가가 시작부터 막으면 보류. 효능·의료 표현, 2~4주 시험, 한 계절 쏠림, 팀 역량, 앱-디바이스 연결은 쓰지 않습니다. 순위는 아이디어 자체로 매깁니다(거름망 1~7, 그중 페인포인트·확장성·성장성을 먼저 봄). CJ·계열사 연결은 있으면 좋은 가점일 뿐 순위·탈락에 쓰지 않습니다(사용자 지시 2026-11-15). 통과 카드는 ○가 많은 순입니다. 카드의 칸은 거름망 번호이고 ○ 충족, △ 부분·근거 약함, ✕ 미충족입니다. "재판정 전" 표시가 붙은 C 후보(11-14 Claude 심층 리서치 16~22차·덱 평가 상위권)는 다른 세션에서 옛 거름망으로 판정한 것이라 확장성·성장성을 아직 보지 않았습니다.</p>
   </section>
+  </details>
 
-  <nav class="bar" aria-label="필터">
-    <button type="button" data-f="all" aria-pressed="true">전체</button>
-    <button type="button" data-f="life" aria-pressed="false">3차 일상 바꾸기</button>
-    <button type="button" data-f="new" aria-pressed="false">2차 탐색</button>
-    <button type="button" data-f="ded" aria-pressed="false">연역형</button>
-    <button type="button" data-f="pass" aria-pressed="false">통과</button>
-    <button type="button" data-f="hold" aria-pressed="false">보류</button>
-    <button type="button" data-f="drop" aria-pressed="false">탈락</button>
-    <input id="q" type="search" placeholder="검색 (예: 요양, AI, 외국인)" aria-label="아이디어 검색">
-  </nav>
 
   <section class="list" id="list" aria-live="polite"></section>
 
@@ -378,7 +406,35 @@ const FN=["페인","반복","대체재","해자","정렬","확장","성장"];
 const SYM={o:"○",t:"△",x:"✕"};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const mk=(lab,c)=>`<span class="mk ${c}">${lab}<b>${SYM[c]}</b></span>`;
-let f="all";
+let f="all",cf="all",view="table";
+const CATS=[["수면",/수면|잠|침대|침실|밤잠|코골이|각방|베개|안대|낮잠|시차/],
+["아이·육아",/아이|아기|초등|어린이|학원|늘봄|육아|아토피|등센서|입덧|놀잇감|피규어|숙제|첫 폰|방과후|등교|수험생/],
+["반려동물",/반려|견|고양이|펫|동물/],
+["부모·노인 돌봄",/부모|노인|요양|경로당|틀니|삼킴|아빠|등 가려움|발톱|지팡이|고령|요실금|가령취|과민성장|유품|배변/],
+["먹거리·식당",/저녁|도시락|급식|반찬|식당|식단|밀키트|말차|조리|후드|김장|차례상|식자재|점심|짠맛|고향 밥|저염|케어푸드|음식|칵테일|물병|과일|리뷰|노쇼|포장대|주방/],
+["사업장·B2B",/창고|축사|무인|공장|양식장|헬스장|승강기|키오스크|상가|호텔|건설|미용실|매장|사업장|CBAM|EUDR|여권|회수망|스터디카페|가게|담배|브랜드|인증 연구소|상자|옷 순환|아이스팩|해충|농막|쉼터|신입/],
+["이동·여행",/전기차|자전거|킥보드|주차|여행|셔틀|출퇴근|차량|운전|차에|짐|국경|코트/],
+["집·생활",/누수|곰팡이|층간|집|단지|세탁|빨래|청소|이사|전월세|관리비|아파트|충전|배터리|인덕션|태양광|벌레|에어컨|분리배출|리넨|쓰레기|폐기물|보관|수선|가족 일정|디퓨저|땀옷|아기용품|식물|가사/],
+["돈·행정·AI",/보험|청구|고정비|요금|정보|사기|돈|AI|투자|병원|민원|보상|차 일생|운동 약속/],
+["취미·몸 관리",/뷰티|향|피부|운동|하이록스|러닝|러너|볼더링|테니스|필사|뜨개|필름|LP|카드|키링|취미|그날의 류|GLP|빛|두통|화장실/]];
+const OV=[["냉동 택배 아이스팩","사업장·B2B"],["다꾸","취미·몸 관리"],["학원·스터디카페 빈방","사업장·B2B"],["한국판 트레이딩카드","취미·몸 관리"],["동네 1인 집중석","기타"],["러너 땀옷","취미·몸 관리"],["앱 디퓨저","취미·몸 관리"],["반려식물","집·생활"],["원룸 이사","집·생활"],["그만둔 취미","취미·몸 관리"],["AI 새 관찰","취미·몸 관리"],["니치향수","취미·몸 관리"],["언어가 사라진","사업장·B2B"],["배터리 안전 보관함","집·생활"],["실내 학원 수업","사업장·B2B"],["말 거는 외국어","아이·육아"],["아픈 날 집 돌봄","아이·육아"],["층간소음 밤 지킴이","수면"],["AI 생성물","사업장·B2B"]];
+function cat(d){for(const [k,c] of OV) if(d.n.startsWith(k)) return c;const t=d.n+" "+(d.dom||"");for(const [c,re] of CATS) if(re.test(t)) return c;const t2=t+" "+(d.hook||d.r||d.pain||"");for(const [c,re] of CATS) if(re.test(t2)) return c;return "기타";}
+D.forEach(d=>d.cat=cat(d));
+const STO=["life","new","ded","pass","hold","drop"];
+const one=d=>d.hook||d.pain||d.mid||d.r||d.who||"";
+const stl=d=>d.st==="ded"?"연역형·"+L[d.v]:L[d.st];
+const stc=d=>d.st==="ded"?d.v:d.st;
+function score(d){if(d.sc) return `${d.rank?d.rank+"위 · ":""}${d.sc}점`; if(d.st==="ded") return "연역 "+d.rank+"위"; if(d.m) return "○ "+[...d.m].filter(c=>c==="o").length+"/7"; if(d.pull) return "끌림 "+d.pull; return "";}
+function chips(){
+  const base=D.filter(d=>cf==="all"||d.cat===cf), base2=D.filter(d=>f==="all"||d.st===f);
+  document.getElementById("stchips").innerHTML=[["all","전체 단계",base.length],...STO.map(k=>[k,L[k],base.filter(d=>d.st===k).length])].map(([k,l,n])=>`<button type="button" data-f="${k}" aria-pressed="${f===k}">${l}<span>${n}</span></button>`).join("");
+  const cats=[...CATS.map(c=>c[0]),"기타"].filter(c=>D.some(d=>d.cat===c));
+  document.getElementById("catchips").innerHTML=[["all","전체 분야",base2.length],...cats.map(c=>[c,c,base2.filter(d=>d.cat===c).length])].map(([k,l,n])=>`<button type="button" data-c="${k}" aria-pressed="${cf===k}">${l}<span>${n}</span></button>`).join("");
+  document.querySelectorAll("#stchips button").forEach(b=>b.onclick=()=>{f=b.dataset.f;chips();render();});
+  document.querySelectorAll("#catchips button").forEach(b=>b.onclick=()=>{cf=b.dataset.c;chips();render();});
+}
+function sortKey(d){return [STO.indexOf(d.st), d.rank||99, -(d.sc||0)];}
+function cmp(a,b){const x=sortKey(a),y=sortKey(b);for(let i=0;i<x.length;i++){if(x[i]!==y[i]) return x[i]-y[i];}return 0;}
 function stats(){
   const c={life:0,new:0,ded:0,pass:0,hold:0,drop:0};D.forEach(d=>c[d.st]++);
   document.getElementById("stats").innerHTML=`<div class="stat"><b>${D.length}</b><span>전체 아이디어</span></div>`+
@@ -429,22 +485,32 @@ function card(d){
   else body=`<p class="reason">${esc(d.r)}</p>`;
   const ded=d.ded?`<p class="ded-line"><b>연역 구성</b> ${esc(d.ded)}</p>`:"";
   const tag=(d.st==="new"||d.st==="life")?`${d.rank?`<span class="src rank">Claude 순위 ${d.rank}</span>`:""}<span class="src">끌림 ${esc(d.pull)}</span>`:d.st==="ded"?`<span class="src">순위 ${d.rank} · 웹 검증 11-15</span>`:(d.old?`<span class="src">새 거름망 재판정 전</span>`:"");
-  return `<article class="card ${d.st}"><div class="head"><h3>${esc(d.n)}</h3><span class="src">${esc(d.s)}</span>${tag}<span class="pill ${d.st==="ded"?d.v:d.st}">${d.st==="ded"?"연역형 · "+L[d.v]:L[d.st]}</span></div>${marks}${body}${ded}</article>`;
+  return `<article class="card ${d.st}"><div class="head"><h3>${esc(d.n)}</h3><span class="src">${esc(d.cat)}</span><span class="src">${esc(d.s)}</span>${tag}<span class="pill ${d.st==="ded"?d.v:d.st}">${d.st==="ded"?"연역형 · "+L[d.v]:L[d.st]}</span></div>${marks}${body}${ded}</article>`;
 }
 function render(){
   const q=document.getElementById("q").value.trim();
-  const rows=D.filter(d=>(f==="all"||d.st===f)&&(!q||JSON.stringify(d).includes(q)));
-  if(!rows.length){document.getElementById("list").innerHTML=`<p class="empty">조건에 맞는 아이디어가 없습니다. 검색어를 지우거나 '전체'를 눌러 보세요.</p>`;return;}
-  let h="";
-  ["life","new","ded","pass","hold","drop"].forEach(k=>{
-    const g=rows.filter(d=>d.st===k); if(!g.length) return;
-    h+=`<h2 class="group-title">${G[k]} · ${g.length}개</h2>`+g.map(card).join("");
+  const rows=D.filter(d=>(f==="all"||d.st===f)&&(cf==="all"||d.cat===cf)&&(!q||JSON.stringify(d).includes(q)));
+  const el=document.getElementById("list");
+  if(!rows.length){el.innerHTML=`<p class="empty">조건에 맞는 아이디어가 없습니다. 검색어를 지우거나 '전체'를 눌러 보세요.</p>`;return;}
+  if(view==="card"){
+    let h="";
+    STO.forEach(k=>{const g=rows.filter(d=>d.st===k); if(!g.length) return; h+=`<h2 class="group-title">${G[k]} · ${g.length}개</h2>`+g.map(card).join("");});
+    el.innerHTML=h; return;
+  }
+  const cats=[...CATS.map(c=>c[0]),"기타"];
+  let h=`<div class="tw"><table class="all"><thead><tr><th>아이디어</th><th>단계</th><th>순위·점수</th><th class="one">한 줄</th></tr></thead><tbody>`;
+  cats.forEach(c=>{const g=rows.filter(d=>d.cat===c).sort(cmp); if(!g.length) return;
+    h+=`<tr class="cat"><td colspan="4">${c} · ${g.length}개</td></tr>`;
+    g.forEach(d=>{h+=`<tr class="it" data-i="${D.indexOf(d)}" tabindex="0" aria-expanded="false"><td class="nm">${esc(d.n)}</td><td><span class="st ${stc(d)}">${esc(stl(d))}</span></td><td class="sc">${esc(score(d))}</td><td class="one">${esc(one(d))}</td></tr>`;});
   });
-  document.getElementById("list").innerHTML=h;
+  h+=`</tbody></table></div><p class="note">줄을 누르면 자세한 내용이 펼쳐집니다. ${rows.length}개 표시.</p>`;
+  el.innerHTML=h;
+  el.querySelectorAll("tr.it").forEach(tr=>{const tog=()=>{const nx=tr.nextElementSibling;
+      if(nx&&nx.classList.contains("det")){nx.remove();tr.setAttribute("aria-expanded","false");return;}
+      const d=D[+tr.dataset.i];tr.insertAdjacentHTML("afterend",`<tr class="det"><td colspan="4">${card(d)}</td></tr>`);tr.setAttribute("aria-expanded","true");};
+    tr.onclick=tog; tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}};});
 }
-document.querySelectorAll(".bar button").forEach(b=>b.addEventListener("click",()=>{
-  f=b.dataset.f;document.querySelectorAll(".bar button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render();
-}));
+document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render();});
 document.getElementById("q").addEventListener("input",render);
-stats();render();
+stats();chips();render();
 </script>
