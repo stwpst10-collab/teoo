@@ -60,6 +60,8 @@ npf = normal.paragraph_format
 npf.line_spacing, npf.space_before, npf.space_after = LINE, Pt(0), Pt(4)
 npf.left_indent, npf.alignment = Cm(BODY_IND), WD_ALIGN_PARAGRAPH.JUSTIFY
 no_keep(npf)
+# 작업 기준 6장(2026-11-25): 한글 글자 단위 줄 바꿈(단어 잘림 허용) — 양쪽 맞춤 간격 벌어짐 방지
+normal.element.get_or_add_pPr().append(parse_xml(f'<w:wordWrap {nsdecls("w")} w:val="0"/>'))
 for name, size, before, after in (('Heading 1', 10, 12, 4), ('Heading 2', 9.5, 6, 2)):
     st = doc.styles[name]
     style_font(st, size, True, INK)
