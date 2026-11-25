@@ -33,12 +33,13 @@ fig.tight_layout(); fig.savefig(OUT / 'us_first_year_spend.png'); plt.close(fig)
 
 # 2. 고객 1명 누적 수수료 범위 (당사 추정)
 fig, ax = plt.subplots(figsize=(6.4, 2.4), dpi=200)
-rows = [('첫 이사 1건(이사+입주청소)', 12, 21.5), ('5년 누적: 정기 청소 안 씀', 42, 62), ('5년 누적: 정기 청소 씀', 111, 134)]
+# 5년 누적은 이사 1회(다음 이사 제외), 거주 중 서비스 = 정기 청소(6만6,900원 × 26회 × 10% × 4년) + 에어컨 분해 청소
+rows = [('첫 이사 1건(이사+입주청소)', 12, 21.5), ('5년 누적: 거주 중 서비스 안 씀', 22, 33), ('5년 누적: 거주 중 서비스 씀', 98, 113)]
 for i, (lab, lo, hi) in enumerate(rows[::-1]):
-    ax.barh(i, hi - lo, left=lo, color=ORANGE if '청소 씀' in lab else BLUE, height=0.5)
+    ax.barh(i, hi - lo, left=lo, color=ORANGE if '서비스 씀' in lab else BLUE, height=0.5)
     ax.text(hi + 2, i, f'{lo:g}만~{hi:g}만원', va='center', fontsize=9, color=INK)
 ax.set_yticks(range(len(rows))); ax.set_yticklabels([r[0] for r in rows[::-1]], fontsize=9, color=INK)
-hbar_axes(ax); ax.set_xlim(0, 160)
+hbar_axes(ax); ax.set_xlim(0, 135)
 ax.set_xlabel('고객 1명이 만드는 수수료(만원)', fontsize=8, color=MUTED)
 fig.tight_layout(); fig.savefig(OUT / 'ltv_5y.png'); plt.close(fig)
 print('charts ->', OUT)
