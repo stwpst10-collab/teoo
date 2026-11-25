@@ -254,6 +254,11 @@ def page_break():
     last = body[-1] if body[-1].tag != qn('w:sectPr') else body[-2]
     if last.tag == qn('w:p') and ''.join(last.itertext()).strip() and last.find(f'.//{{{_W}}}drawing') is None:
         last.append(parse_xml(f'<w:r {nsdecls("w")}><w:br w:type="page"/></w:r>'))
+        # 양쪽 맞춤은 쪽 나누기로 끝나는 마지막 줄까지 늘려 글자 사이가 벌어짐 → 이 문단만 왼쪽 맞춤
+        ppr = last.get_or_add_pPr()
+        for jc in ppr.findall(qn('w:jc')):
+            ppr.remove(jc)
+        ppr.append(parse_xml(f'<w:jc {nsdecls("w")} w:val="left"/>'))
         return
     p = doc.add_paragraph()
     pf = p.paragraph_format
