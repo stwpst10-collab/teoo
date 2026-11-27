@@ -48,7 +48,7 @@ function arrowR(s, x, y, w) { s.addShape('line', { x, y, w, h: 0, line: { color:
 
 // ───────────────── 1장: 확장 논리 ─────────────────
 function logicSlide(pres, s) {
-  title(s, '이사 날짜를 맡는 곳이 주거 생애 전체를 잇는다', '확장 논리(검토안): 이사로 만나 → 절차·거주·다음 거래로 넓히고 → 쌓인 집 기록으로 보장·IoT까지');
+  title(s, '이사 회사가 아니라, 이사를 입구로 주거 생애주기를 잇는 플랫폼', '확장 논리(검토안): 이사로 만나 → 입주 직후·거주 중 서비스로 넓히고 → 쌓인 집 이력으로 보장·IoT, 다음 주거 이벤트까지');
   // 대전제
   box(s, 0.6, 1.55, 12.1, 0.62, TINT, TINT);
   T(s, [
@@ -58,16 +58,16 @@ function logicSlide(pres, s) {
   ], { x: 0.8, y: 1.6, w: 11.8, h: 0.52, fontSize: 13, valign: 'middle' });
   // 5단계
   const st = [
-    ['1', '이사·입주 일정', '현재', '업종 사이 일정 조율, 지연 시 뒤 업체 재조정', '시공·청소 업체 수수료', '문제 근거 중간'],
-    ['2', '계약 이후 절차', '', '대출 비교·법무사·전입·인터넷 연결', '금융사·자격자 제휴 수수료', '규모는 공식 통계'],
-    ['3', '입주 후 주거 운영', '반복 매출', '가구·가전 목록으로 정기 청소·관리·교체 제안', '정기 이용료, 업체 수수료', '전환율 측정 전'],
-    ['4', '다음 거래·제휴사 공급', '', '중개사무소·건설사·관리 앱에 일정 기능 공급', '소프트웨어 이용료', '해외 사례(Updater)'],
-    ['5', '주거 보장·IoT', '장기', '쌓인 기록으로 보험사와 주택 보증, IoT 점검 연동', '보험사 판매 수수료', '해외 공시(Porch·Frontdoor)'],
+    ['1', '이사·입주 일정', '현재', '업종 사이 일정 조율, 계약 뒤 등기·전입 기한 안내', '시공·청소 업체 수수료', '문제 근거 중간'],
+    ['2', '입주 직후 홈서비스', '', '청소·설치·인터넷·수리를 이사 일정 안에서 순서대로', '업체 성사 수수료', '추가 이용 측정 전'],
+    ['3', '거주 중 반복·자산 기록', '반복 매출', '가전·설비 목록으로 정기 관리·교체 제안, 이력 축적', '정기 이용료, 업체 수수료', '전환율 측정 전'],
+    ['4', '주거 보장·IoT', '장기', '쌓인 이력으로 보험사와 주택 보증, IoT 연동', '보험사 판매 수수료', '해외 공시(Porch·Frontdoor)'],
+    ['5', '다음 주거 이벤트', '제휴사 공급', '재이사·임대·매매 지원, 중개사무소·건설사에 일정 기능', '소프트웨어·제휴 수수료', '해외 사례(Updater)'],
   ];
   const x0 = 0.6, w = 2.3, g = 0.15, y = 2.4, h = 2.35;
   st.forEach((r, i) => {
     const x = x0 + i * (w + g);
-    const last = i === 4;
+    const last = i === 3;
     box(s, x, y, w, h, last ? TINT2 : WHITE, last ? ORANGE : LINE);
     s.addShape('ellipse', { x: x + 0.15, y: y + 0.15, w: 0.42, h: 0.42, fill: { color: last ? ORANGE : (i === 0 ? NAVY : BLUE) }, line: { color: WHITE } });
     T(s, r[0], { x: x + 0.15, y: y + 0.15, w: 0.42, h: 0.42, fontSize: 14, bold: true, color: WHITE, align: 'center', valign: 'middle' });
@@ -79,7 +79,7 @@ function logicSlide(pres, s) {
   });
   // 플라이휠
   T(s, '플라이휠: 고객이 늘수록 기록이 쌓이고, 기록이 쌓일수록 제안·보장이 정확해짐', { x: 0.6, y: 4.95, w: 7.4, h: 0.3, fontSize: 12, bold: true, color: NAVY });
-  const fw = ['이사 고객 증가', '집 단위 기록 축적\n(가구·가전 목록, 실행 기록)', '제안·보장 가격 정확도 상승', '반복 매출↑ 확보 비용↓'];
+  const fw = ['이사 고객 증가', '집 단위 이력 축적\n(가전·설비·서비스 이력)','제안·보장 가격 정확도 상승', '반복 매출↑ 확보 비용↓'];
   fw.forEach((t, i) => {
     const x = 0.6 + i * 1.87;
     box(s, x, 5.35, 1.6, 0.95, i === 1 ? NAVY : TINT, i === 1 ? NAVY : TINT);
@@ -92,9 +92,9 @@ function logicSlide(pres, s) {
   T(s, '성립 조건과 먼저 측정할 것', { x: 8.38, y: 5.03, w: 4.2, h: 0.3, fontSize: 12, bold: true, color: ORANGE });
   T(s, [
     { text: '시공·재고·보험 위험은 직접 지지 않음(업체·보험사가 부담)', options: { bullet: { indent: 14 }, breakLine: true } },
-    { text: '정기 서비스 12개월 재이용 30% 이상', options: { bullet: { indent: 14 }, breakLine: true } },
-    { text: '단계별 함께 쓰는 비율, 가전 목록 갱신률', options: { bullet: { indent: 14 }, breakLine: true } },
-    { text: '이사 시점 보장 안내 수락률(5단계 전제)', options: { bullet: { indent: 14 } } },
+    { text: '고객 확보 비용 7만원↓, 추가 이용 40%↑, 재구매 25%↑', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '정기 서비스 전환율(12개월 재이용 30% 이상)', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '입주 시 자산 정보 등록률, 보장 안내 수락률', options: { bullet: { indent: 14 } } },
   ], { x: 8.38, y: 5.36, w: 4.2, h: 1.25, fontSize: 10.5, paraSpaceAfter: 2 });
   source(s, 'KE Holdings 2025 연간실적, Porch 10-K(FY2025), Frontdoor 10-K·연차보고서(2025), Updater 공시, 청소연구소 발표, 당사 정리. 모든 단계의 함께 쓰는 비율·전환율은 측정 전 가설');
 }
@@ -119,10 +119,10 @@ function fullDeck(pres) {
     stat(s, 0.6 + i * 3.05, 1.6, 2.85, r[0], r[1], i === 3 ? ORANGE : BLUE);
   });
   const pts = [
+    ['이사 회사가 아니라 주거 생애주기 플랫폼', '이사를 입구로 고객과 집·가전·설비를 함께 확보하고 서비스 이력을 시간 순으로 쌓음. 요청에 응답하지 않고 필요한 서비스를 먼저 제안하는 것이 목표(가설)'],
     ['이사는 실행이 한 날짜로 몰리는 지점', '대출 실행·등기·전입·이사·시공·배송이 잔금·입주일 전후에 맞물리나 끝까지 잇는 곳은 공개 자료로 확인 못 함'],
     ['오늘의집과 같은 목표, 반대 방향', '오늘의집은 커머스 고객을 시공·이사로, ROOMOVE는 이사 고객을 주거 생활로. 구매처·업체를 묻지 않는 중립적 일정 관리'],
     ['누적 매출은 반복 서비스에서', '정기 청소·가전 관리가 붙으면 5년 수수료 약 3.5~4.4배. 해외 확장 성공 사례도 모두 매년 갱신 상품 보유'],
-    ['해자 후보는 평면이 아니라 가구·가전 목록', '어디서 샀든 집 안 물건 전체와 이사 실행 기록(검증 전 가설)'],
   ];
   pts.forEach((p, i) => {
     const y = 3.4 + i * 0.8;
@@ -149,7 +149,7 @@ function fullDeck(pres) {
   T(s, [
     { text: '시사점  ', options: { bold: true, color: BLUE } },
     { text: '가구 배치 기능만으로는 차별화 어려움(어반베이스 2024.7 폐업, 집꾸미기 2025 종료). 차별화 후보는 실측 치수로 "가져갈지" 판단한 결과가 이사 품목표·사다리차·시공 치수·배송 통로 요청서로 바로 이어지는 연결.', options: { breakLine: true } },
-    { text: '"조율 서비스 없음"은 공개 자료 기준이며, 짐싸·헬로입주 등의 상담 단계 비공식 조율 여부는 직접 문의로 확인 예정.', options: { color: MUTED } },
+    { text: '미소는 1,000개 이상 서비스(2025.9), 직방은 삼성SDS 홈IoT 인수(2022)로 서비스 묶음·IoT 보유 자체는 차별점이 아님. "조율 서비스 없음"은 공개 자료 기준.', options: { color: MUTED } },
   ], { x: 0.85, y: 4.9, w: 11.6, h: 1.35, fontSize: 12.5, paraSpaceAfter: 6 });
   source(s, '각 사 앱 소개·공식 페이지, 언론 보도, 당사 조사(2026.11.26)');
 
@@ -267,21 +267,21 @@ function fullDeck(pres) {
 
   // 10. 단계별 겹침
   s = pres.addSlide({ masterName: 'CONTENT' });
-  title(s, '정면 경쟁은 1·3단계, 비어 있는 곳은 2단계 이음새와 홈닉 밖 기존 주택', '확장 단계별로 겹치는 경쟁사와 대응');
+  title(s, '정면 경쟁은 1~3단계, 빈 곳은 업종 사이 일정 재조정과 홈닉 밖 기존 주택', '확장 단계별로 겹치는 경쟁사와 대응');
   table(s, [
     ['단계', '겹치는 곳', '겹침', '대응(당사 제안)'],
-    ['1. 이사·입주 일정', '오늘의집, 홈닉, 짐싸·이사타임·헬로입주, 건설사 앱', '높음', '홈닉이 닿지 않는 기존 주택·협약 밖 단지부터. 건설사 앱엔 일정 기능 공급 제휴'],
-    ['2. 계약 이후 절차', '직방, 국토부 전자계약, 금융 앱, 법무통', '중간', '단계마다 단일 기능 앱이라 이음새 연결이 자리. 직접 하지 않고 연결만'],
-    ['3. 입주 후 주거 운영', '청소연구소·미소, 숨고·오늘의집, 건설사 앱, 제조사 AS', '높음', '경쟁보다 제휴. 어디서 샀든 전체 목록과 실행 기록으로 차별화'],
-    ['4. 다음 거래·제휴사 공급', '직방, 홈닉 확대, 건설사·관리 앱', '제휴=경쟁', '홈닉 미도입 건설사·관리 앱·중개사무소 먼저. 도입 단지 수 분기 추적'],
-    ['5. 주거 보장·IoT', '보험사·하이마트 가전수리올케어, 제조사 구독(LG 최대 6년 무상 A/S)', '장기', '직접 인수 없이 보험대리점 제휴, 기기는 만들지 않고 연결'],
+    ['1. 이사·입주 일정', '오늘의집, 홈닉, 짐싸·이사타임·헬로입주, 건설사 앱 / 계약 뒤: 직방·전자계약·금융 앱·법무통', '높음', '홈닉이 닿지 않는 기존 주택·협약 밖 단지부터. 계약 뒤 절차는 안내만'],
+    ['2. 입주 직후 홈서비스', '미소(1,000개 이상 서비스), 숨고·오늘의집, 헬로입주', '높음', '서비스 수가 아니라 이사 일정 안에서 순서대로 잇는 연결로 차별화'],
+    ['3. 거주 중 반복·자산 기록', '청소연구소·미소, 건설사 앱, 제조사 AS', '높음', '경쟁보다 제휴. 어디서 샀든 전체 목록과 서비스 이력으로 차별화'],
+    ['4. 주거 보장·IoT', '직방(삼성SDS 홈IoT 인수), 제조사 SmartThings·ThinQ, 하이마트 가전수리올케어', '장기', '기기는 만들지 않고 연동, 보장 위험은 보험사가 짐'],
+    ['5. 다음 주거 이벤트', '직방, 홈닉 확대, 건설사·관리 앱', '제휴=경쟁', '홈닉 미도입 건설사·관리 앱·중개사무소 먼저. 도입 단지 수 분기 추적'],
   ], { t: { x: 0.6, y: 1.6, w: 12.1, colW: [2.3, 4.0, 1.2, 4.6], fontSize: 11.5, rowH: 0.75 },
-    hl: (i, j) => j === 2 ? { bold: true, align: 'center', color: (i === 0 || i === 2) ? ORANGE : (i === 1 ? GREEN : NAVY) } : (j === 0 ? { bold: true, color: NAVY } : null) });
+    hl: (i, j) => j === 2 ? { bold: true, align: 'center', color: (i <= 2) ? ORANGE : NAVY } : (j === 0 ? { bold: true, color: NAVY } : null) });
   source(s, '2장 경쟁 분석, 각 앱스토어 설명·보도(2026.11.26 조회), SBS Biz·한국경제(하이마트, 2026.10), LG전자 가전 구독 안내, 당사 정리');
 
   // 11. 장기: 주거 보장·IoT
   s = pres.addSlide({ masterName: 'CONTENT' });
-  title(s, '장기 방향: 쌓인 집 기록으로 주거 생애 전체를 보장하는 회사', '5단계 주거 보장·IoT(장기 검토안, 매출 추정에 넣지 않음)');
+  title(s, '장기 방향: 쌓인 집 기록으로 주거 생애 전체를 보장하는 회사', '4단계 주거 보장·IoT(장기 검토안, 매출 추정에 넣지 않음)');
   const lad = [['① 연결', '보험대리점 제휴로 이사 시점 보증금·누수 배상·가재도구 안내, 하자담보기간·가전 보증 만료 알림'],
     ['② 기록 축적', '고장·수리·파손 기록을 가구·가전 목록에 붙여 쌓음'],
     ['③ 주택 보증', '쌓인 기록으로 보험사와 함께 설계한 보증 판매. 위험 인수는 보험사, ROOMOVE는 가격 근거 데이터와 수리 업체 연결'],
@@ -302,7 +302,8 @@ function fullDeck(pres) {
   T(s, [{ text: '해외 선례와 한계', options: { bold: true, color: BLUE, breakLine: true } },
     { text: 'Porch: 집 정보로 보험 가격, 2025 가입자 소유 상호보험으로 전환', options: { bullet: { indent: 14 }, breakLine: true } },
     { text: 'Frontdoor: 보증 매출 약 76%가 갱신', options: { bullet: { indent: 14 }, breakLine: true } },
-    { text: '단, 강제 없는 주택 보증은 미국 가구의 약 4%, 거래 때 받은 고객 첫해 갱신 29%', options: { bullet: { indent: 14 } } }], { x: 8.8, y: 4.2, w: 3.8, h: 2.15, fontSize: 11, paraSpaceAfter: 2 });
+    { text: '강제 없는 주택 보증은 미국 가구의 약 4%, 거래 때 받은 고객 첫해 갱신 29%', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '직방은 홈IoT 인수 뒤 경영 악화 원인으로 지목(보도)', options: { bullet: { indent: 14 } } }], { x: 8.8, y: 4.2, w: 3.8, h: 2.15, fontSize: 11, paraSpaceAfter: 2 });
   T(s, '확장 문장: "한국에는 집 보험이 팔리는 거래 순간이 없고, ROOMOVE가 그 순간을 이사 일정 안에 만든다"(당사 판단)', { x: 0.6, y: 5.75, w: 7.7, h: 0.65, fontSize: 12, bold: true, color: NAVY });
   source(s, '민법·공동주택관리법 시행령(법령), 경향신문(2013.8.13), Porch 10-K(FY2025), Frontdoor 10-K(FY2023·FY2025)·2025 연차보고서, 당사 판단');
 
@@ -347,6 +348,29 @@ function fullDeck(pres) {
   T(s, [{ text: '판단 기준  ', options: { bold: true, color: BLUE } }, { text: '연계 판매·재이용은 측정 전까지 0으로 두고, 첫 이사 공헌이익만으로 고객 확보 비용의 2배 이상인지 확인' }], { x: 7.7, y: 5.25, w: 4.85, h: 1.05, fontSize: 12, valign: 'middle' });
   source(s, '숨고·미소·아정당·LG전자 공개 가격(2026.11.26 조회), 아마존 제휴 수수료표, 당사 추정. 수수료율 10%·전환율·연계 구매액은 근거 없는 가정');
 
+  // 13-1. 1년 단위경제
+  s = pres.addSlide({ masterName: 'CONTENT' });
+  title(s, '중개 기준 1년 단위경제: 정기 서비스 전환과 이사 수수료 방식이 좌우', '1년 단위경제 시나리오(내부 논의 가정을 중개 기준으로 재계산, 당사 가정)');
+  s.addChart(pres.charts.BAR, [{ name: '생애가치 ÷ 고객 확보 비용', labels: ['보수', '기준', '공격'], values: [0.55, 1.34, 2.53] }],
+    { x: 0.6, y: 1.55, w: 5.2, h: 4.9, barDir: 'col', chartColors: [BLUE], showValue: true, dataLabelPosition: 'outEnd', dataLabelFontSize: 12, dataLabelColor: INK, dataLabelFontFace: F, dataLabelFormatCode: '0.00"배"',
+      catAxisLabelFontFace: F, catAxisLabelFontSize: 12, catAxisLabelColor: INK, valAxisHidden: true, valGridLine: { style: 'none' }, catGridLine: { style: 'none' }, showLegend: false,
+      showTitle: true, title: '1년 생애가치 ÷ 고객 확보 비용(배)', titleFontFace: F, titleFontSize: 13, titleColor: NAVY });
+  table(s, [
+    ['항목', '보수', '기준', '공격'],
+    ['이사 공헌이익', '5만원', '8만원', '10만원'],
+    ['고객 확보 비용', '10만원', '7만원', '5만원'],
+    ['추가 이용 비율', '20%', '40%', '60%'],
+    ['추가 이용 공헌이익(10%×70%)', '1.4만원', '2.1만원', '2.8만원'],
+    ['연간 재구매율', '15%', '25%', '35%'],
+    ['1년 생애가치', '약 5.5만원', '약 9.4만원', '약 12.7만원'],
+  ], { t: { x: 6.1, y: 1.6, w: 6.6, colW: [2.7, 1.3, 1.3, 1.3], fontSize: 11, rowH: 0.38 }, hl: (i) => i === 5 ? { bold: true, color: ORANGE } : null });
+  T(s, [
+    { text: '원 시나리오(0.64·1.84·4.28배)는 추가 이용에 이익률 25%를 적용. 중개면 수수료(10%)를 넘을 수 없음', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '이사 10% 정률은 운송주선 허가가 전제. 제휴 정액(건당 3만원 예시)이면 기준 약 0.5배', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '정기 청소 1명 연 수수료 17.4만원: 이사 고객 약 38%가 입주 직후부터 쓰면 기준 시나리오가 2배 도달', options: { bullet: { indent: 14 } } },
+  ], { x: 6.1, y: 4.45, w: 6.6, h: 2.0, fontSize: 12, paraSpaceAfter: 6 });
+  source(s, '내부 논의 시나리오(2026.11.27), 아정당·숨고 이사 가격(업체 자료), 당사 계산. 모든 값은 근거 없는 가정이며 측정 대상');
+
   // 14. 리스크
   s = pres.addSlide({ masterName: 'CONTENT' });
   title(s, '주요 리스크 9가지와 대응', '확장 단계의 리스크');
@@ -382,15 +406,17 @@ function fullDeck(pres) {
     ['통로별 고객 확보 비용', '첫 이사 공헌이익 ÷ 2 이하'],
     ['시뮬레이션 고객 견적 정확도', '당일 추가 요금 뚜렷하게 낮음'],
     ['가구·가전 목록 갱신률', '첫 고객 집단 측정 후 설정'],
-    ['목록 기반 재방문율', '첫 고객 집단 측정 후 설정'],
+    ['자산 정보 기반 추천 전환율', '첫 고객 집단 측정 후 설정'],
     ['계약 이후 절차 함께 쓰는 비율', '첫 고객 집단 측정 후 설정'],
-  ], { t: { x: 0.6, y: 1.6, w: 6.8, colW: [3.3, 3.5], fontSize: 11, rowH: 0.47 } });
-  box(s, 7.7, 1.6, 5.0, 3.3, NAVY);
+    ['입주 시 자산 정보 등록률', '첫 고객 집단 측정 후 설정'],
+  ], { t: { x: 0.6, y: 1.6, w: 6.8, colW: [3.3, 3.5], fontSize: 11, rowH: 0.43 } });
+  box(s, 7.7, 1.6, 5.0, 3.9, NAVY);
   T(s, [{ text: '성립에 필요한 네 가지 조건', options: { bold: true, color: 'AFC6E9', breakLine: true } },
     { text: '정보는 판매가 아닌 동의 범위 안의 제안 능력으로', options: { bullet: { indent: 14 }, breakLine: true } },
     { text: '누적 매출은 연계 판매가 아닌 반복 서비스로', options: { bullet: { indent: 14 }, breakLine: true } },
     { text: '대출·중개·등기는 등록 플랫폼·자격자와 제휴로', options: { bullet: { indent: 14 }, breakLine: true } },
-    { text: '다음 이사는 계산에서 뺌', options: { bullet: { indent: 14 } } }], { x: 7.95, y: 1.85, w: 4.5, h: 2.9, fontSize: 14, color: WHITE, paraSpaceAfter: 10 });
+    { text: '다음 이사는 계산에서 뺌', options: { bullet: { indent: 14 }, breakLine: true } },
+    { text: '장기 목표: 이사를 입구로 주거 생애주기를 잇는 플랫폼', options: { bullet: { indent: 14 }, bold: true, color: 'AFC6E9' } }], { x: 7.95, y: 1.85, w: 4.5, h: 3.5, fontSize: 14, color: WHITE, paraSpaceAfter: 10 });
   source(s, '리서치/확장(2026.11.25), 기존 보고서(v1) 5장, 당사 정리');
 }
 
