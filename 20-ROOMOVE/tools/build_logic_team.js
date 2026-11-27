@@ -45,7 +45,7 @@ s.addShape('line', { x: x0, y: y + 0.97, w: W, h: 0, line: { color: 'D0D0D0', wi
 const by = 4.25, bh = 2.25;
 s.addShape('rect', { x: 0.6, y: by, w: 5.9, h: bh, fill: { color: CARD }, line: { color: CARD } });
 T('이사 때 쌓이는 집 정보', { x: 0.85, y: by + 0.25, w: 5.4, h: 0.4, fontSize: 16, bold: true });
-T('어디서 샀든, 어느 업체든 한 집 기준으로 남는다', { x: 0.85, y: by + 0.68, w: 5.4, h: 0.3, fontSize: 11.5, color: SUB });
+T('어디서 샀든, 어느 업체든 우리 집 데이터로 쌓인다', { x: 0.85, y: by + 0.68, w: 5.4, h: 0.3, fontSize: 11.5, color: SUB });
 ['새집 평면·치수', '가구·가전 목록과 구매 연도', '업체별 일정 이행 기록', '고장·수리·교체 이력'].forEach((t, i) => {
   T(t, { x: 0.85 + (i % 2) * 2.7, y: by + 1.15 + Math.floor(i / 2) * 0.42, w: 2.6, h: 0.35, fontSize: 12.5, bold: true });
 });

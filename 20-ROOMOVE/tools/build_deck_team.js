@@ -138,7 +138,7 @@ const st = [['이사·입주', '업종 사이 일정 조율', '업체 수수료'
     T(r[2], { x: x + 0.1, y: y + 1.45, w: w - 0.2, h: 0.3, fontSize: 10.5, color: MUTE, align: 'center' }); }); }
 rect(0.6, 4.25, 5.9, 2.25, CARD);
 T('이사 때 쌓이는 집 정보', { x: 0.85, y: 4.5, w: 5.4, h: 0.4, fontSize: 16, bold: true });
-T('어디서 샀든, 어느 업체든 한 집 기준으로 남는다', { x: 0.85, y: 4.93, w: 5.4, h: 0.3, fontSize: 11.5, color: SUB });
+T('어디서 샀든, 어느 업체든 우리 집 데이터로 쌓인다', { x: 0.85, y: 4.93, w: 5.4, h: 0.3, fontSize: 11.5, color: SUB });
 ['새집 평면·치수', '가구·가전 목록과 구매 연도', '업체별 일정 이행 기록', '고장·수리·교체 이력'].forEach((t, i) => T(t, { x: 0.85 + (i % 2) * 2.7, y: 5.4 + Math.floor(i / 2) * 0.42, w: 2.6, h: 0.35, fontSize: 12.5, bold: true }));
 rect(6.83, 4.25, 5.9, 2.25, BLACK);
 T('그래서', { x: 7.08, y: 4.5, w: 5.4, h: 0.3, fontSize: 11.5, bold: true, color: 'BDBDBD' });
