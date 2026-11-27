@@ -38,3 +38,15 @@ updated: 2026-11-27
 - Frontdoor 10-K FY2025: https://www.sec.gov/Archives/edgar/data/1727263/000119312526076548/ftdr-20251231.htm
 - Frontdoor 10-K FY2022(원가율 57%·51%): https://www.sec.gov/Archives/edgar/data/1727263/000156276223000062/ftdr-20221231x10k.htm
 - Frontdoor 2025 실적 발표: https://www.businesswire.com/news/home/20260226042868/en/Frontdoor-Announces-Record-Full-Year-2025-Financial-Results
+
+## 4. 보험사와 연동하나? (10-K FY2025 Item 1 Insurance·Regulatory Compliance, 2026-11-27 추가)
+
+- 수리 위험은 Frontdoor가 직접 짐: "the convenience of having repairs guaranteed by us and completed by experienced professionals". 일반 주택 보증을 외부 보험사가 인수한다는 공시는 없음.
+- 일부 주에서는 보험 당국이 규제: "in certain states, both our home warranty business and the new home builder warranty business are regulated by applicable state insurance regulatory authorities"(캘리포니아·DC·플로리다·텍사스 보험 당국). 버지니아·텍사스는 다른 기관도 관여. 어느 주에서 보험으로 분류되는지는 공시하지 않음.
+- 텍사스는 자회사 보험사(captive)로 보증 청구를 보험 처리: "We also provide insurance for our home warranty claims in Texas via our wholly-owned captive insurance company."
+- 자본 요건: 일부 자회사에 최소 자본·순자산 요건, 규제로 묶인 순자산 1억5,100만달러.
+- 재보험은 신축 건설사 보증(2-10 HBW, 구조 하자 최대 10년)에만: "we maintain reinsurance policies to transfer a significant portion of the risk that we assume pursuant to our new home builder warranties." 재보험사 이름은 비공개.
+- 주택보험사와의 접점은 IoT: "our partnership with Moen to offer installation of their smart water shut-off valve, including where supported by home insurers." 보증 회사의 수리업체망이 누수 차단 기기를 설치하고, 일부는 주택보험사가 지원.
+- 보증과 주택보험의 범위는 다름: 날씨 같은 단발 사고 수리는 "homeowners' and other forms of insurance"가 처리하고 보증은 고장 수리.
+
+ROOMOVE에 주는 뜻(당사 판단): Frontdoor 방식은 "보증 회사가 위험을 직접 지고, 주에 따라 보험 규제·자본 요건을 따르는" 구조. 국내에서는 제3자 보증이 보험으로 볼 소지가 커서 지금은 보험사 제휴(4-A)가 현실적이고, 규모가 생긴 뒤 직접 인수를 검토하는 순서. Moen 사례는 보증(4-A)과 스마트홈(4-B)이 수리업체망·보험사 지원으로 이어지는 실제 선례.
