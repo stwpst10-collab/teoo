@@ -44,6 +44,7 @@ pts.forEach(([n, x, y, rev]) => {
   const d = rev ? 0.28 + 0.62 * Math.sqrt(rev / MAXR) : 0.26;
   s.addShape('ellipse', { x: px(x) - d / 2, y: py(y) - d / 2, w: d, h: d, fill: rev ? { color: BUB, transparency: 25 } : { color: WHITE }, line: { color: BUB, width: 1.5 } });
   T(n, { x: px(x) - 1.2, y: py(y) + d / 2 + 0.02, w: 2.4, h: 0.24, fontSize: 9.5, bold: true, align: 'center' });
+  if (rev) T(rev.toLocaleString('en-US') + '억', { x: px(x) - d / 2, y: py(y) - d / 2, w: d, h: d, fontSize: d > 0.7 ? 10 : 8, bold: true, align: 'center', valign: 'middle', fit: 'none', wrap: false });
 });
 // ROOMOVE 목표 위치
 const rx = px(8.7), ry = py(8.6);
