@@ -74,7 +74,7 @@ function logicSlide(pres, s) {
     T(s, r[1], { x: x + 0.65, y: y + 0.12, w: w - 0.75, h: 0.5, fontSize: 13, bold: true, color: NAVY, valign: 'middle' });
     if (r[2]) T(s, r[2], { x: x + 0.65, y: y + 0.55, w: w - 0.75, h: 0.22, fontSize: 9.5, bold: true, color: last ? ORANGE : BLUE });
     T(s, r[3], { x: x + 0.15, y: y + 0.85, w: w - 0.3, h: 0.7, fontSize: 11 });
-    T(s, [{ text: '돈 내는 곳  ', options: { bold: true, color: MUTED } }, { text: r[4] }], { x: x + 0.15, y: y + 1.55, w: w - 0.3, h: 0.4, fontSize: 10 });
+    T(s, [{ text: '수익원  ', options: { bold: true, color: MUTED } }, { text: r[4] }], { x: x + 0.15, y: y + 1.55, w: w - 0.3, h: 0.4, fontSize: 10 });
     T(s, [{ text: '근거  ', options: { bold: true, color: MUTED } }, { text: r[5] }], { x: x + 0.15, y: y + 1.92, w: w - 0.3, h: 0.35, fontSize: 10 });
   });
   // 플라이휠
