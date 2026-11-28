@@ -18,6 +18,7 @@ ACC = RGBColor(0x3D, 0x38, 0xF5); MUTE = RGBColor(0x9A, 0x9A, 0xA1); LINE = RGBC
 LAV = RGBColor(0xE9, 0xE8, 0xFF); WHITE = RGBColor(0xFF, 0xFF, 0xFF); DARK = RGBColor(0x2A, 0x2A, 0x2E)
 PALE = RGBColor(0xC9, 0xC7, 0xFF)
 F = 'Malgun Gothic'
+ACC2 = RGBColor(0x8E, 0x8A, 0xFF)
 prs = Presentation(SRC)
 REF = [s for s in prs.slides if any(ph.placeholder_format.idx == 1 and ph.text_frame.text.strip() == 'OVERVIEW' for ph in s.placeholders)][0]
 
@@ -60,7 +61,7 @@ s = prs.slides.add_slide(REF.slide_layout)
 fill_ph(s, 'MARKET', "본업에서 출발해 '집 전체'를 맡는 쪽으로 넓히는 업계",
         '인테리어·가구·건설·가전·부동산·이사 업계 모두 판매 다음 단계인 시공·관리·입주 서비스로 영역을 넓히는 흐름',
         '출처: 버킷플레이스·직방 감사보고서(DART), 삼성물산·LG전자·무브제 발표, 바이라인네트워크(2026.10)·지디넷(2026.7)·CEO스코어데일리(2025.9·2026.11)·쿠키뉴스(2026.6)·'
-        '한국경제(2026.5·7)·머니투데이(2026.8)·토요경제(2026.11)·뉴데일리(2021.11·2026.1)·유니콘팩토리(2026.3)·아시아경제(2025.5). 회사 묶음은 당사 정리')
+        '한국경제(2026.5·7)·머니투데이(2026.8)·토요경제(2026.11)·뉴데일리(2021.11·2026.1, LG 구독)·유니콘팩토리(2026.3)·아시아경제(2025.5). 회사 묶음은 당사 정리')
 
 # (회사, 업종, 본업, [(시점, 넓힌 영역, 한 줄 설명)], 큰 숫자, 숫자 설명)
 ROWS = [
@@ -90,11 +91,38 @@ ROWS = [
      '3개', '컨시어지 영역\n이사·부동산·홈케어\n(회사 소개)'),
 ]
 
+# 성장 흐름: (헤드라인, 설명, 라벨, 값, 값표시, 0선 표시)
+SPARK = [
+    ('2.7배', '매출(억 원)\n2021→2025', ["'21", "'22", "'23", "'24", "'25"], [1176, 1864, 2355, 2880, 3216], ['1,176', '1,864', '2,355', '2,880', '3,216'], False),
+    ('흑자 전환', '리하우스 영업이익\n(억 원, 1~3분기)', ["'25", "'26"], [-31, 129], ["'25  −31", "'26  +129"], True),
+    ('1→21곳', "홈닉 쓰는 건설사\n('23.8은 삼성물산만)", ["'23.8", "'26.7", "'26.11"], [1, 18, 21], ['1', '18', '21'], False),
+    ('2배', "가전 구독 매출(조 원)\n'23은 증가율 역산", ["'23", "'24", "'25"], [1.07, 1.6, 2.0], ['약 1.1', '1.6', '2.0+'], False),
+    ('2.2배', "매출(억 원), '22부터\n스마트홈 포함", ["'18", "'21", "'23", "'25"], [415, 559, 1203, 922], ['415', '559', '1,203', '922'], False),
+    ('비공개', '매출·고객 수', None, '사람이 직접 하는\n고급 컨시어지', None, None),
+]
+def spark(x, y, w, h, cats, vals, labs, signed):
+    top_pad, bot_pad = 0.11, 0.1
+    ah = h - top_pad - bot_pad
+    n = len(vals); slot = w / n; bw = slot * 0.6
+    vmax = max(vals); vmin = min(0, min(vals)); rng = vmax - vmin
+    zero = y + top_pad + ah * (vmax / rng)
+    if signed:
+        ln = s.shapes.add_connector(1, Inches(x), Inches(zero), Inches(x + w), Inches(zero)); ln.line.color.rgb = RGBColor(0xD4, 0xD4, 0xD8); ln.line.width = Pt(0.5); noshadow(ln)
+    for i, (c, v, lb) in enumerate(zip(cats, vals, labs)):
+        bx = x + i * slot + (slot - bw) / 2
+        hg = max(ah * abs(v) / rng, 0.015)
+        t = zero - hg if v >= 0 else zero
+        last = i == n - 1
+        box(s, bx, t, bw, hg, (ACC if last else ACC2) if v >= 0 else RGBColor(0xC4, 0xC4, 0xCA))
+        ly = t - 0.1 if v >= 0 else t + hg
+        text(s, bx - 0.25, ly, bw + 0.5, 0.1, lb, 5.5, last, INK if last else SUB, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
+        if not signed: text(s, bx - 0.12, y + h - bot_pad, bw + 0.24, 0.1, c, 5, False, MUTE, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
+
 X0, X1 = 0.5625, 9.4349
 CO_W = 1.62                 # 회사·본업 칸
 AR_X = X0 + CO_W + 0.05     # 화살표
 CH_X = AR_X + 0.27          # 칩 시작
-NUM_W = 2.0
+NUM_W = 2.35
 NUM_X = X1 - NUM_W
 CH_GAP = 0.06
 CH_W = (NUM_X - 0.12 - CH_X - 3 * CH_GAP) / 4
@@ -103,7 +131,7 @@ HY, RY, RH, RG = 1.6, 1.84, 0.47, 0.04
 # 머리 줄
 text(s, X0, HY, CO_W, 0.18, '회사 · 원래 본업', 7, True, MUTE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
 text(s, CH_X, HY, 4 * CH_W + 3 * CH_GAP, 0.18, '넓힌 영역 (시점순, 파랑 = 가장 최근)', 7, True, MUTE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
-text(s, NUM_X, HY, NUM_W, 0.18, '확인된 숫자', 7, True, MUTE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+text(s, NUM_X, HY, NUM_W, 0.18, '성장 흐름', 7, True, MUTE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
 
 for k, (co, cat, base, chips, num, cap) in enumerate(ROWS):
     y = RY + k * (RH + RG)
@@ -121,9 +149,14 @@ for k, (co, cat, base, chips, num, cap) in enumerate(ROWS):
         rich(s, cx + 0.08, y, CH_W - 0.12, RH,
              [(when, 6, True, PALE if last else ACC), (area, 8, True, WHITE if last else INK),
               (det, 6, False, PALE if last else SUB)])
-    # 확인된 숫자
+    # 성장 흐름(미니 막대)
     box(s, NUM_X, y, NUM_W, RH, LIGHT)
-    text(s, NUM_X + 0.1, y, 0.95, RH, num, 13, True, INK, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
-    text(s, NUM_X + 1.06, y, NUM_W - 1.1, RH, cap, 6, False, SUB, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+    g = SPARK[k]
+    text(s, NUM_X + 0.08, y + 0.05, 0.75, 0.2, g[0], 10, True, INK, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+    text(s, NUM_X + 0.08, y + 0.25, 0.8, 0.2, g[1], 5.5, False, SUB)
+    if g[2] is None:
+        text(s, NUM_X + 0.85, y, NUM_W - 0.9, RH, g[3], 6, False, MUTE, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
+    else:
+        spark(NUM_X + 0.85, y, NUM_W - 0.92, RH, g[2], g[3], g[4], g[5])
 
 prs.save(OUT); print('saved', OUT, len(prs.slides))
