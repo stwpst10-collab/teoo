@@ -46,10 +46,10 @@ def fill_ph(sl, label, title, sub, src):
 s = prs.slides.add_slide(REF.slide_layout)
 fill_ph(s, 'MARKET', '숫자로 본 시장 내 구조적 변화',
         '상품 판매는 멈추고, 서비스 공급·공간 제안·맡기는 소비는 빠르게 커지는 흐름',
-        '출처: 국가데이터처 「온라인쇼핑동향」(가구, 2025 잠정), 유니콘팩토리·언론 보도(미소 누적 거래액, 회사 발표), 바이라인네트워크(2026.1, 오늘의집 발표: 3D·AI 인테리어 관련 검색량 전년 대비 약 24배), 브레이브모바일(숨고) 감사보고서(DART)')
+        '출처: 국가데이터처 「온라인쇼핑동향」(가구, 2025 잠정), 영구크린 감사보고서(DART), 디지털데일리(2026.1, 청소연구소 발표), 유니콘팩토리·회사 연혁(미소 누적 거래액, 회사 발표), 바이라인네트워크(2026.1, 오늘의집 발표: 3D·AI 인테리어 관련 검색량 전년 대비 약 24배), 브레이브모바일(숨고) 감사보고서(DART)')
 panels = [
     ('01', '상품 판매의 정체', '2021년부터 정체', '온라인 가구 거래액(조 원)', ['18', '19', '20', '21', '22', '23', '24', '25'], [3.13, 3.54, 4.90, 5.40, 5.20, 5.35, 5.67, 5.53], False, '0.0'),
-    ('02', '공급의 세분화', '서비스 1,000개, 거래 4배', '미소 누적 거래액(조 원)', ["'22.4", "'24", "'25 중반"], [0.35, 1.0, 1.5], True, '0.0#'),
+    ('02', '공급의 세분화', '서비스별 1.8~4.3배', '2022년 대비 배수(2022=1)', None, None, True, None),
     ('03', '공간 제안 도구의 확산', '검색량 1년 새 약 24배', '3D·AI 인테리어 검색량(전년=1)', ['2024', '2025'], [1, 24], True, '0'),
     ('04', '맡기는 소비의 성장', '4년간 4.7배', '숨고 매출(억 원)', ['21', '22', '23', '24', '25'], [151.8, 313.8, 458.6, 624.2, 719.8], True, '#,##0'),
 ]
@@ -61,6 +61,18 @@ for i, (n, k, take, cap, cats, vals, up, fmt) in enumerate(panels):
     text(s, x + 0.12, y + 0.12, 0.3, 0.3, n, 8, True, WHITE, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
     text(s, x + 0.5, y + 0.14, w - 0.6, 0.26, k, 9, True, ACC, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
     text(s, x + 0.12, y + 0.5, w - 0.24, 0.3, take, 11.5, True, INK)
+    if cats is None:
+        rows = [('이사', "영구크린 매출 '22→'25", 1.8), ('청소', "청소연구소 매니저 수 '22→'26.1", 2.2), ('생활서비스', "미소 누적 거래액 '22.4→'25 중반", 4.3)]
+        maxw = w - 0.24 - 0.55
+        for j, (nm, met, v) in enumerate(rows):
+            ry = y + 1.0 + j * 0.6
+            text(s, x + 0.12, ry, w - 0.24, 0.2, nm, 9, True, INK)
+            text(s, x + 0.12, ry + 0.17, w - 0.24, 0.16, met, 6.5, False, SUB)
+            bl = maxw * v / 4.3
+            box(s, x + 0.12, ry + 0.36, bl, 0.18, ACC)
+            text(s, x + 0.12 + bl + 0.06, ry + 0.32, 0.5, 0.26, f'{v:.1f}배', 9, True, INK, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+        text(s, x + 0.12, y + 2.85, w - 0.24, 0.26, cap, 7.5, False, SUB)
+        continue
     cd = CategoryChartData(); cd.categories = cats; cd.add_series(cap, vals)
     gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(x + 0.05), Inches(y + 0.85), Inches(w - 0.1), Inches(1.95), cd)
     ch = gf.chart; ch.has_legend = False; ch.has_title = False
