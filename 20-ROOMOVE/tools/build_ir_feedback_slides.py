@@ -90,43 +90,49 @@ for j, (kind, nm, desc, rev, chg, up) in enumerate(cards):
     text(s, cx + 1.35, y + 0.12, 1.0, 0.44, rev, 8.5, False, INK, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
     text(s, cx + 2.4, y + 0.12, 0.56, 0.44, chg, 13, True, ACC if up else RED, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
 
-# ---------- 2) 단계별 대표 플레이어 ----------
+# ---------- 2) 단계별 경쟁사 지도 + 대표 경쟁사 강조(매출 막대) ----------
 s = prs.slides.add_slide(REF.slide_layout)
 fill_ph(s, 'COMPETITION', '단계마다 강자는 있지만, 세 단계를 잇는 곳은 없음',
-        '판단·상품 선택은 오늘의집, 서비스 선택은 숨고, 시공 실행은 한샘이 대표. 각자 자기 단계에서만 강함',
-        '출처: 각 사 감사보고서·공시(DART, 2025년 매출. 한샘 연결·잠정, 오늘의집·숨고 별도), 바이라인네트워크(2026.1, 오늘의집 발표), 각 사 서비스 소개. 단계 분류와 한계는 당사 정리(공개 자료 기준)')
-x0, y0, H = 0.56, 1.62, 2.72
-chev = [('1  해결 방법 판단', 0.56, 2.9), ('2  상품·서비스 선택', 3.38, 2.9), ('3  작업 실행·조율', 6.53, 2.9)]
-# 단계 띠
-for k, (lab, x, w) in enumerate([('1  해결 방법 판단', 0.56, 2.5), ('2  상품·서비스 선택', 3.0, 4.38), ('3  작업 실행·조율', 7.32, 2.11)]):
-    sh = s.shapes.add_shape(MSO_SHAPE.CHEVRON if k else MSO_SHAPE.PENTAGON, Inches(x), Inches(y0), Inches(w), Inches(0.32))
-    sh.fill.solid(); sh.fill.fore_color.rgb = RGBColor(0xE4, 0xE4, 0xE7); sh.line.fill.background(); noshadow(sh)
-    text(s, x + 0.2, y0, w - 0.4, 0.32, lab, 9, True, INK, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-players = [
-    (0.56, 4.6, '오늘의집', '판단 + 상품 선택을 한 앱에서', '3,216억 원', '2025 매출 · 2021년 대비 2.7배',
-     ['3D·AI 방꾸미기 사용자 연평균 63% 증가(2023~)', '공간 제안 → 상품 판매 → 직접 시공까지'],
-     '판매 상품 중심의 제안, 이사·청소 등 다른 업종 일정은 고객 몫', True),
-    (5.3, 1.92, '숨고', '서비스 선택', '720억 원', '2025 매출 · 4.7배',
-     ['이사·청소·시공 업체 견적 연결', '2023년부터 흑자'],
-     '업체별 견적까지, 공간 판단과 작업 순서는 없음', False),
-    (7.36, 2.07, '한샘', '작업 실행(시공)', '1조 7,445억 원', '2025 매출 · −22%',
-     ['리하우스 시공·자사 가구 설치'],
-     '자사 상품 중심, 다른 업체 일정은 고객 몫', False),
+        '판단·상품 선택은 오늘의집, 서비스 선택은 숨고, 시공 실행은 한샘이 대표. 오늘의집은 세 단계로 넓히는 중',
+        '출처: 각 사 감사보고서·공시(DART, 2025년 매출. 한샘 연결·잠정, 오늘의집·숨고·영구크린 별도), 미소는 회사 발표 최근 1년 거래액(유니콘팩토리 2025.7, 매출 아님), 바이라인네트워크(2026.1)·디지털데일리(2026.3)·삼성물산 보도자료(2026.11). 막대는 한샘 매출=100% 기준. 분류는 당사 정리')
+MAXREV = 17445
+cols = [
+    ('1  해결 방법 판단', ('오늘의집', '3D·AI 방꾸미기 · 쇼룸 상담', 3216, '3,216억', '2021년 대비 2.7배'),
+     [('아키스케치', '배치 도구', '매출 비공개', False), ('한샘 쇼룸', '매장 상담 → 3단계 한샘', '', False)]),
+    ('2  상품·서비스 선택', ('숨고', '이사·청소·시공 업체 견적 연결', 720, '720억', '4.7배 · 2023년부터 흑자'),
+     [('오늘의집', '상품 커머스(1단계와 같은 회사)', '', True), ('미소', '생활서비스', '연 거래 약 5,000억', False),
+      ('쿠팡·가전 제조사', '상품 판매', '', False), ('짐싸·헬로입주·홈닉', '이사·입주 서비스', '매출 비공개', False)]),
+    ('3  작업 실행·조율', ('한샘', '리하우스 시공 · 자사 가구 설치', 17445, '1조 7,445억', '2021년 대비 −22%'),
+     [('오늘의집', '직접 시공 · 지정일 배송', '', True), ('영구크린', '이사(가맹)', '매출 205억', False),
+      ('삼성 인테리어핏', '자사 가전 중심 인테리어', '', False), ('이사·청소 업체', '개별 예약', '', False)]),
 ]
-py = y0 + 0.46
-for (x, w, nm, role, rev, revsub, pts, lim, big) in players:
-    box(s, x, py, w, 2.36, LAV if big else LIGHT)
-    text(s, x + 0.16, py + 0.14, 2.2, 0.18, role, 7.5, True, ACC)
-    text(s, x + 0.16, py + 0.34, 2.2, 0.3, nm, 14, True, INK)
-    text(s, x + 0.16, py + 0.7, 2.4, 0.34, rev, 17 if big else 14, True, INK)
-    text(s, x + 0.16, py + 1.04, 2.2, 0.18, revsub, 7, False, SUB)
-    if big:
-        tx, ty, tw = x + 2.35, py + 0.34, w - 2.5
-    else:
-        hline(s, x + 0.16, py + 1.3, x + w - 0.16); tx, ty, tw = x + 0.16, py + 1.38, w - 0.32
-    text(s, tx, ty, tw, 0.5, '\n'.join('· ' + p for p in pts), 7.5, False, INK)
-    text(s, tx, ty + (0.72 if big else 0.48), tw, 0.46, '한계  ' + lim, 7.5, True, RED)
-by = py + 2.36 + 0.12
-box(s, 0.56, by, 8.87, 0.4, ACC)
-text(s, 0.76, by, 8.5, 0.4, '세 단계를 한 해결 과정으로 잇는 곳: 대중형 서비스로는 공개 자료상 없음(사람이 하는 고급 대행 무브제 정도)', 9.5, True, WHITE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+cw, gap, x0, y0 = 2.85, 0.16, 0.56, 1.6
+for k, (stage, rep, others) in enumerate(cols):
+    x = x0 + k * (cw + gap)
+    sh = s.shapes.add_shape(MSO_SHAPE.CHEVRON if k else MSO_SHAPE.PENTAGON, Inches(x), Inches(y0), Inches(cw + (0.12 if k < 2 else 0)), Inches(0.3))
+    sh.fill.solid(); sh.fill.fore_color.rgb = RGBColor(0xE4, 0xE4, 0xE7); sh.line.fill.background(); noshadow(sh)
+    text(s, x + 0.2, y0, cw - 0.3, 0.3, stage, 9, True, INK, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
+    # 대표 경쟁사 카드(강조)
+    nm, desc, rev, revtxt, chg = rep; ry = y0 + 0.4
+    box(s, x, ry, cw, 1.0, ACC)
+    text(s, x + 0.14, ry + 0.07, 1.0, 0.18, '대표 경쟁사', 7, True, RGBColor(0xC9, 0xC7, 0xFF))
+    text(s, x + 0.14, ry + 0.22, 1.5, 0.3, nm, 14, True, WHITE)
+    text(s, x + 0.14, ry + 0.5, cw - 0.28, 0.18, desc, 7, False, RGBColor(0xE0, 0xDF, 0xFF))
+    text(s, x + 1.45, ry + 0.16, cw - 1.59, 0.34, revtxt, 14, True, WHITE, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
+    bw = cw - 0.28
+    box(s, x + 0.14, ry + 0.7, bw, 0.1, RGBColor(0x5F, 0x5B, 0xF7))
+    box(s, x + 0.14, ry + 0.7, max(bw * rev / MAXREV, 0.04), 0.1, WHITE)
+    text(s, x + 0.14, ry + 0.82, cw - 0.28, 0.18, f'2025 매출 · {chg}', 7, False, RGBColor(0xE0, 0xDF, 0xFF))
+    # 다른 경쟁사(회색)
+    oy = ry + 1.06
+    text(s, x, oy, cw, 0.18, '그 밖의 플레이어', 7, True, MUTE)
+    oy += 0.2
+    for (onm, odesc, orev, same) in others:
+        box(s, x, oy, cw, 0.27, LAV if same else LIGHT)
+        text(s, x + 0.12, oy, 1.15, 0.27, onm, 7.5, True, ACC if same else INK, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+        text(s, x + 1.25, oy, cw - 1.35, 0.27, odesc + (f' · {orev}' if orev else ''), 6.5, False, SUB, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+        oy += 0.3
+by = 4.5
+box(s, 0.56, by, 8.87, 0.36, DARK)
+text(s, 0.76, by, 8.5, 0.36, '세 단계를 한 해결 과정으로 잇는 곳: 대중형 서비스로는 공개 자료상 없음(사람이 하는 고급 대행 무브제 정도)', 9, True, WHITE, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
 prs.save(OUT); print('saved', OUT, len(prs.slides))
