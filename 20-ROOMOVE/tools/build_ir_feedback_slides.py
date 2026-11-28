@@ -54,13 +54,13 @@ def fill_ph(sl, label, title, sub, src):
 # ---------- 1) 전통 강자 vs 플랫폼 강자 ----------
 s = prs.slides.add_slide(REF.slide_layout)
 fill_ph(s, 'MARKET', '전통 강자는 줄고, 플랫폼 강자는 커지는 주거 서비스',
-        '같은 4년 동안 가구 대기업·부동산 중개 앱 매출은 줄고, 공간 제안·홈서비스 플랫폼 매출은 3~5배로 성장',
-        '출처: 각 사 감사보고서·공시(DART). 한샘 연결, 다방(스테이션3)·오늘의집(버킷플레이스)·숨고(브레이브모바일) 별도 매출. 지수는 2021년=100 당사 계산(한샘 2025 잠정)')
+        '같은 기간 가구 대기업·부동산 중개 앱 매출은 줄고, 공간 제안·홈서비스·시공 플랫폼 매출은 2~5배로 성장',
+        '출처: 각 사 감사보고서·공시(DART, 한샘 연결·잠정, 나머지 별도). 지수는 2021년=100 당사 계산(아파트멘터리는 2022년부터 공시라 선 제외). 이유: 숨고 회사 소개(2025), 유니콘팩토리·데일리안(2026.4, 오늘의집), 국토부 거래 통계(KB 인용), 뉴스1·딜사이트(2026.2, 한샘)')
 series = [('숨고', [151.8, 313.8, 458.6, 624.2, 719.8], ACC, True), ('오늘의집', [1176.3, 1864.2, 2355.2, 2879.5, 3215.7], ACC2, True),
           ('다방', [246.0, 230.7, 209.4, 209.7, 206.5], GRAY2, False), ('한샘', [22314, 20009, 19669, 19084, 17445], GRAY1, False)]
 cd = CategoryChartData(); cd.categories = ['2021', '2022', '2023', '2024', '2025']
 for nm, v, c, up in series: cd.add_series(nm, [round(x / v[0] * 100, 1) for x in v])
-gf = s.shapes.add_chart(XL_CHART_TYPE.LINE_MARKERS, Inches(0.5), Inches(1.6), Inches(5.6), Inches(3.3), cd)
+gf = s.shapes.add_chart(XL_CHART_TYPE.LINE_MARKERS, Inches(0.45), Inches(1.6), Inches(5.05), Inches(3.3), cd)
 ch = gf.chart; ch.has_legend = False; ch.font.name = F; ch.font.size = Pt(8); ch.font.color.rgb = SUB
 va = ch.value_axis; va.has_major_gridlines = True; va.major_gridlines.format.line.color.rgb = RGBColor(0xEC, 0xEC, 0xEE)
 va.format.line.fill.background(); va.tick_labels.font.size = Pt(7.5); va.maximum_scale = 500; va.minimum_scale = 0; va.major_unit = 100
@@ -74,21 +74,24 @@ for i, (nm, v, c, up) in enumerate(series):
     pt.data_label.text_frame.text = f'{nm} {round(v[4] / v[0] * 100)}'
     r = pt.data_label.text_frame.paragraphs[0].runs[0]; r.font.size = Pt(8); r.font.bold = True; r.font.color.rgb = c if up else SUB; r.font.name = F
     from pptx.enum.chart import XL_LABEL_POSITION
-    pt.data_label.position = XL_LABEL_POSITION.RIGHT if up else (XL_LABEL_POSITION.ABOVE if nm == '다방' else XL_LABEL_POSITION.BELOW)
+    pt.data_label.position = (XL_LABEL_POSITION.ABOVE if nm == '오늘의집' else XL_LABEL_POSITION.RIGHT) if up else (XL_LABEL_POSITION.ABOVE if nm == '다방' else XL_LABEL_POSITION.BELOW)
 text(s, 0.56, 1.58, 3, 0.2, '매출 지수(2021년=100)', 8, True, SUB)
-# 오른쪽 카드
-cx, cw = 6.35, 3.08
-text(s, cx, 1.62, cw, 0.22, '2025년 매출과 2021년 대비 변화', 9, True, INK)
-cards = [('플랫폼', '숨고', '홈서비스 연결', '720억 원', '4.7배', True), ('플랫폼', '오늘의집', '공간 제안·커머스·시공', '3,216억 원', '2.7배', True),
-         ('전통', '다방', '부동산 중개 앱', '207억 원', '−16%', False), ('전통', '한샘', '가구·인테리어 대기업', '1조 7,445억 원', '−22%', False)]
-for j, (kind, nm, desc, rev, chg, up) in enumerate(cards):
-    y = 1.92 + j * 0.74
-    box(s, cx, y, cw, 0.66, LAV if up else LIGHT)
-    text(s, cx + 0.14, y + 0.1, 0.5, 0.18, kind, 7, True, ACC if up else MUTE)
-    text(s, cx + 0.14, y + 0.27, 1.3, 0.26, nm, 11, True, INK)
-    text(s, cx + 0.14, y + 0.48, 1.5, 0.16, desc, 6.5, False, SUB)
-    text(s, cx + 1.35, y + 0.12, 1.0, 0.44, rev, 8.5, False, INK, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
-    text(s, cx + 2.4, y + 0.12, 0.56, 0.44, chg, 13, True, ACC if up else RED, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
+# 오른쪽 카드: 매출 변화 + 왜 늘었나/줄었나
+cx, cw = 5.62, 3.81
+text(s, cx, 1.6, cw, 0.22, '2025년 매출 · 변화 · 이유', 9, True, INK)
+cards = [('플랫폼', '숨고', '720억 원', "'21→'25 4.7배", True, '이사·청소·인테리어 등 1,000여 개 서비스, 고수 200만 명이 내는 견적 수수료'),
+         ('플랫폼', '오늘의집', '3,216억 원', "'21→'25 2.7배", True, "커머스에 시공을 더함: 인테리어 시공 거래 매출 '25년 3.5배"),
+         ('플랫폼', '아파트멘터리', '522억 원', "'22→'25 1.9배", True, "설계부터 시공까지 직접 맡는 인테리어, 시공 매출이 89%"),
+         ('전통', '다방', '207억 원', "'21→'25 −16%", False, "중개사 광고 기반, 주택 매매 '21 101만→'22 51만 건으로 급감"),
+         ('전통', '한샘', '1조 7,445억 원', "'21→'25 −22%", False, "건설 경기 침체·소비 감소(회사 설명), '25년 매출 −8.6%")]
+for j, (kind, nm, rev, chg, up, why) in enumerate(cards):
+    y = 1.88 + j * 0.61
+    box(s, cx, y, cw, 0.55, LAV if up else LIGHT)
+    text(s, cx + 0.12, y + 0.05, 0.5, 0.16, kind, 6.5, True, ACC if up else MUTE)
+    text(s, cx + 0.12, y + 0.18, 1.5, 0.22, nm, 10.5, True, INK, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
+    text(s, cx + 1.45, y + 0.05, 1.05, 0.3, rev, 8, False, INK, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
+    text(s, cx + 2.55, y + 0.05, 1.14, 0.3, chg, 11, True, ACC if up else RED, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
+    text(s, cx + 0.12, y + 0.38, cw - 0.24, 0.15, ('왜 늘었나  ' if up else '왜 줄었나  ') + why, 6.5, False, SUB, PP_ALIGN.LEFT, MSO_ANCHOR.MIDDLE)
 
 # ---------- 2) 단계별 경쟁사 지도 + 대표 경쟁사 강조(매출 막대) ----------
 s = prs.slides.add_slide(REF.slide_layout)
