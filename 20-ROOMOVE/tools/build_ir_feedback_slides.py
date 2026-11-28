@@ -94,7 +94,7 @@ for j, (kind, nm, desc, rev, chg, up) in enumerate(cards):
 s = prs.slides.add_slide(REF.slide_layout)
 fill_ph(s, 'COMPETITION', '단계마다 강자는 있지만, 세 단계를 잇는 곳은 없음',
         '판단·상품 선택은 오늘의집, 서비스 선택은 숨고, 시공 실행은 한샘이 대표. 오늘의집은 세 단계로 넓히는 중',
-        '출처: 각 사 감사보고서·공시(DART, 2025년 매출. 한샘 연결·잠정, 오늘의집·숨고·영구크린 별도), 미소는 회사 발표 최근 1년 거래액(유니콘팩토리 2025.7, 매출 아님), 바이라인네트워크(2026.1)·디지털데일리(2026.3)·삼성물산 보도자료(2026.11). 막대는 회사별 자기 매출 추이(회사 간 비교 아님). 분류는 당사 정리')
+        '출처: 각 사 감사보고서·공시(DART, 2025년 매출. 한샘 연결·잠정, 오늘의집·숨고·영구크린 별도), 미소는 회사 발표 최근 1년 거래액(유니콘팩토리 2025.7, 매출 아님), 바이라인네트워크(2026.1)·디지털데일리(2026.3)·삼성물산 보도자료(2026.11). 분류는 당사 정리')
 TREND = {'오늘의집': [1176, 1864, 2355, 2880, 3216], '숨고': [152, 314, 459, 624, 720], '한샘': [22314, 20009, 19669, 19084, 17445]}
 cols = [
     ('1  해결 방법 판단', ('오늘의집', '3D·AI 방꾸미기 · 쇼룸 상담', 3216, '3,216억', '2.7배'),
@@ -119,12 +119,7 @@ for k, (stage, rep, others) in enumerate(cols):
     text(s, x + 0.14, ry + 0.22, 1.5, 0.3, nm, 14, True, WHITE)
     text(s, x + 0.14, ry + 0.5, cw - 0.28, 0.18, desc, 7, False, RGBColor(0xE0, 0xDF, 0xFF))
     text(s, x + 1.45, ry + 0.16, cw - 1.59, 0.34, revtxt, 14, True, WHITE, PP_ALIGN.RIGHT, MSO_ANCHOR.MIDDLE)
-    # 회사별 자기 매출 추이(2021~2025, 각자 기준. 회사끼리 비교하지 않음)
-    ser = TREND[nm]; vmax = max(ser); sw = (cw - 0.28) / 5; bh = 0.2
-    for i, v in enumerate(ser):
-        hh = bh * v / vmax
-        box(s, x + 0.14 + i * sw + sw * 0.15, ry + 0.66 + bh - hh, sw * 0.7, hh, WHITE if i == 4 else RGBColor(0x8E, 0x8A, 0xFF))
-    text(s, x + 0.14, ry + 0.87, cw - 0.28, 0.12, f"'21→'25 매출 추이 · {chg}", 6.5, False, RGBColor(0xE0, 0xDF, 0xFF))
+    text(s, x + 0.14, ry + 0.74, cw - 0.28, 0.16, f"2025 매출 · '21 대비 {chg}", 7.5, False, RGBColor(0xE0, 0xDF, 0xFF))
     # 다른 경쟁사(회색)
     oy = ry + 1.06
     text(s, x, oy, cw, 0.18, '그 밖의 플레이어', 7, True, MUTE)
